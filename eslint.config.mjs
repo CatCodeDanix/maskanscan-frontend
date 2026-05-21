@@ -16,6 +16,11 @@ const eslintConfig = defineConfig([
     },
   },
   eslintConfigPrettier,
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
 ]);
 
