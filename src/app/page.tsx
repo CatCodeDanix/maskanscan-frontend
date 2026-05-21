@@ -1,3 +1,9 @@
-export default function Home() {
-  return <h1>Hello MaskanScan</h1>;
+import BaseMapWrapper from "@/components/BaseMapWrapper";
+
+export default function Page() {
+  return (
+    <main>
+      <BaseMapWrapper />
+    </main>
+  );
 }
