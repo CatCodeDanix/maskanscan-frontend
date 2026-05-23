@@ -2,6 +2,7 @@ import { DirectionProvider } from "@/components/ui/direction";
 import { ThemeProvider } from "@wrksz/themes/next";
 import type { Metadata } from "next";
 import "@/styles/globals.css";
+import Providers from "@/components/Providers";
 
 // TODO: Add custom local fonts
 
@@ -67,7 +68,9 @@ export default function RootLayout({
         disableTransitionOnChange
       >
         <DirectionProvider dir="rtl">
-          <body className="flex min-h-full flex-col">{children}</body>
+          <Providers>
+            <body className="flex min-h-full flex-col">{children}</body>
+          </Providers>
         </DirectionProvider>
       </ThemeProvider>
     </html>

@@ -1,12 +1,15 @@
-// components/BaseMap.tsx
 "use client";
 
 import Map from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useMapStore } from "@/store/map-store";
+import DeckMap from "./DeckMap";
 
 const API_KEY = process.env.NEXT_PUBLIC_MAPIR_API_KEY;
 
 export default function BaseMap() {
+  const mapStyle = useMapStore((s) => s.mapStyle);
+
   return (
     <Map
       RTLTextPlugin="/mapbox-gl-rtl-text.js"
@@ -15,10 +18,9 @@ export default function BaseMap() {
         latitude: 35.689,
         zoom: 11,
       }}
-      style={{ width: "100%", height: "100vh", fontFamily: "sans-serif" }}
-      mapStyle={`https://map.ir/vector/styles/main/mapir-xyz-style.json?x-api-key=${API_KEY}`}
+      style={{ width: "100%", height: "100vh" }}
+      mapStyle={mapStyle}
       transformRequest={(url) => {
-        // Add the x-api-key header to every request (tiles, fonts, sprites, etc.)
         return {
           url,
           headers: {
@@ -26,6 +28,8 @@ export default function BaseMap() {
           },
         };
       }}
-    />
+    >
+      <DeckMap />
+    </Map>
   );
 }
