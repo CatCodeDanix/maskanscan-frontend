@@ -1,0 +1,263 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [51.6029947, 32.7152021],
+          [51.6167229, 32.7134165],
+          [51.6312717, 32.7156817],
+          [51.6445335, 32.7161039],
+          [51.658613, 32.7151571],
+          [51.6660176, 32.7083213],
+          [51.6730042, 32.6989822],
+          [51.6731154, 32.6874701],
+          [51.6718541, 32.6793428],
+          [51.6709529, 32.6715762],
+          [51.6699444, 32.6643214],
+          [51.6695046, 32.657773],
+          [51.6679358, 32.6487915],
+          [51.6659031, 32.6442008],
+          [51.6669553, 32.6404712],
+          [51.6652726, 32.6294345],
+          [51.6642427, 32.6224227],
+          [51.6633477, 32.6129017],
+          [51.6647993, 32.6049755],
+          [51.6680901, 32.5989419],
+          [51.6699269, 32.5884211]
+        ]
+      },
+      "properties": {
+        "name": "خط 1 مترو اصفهان",
+        "description": null,
+        "type": "line",
+        "city": "Isfahan",
+        "stroke": "#A52714",
+        "stroke-width": 4.1,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6029947, 32.7152021] },
+      "properties": {
+        "name": "اصفهان 1 - ایستگاه قدس (ملکشهر) Ghods Malekshahr",
+        "description": "5",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6167229, 32.7134165] },
+      "properties": {
+        "name": "اصفهان 1 - بهارستان Baharestan",
+        "description": "6",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6312717, 32.7156817] },
+      "properties": {
+        "name": "اصفهان 1 - گلستان Golestan",
+        "description": "7",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6445335, 32.7161039] },
+      "properties": {
+        "name": "اصفهان 1 - مفتح Mofateh",
+        "description": "8",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.658613, 32.7151571] },
+      "properties": {
+        "name": "اصفهان 1 - علیخانی Alikhani",
+        "description": "9",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6660176, 32.7083213] },
+      "properties": {
+        "name": "اصفهان 1 - جابر Jaber",
+        "description": "10",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6730042, 32.6989822] },
+      "properties": {
+        "name": "اصفهان 1 - ترمینال کاوه Bus Terminal Kave",
+        "description": "11",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6731154, 32.6874701] },
+      "properties": {
+        "name": "اصفهان 1 - چمران Chamran",
+        "description": null,
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6718541, 32.6793428] },
+      "properties": {
+        "name": "اصفهان 1 - باهنر Bahonar",
+        "description": "13",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6709529, 32.6715762] },
+      "properties": {
+        "name": "اصفهان 1 - شهدا(فروغی) Shohada",
+        "description": "14",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6699444, 32.6643214] },
+      "properties": {
+        "name": "اصفهان 1 - تختی(عبدالرزاق) Takhti",
+        "description": "15",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6695046, 32.657773] },
+      "properties": {
+        "name": "اصفهان 1 - امام حسین(دروازه دولت) Emam Huseyn",
+        "description": "چهل ستون - میدان نقش جهان",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6679358, 32.6487915] },
+      "properties": {
+        "name": "اصفهان 1 - انقلاب Enghelab",
+        "description": "17 شمال سی و سه پل و مسجد مادرشاه (مسجد چهارباغ) هتل عباسی",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6669553, 32.6404712] },
+      "properties": {
+        "name": "اصفهان 1 - سی و سه پل 33Pol Si-o-se-pol",
+        "description": "18 - جنوب 33 پل - مجتمع تجاری متروپل",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6652726, 32.6294345] },
+      "properties": {
+        "name": "اصفهان 1 - 19شریعتی Shariati",
+        "description": null,
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6642427, 32.6224227] },
+      "properties": {
+        "name": "اصفهان 1 - آزادی Azadi sq",
+        "description": "20",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6633477, 32.6129017] },
+      "properties": {
+        "name": "اصفهان 1 - دانشگاه Daneshgha (University)",
+        "description": null,
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6647993, 32.6049755] },
+      "properties": {
+        "name": "اصفهان 1 - کارگر Karegar",
+        "description": "22",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6680901, 32.5989419] },
+      "properties": {
+        "name": "اصفهان 1 - کوی امام Koy-e Emam",
+        "description": "23",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [51.6699269, 32.5884211] },
+      "properties": {
+        "name": "اصفهان 1 - دفاع مقدس (صفه) Defa Moghadas - Soffe",
+        "description": "24",
+        "type": "station",
+        "city": "Isfahan",
+        "marker-color": "#A52714"
+      }
+    }
+  ]
+}

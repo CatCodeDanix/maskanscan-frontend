@@ -1,0 +1,320 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [52.5994379, 29.552003],
+          [52.562783, 29.6032109],
+          [52.558664, 29.6083229],
+          [52.540467, 29.6191798],
+          [52.5195243, 29.6315651],
+          [52.5115755, 29.6312392],
+          [52.502167, 29.6383731],
+          [52.4854066, 29.6545785],
+          [52.4863078, 29.6659526],
+          [52.4731757, 29.6861619],
+          [52.4541213, 29.6785559]
+        ]
+      },
+      "properties": {
+        "name": "خط 1 مترو شیراز",
+        "description": null,
+        "type": "line",
+        "city": "Shiraz",
+        "stroke": "#E65100",
+        "stroke-width": 5.263,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5994379, 29.552003] },
+      "properties": {
+        "name": "شیراز 1 - فرودگاه شهید دستغیب Dastgheyb Shiraz INT Airport",
+        "description": null,
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5905185, 29.5646493] },
+      "properties": {
+        "name": "شیراز 1 - فرصت Forsat",
+        "description": "3",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5851004, 29.5724267] },
+      "properties": {
+        "name": "شیراز 1 - جانبازان Janbazan",
+        "description": "4",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5789984, 29.5806666] },
+      "properties": {
+        "name": "شیراز 1 - غدیر Ghadir",
+        "description": null,
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5740075, 29.5877994] },
+      "properties": {
+        "name": "شیراز 1 - رازی Razi",
+        "description": null,
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5676769, 29.5961007] },
+      "properties": {
+        "name": "شیراز 1 - فضیلت Fazilat",
+        "description": null,
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5630193, 29.6028482] },
+      "properties": {
+        "name": "شیراز 1 - کاوه Kave",
+        "description": null,
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.558664, 29.6083229] },
+      "properties": {
+        "name": "شیراز 1 - ولیعصر - کاراندیش Valiasr",
+        "description": "10",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5512584, 29.6127149] },
+      "properties": {
+        "name": "شیراز 1 - وکیل الرعایا (بازار وکیل) Vakil Bazar & Mosque",
+        "description": "10 - historical center of Shiraz - Hamam Vakil - Grand Shop",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5413673, 29.6185884] },
+      "properties": {
+        "name": "شیراز 1 - زندیه - چهارراه زند Zandiyeh",
+        "description": "11",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5320426, 29.6241105] },
+      "properties": {
+        "name": "شیراز 1 و 2 - امام حسین (ستاد) Emam Housein - Setaad",
+        "description": "12 - ستاد",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5195243, 29.6315651] },
+      "properties": {
+        "name": "شیراز 1 - نمازی Namazi",
+        "description": "14",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5114711, 29.631088] },
+      "properties": {
+        "name": "شیراز 1 - آوینی Avini",
+        "description": "15",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.502167, 29.6383731] },
+      "properties": {
+        "name": "شیراز 1 - شهید مطهری Motahari",
+        "description": "16",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.4852041, 29.6548991] },
+      "properties": {
+        "name": "شیراز 1 - قصرالدشت - Ghasr-ol-Dasht",
+        "description": "ترمینال یاسوج شمال غرب",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.4863078, 29.6659526] },
+      "properties": {
+        "name": "شیراز 1 - شاهد Shahed",
+        "description": "18",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.4731757, 29.6861619] },
+      "properties": {
+        "name": "شیراز 1 - میرزای شیرازی Mirza Shirazi",
+        "description": "19",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.4647819, 29.6825468] },
+      "properties": {
+        "name": "شیراز 1 - شریعتی Shariati",
+        "description": "20",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.4541213, 29.6785559] },
+      "properties": {
+        "name": "شیراز 1 - احسان Ehsan",
+        "description": "21",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#E65100"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [52.5320426, 29.6241105],
+          [52.5159267, 29.6041704],
+          [52.5094383, 29.595569],
+          [52.5085754, 29.5890296],
+          [52.505496, 29.577454],
+          [52.495849, 29.5701954]
+        ]
+      },
+      "properties": {
+        "name": "خط2 مترو شیراز",
+        "description": null,
+        "type": "line",
+        "city": "Shiraz",
+        "stroke": "#097138",
+        "stroke-width": 5.263,
+        "stroke-opacity": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.495849, 29.5701954] },
+      "properties": {
+        "name": "شیراز 2 - قهرمانان(میانرود) Ghahremanan",
+        "description": null,
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#097138"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.505496, 29.577454] },
+      "properties": {
+        "name": "شیراز 2 - عدالت(عادل آباد) Edalat",
+        "description": "3",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#097138"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5085754, 29.5890296] },
+      "properties": {
+        "name": "شیراز 2 - دولت - Goverment Station (Doulat)",
+        "description": null,
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#097138"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5094383, 29.595569] },
+      "properties": {
+        "name": "شیراز 2 - رحمت Rahmat",
+        "description": null,
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#097138"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [52.5159267, 29.6041704] },
+      "properties": {
+        "name": "شیراز 2 - امیرکبیر(بسیج) Amir-Kabir - Basij",
+        "description": "6",
+        "type": "station",
+        "city": "Shiraz",
+        "marker-color": "#097138"
+      }
+    }
+  ]
+}
