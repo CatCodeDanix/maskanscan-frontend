@@ -2,9 +2,35 @@ import { DirectionProvider } from "@/components/ui/direction";
 import { ThemeProvider } from "@wrksz/themes/next";
 import type { Metadata } from "next";
 import "@/styles/globals.css";
+import localFont from "next/font/local";
 import Providers from "@/components/Providers";
 
-// TODO: Add custom local fonts
+const iranSansX = localFont({
+  src: [
+    {
+      path: "../assets/fonts/woff2/IRANSansX-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/woff/IRANSansX-Regular.woff",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/woff2/IRANSansX-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/woff/IRANSansX-Bold.woff",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-iran-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -59,7 +85,10 @@ export default function RootLayout({
     <html
       lang="fa"
       dir="rtl"
-      className={`h-full antialiased`}
+      className={`
+        h-full antialiased
+        ${iranSansX.variable}
+      `}
       suppressHydrationWarning
     >
       <ThemeProvider
