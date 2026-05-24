@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 import localFont from "next/font/local";
 import Providers from "@/components/Providers";
+import { ModeToggle } from "@/components/ModeToggle";
 
 const iranSansX = localFont({
   src: [
@@ -93,12 +94,18 @@ export default function RootLayout({
     >
       <ThemeProvider
         storage="cookie"
-        defaultTheme="dark"
+        defaultTheme="system"
+        enableSystem
         disableTransitionOnChange
       >
         <DirectionProvider dir="rtl">
           <Providers>
-            <body className="flex min-h-full flex-col">{children}</body>
+            <body className="flex min-h-full flex-col">
+              <div className="fixed top-4 left-4 z-50">
+                <ModeToggle />
+              </div>
+              {children}
+            </body>
           </Providers>
         </DirectionProvider>
       </ThemeProvider>

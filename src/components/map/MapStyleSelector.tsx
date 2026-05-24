@@ -103,9 +103,7 @@ export default function MapStyleSelector() {
             {vectorStyles.length > 0 && (
               <section>
                 <h4
-                  className="
-                  text-foreground/80 mb-2 px-1 text-xs font-semibold
-                "
+                  className="text-foreground/80 mb-2 px-1 text-xs font-semibold"
                 >
                   استایل‌های برداری
                 </h4>
@@ -126,9 +124,7 @@ export default function MapStyleSelector() {
             {OVERLAYS.length > 0 && (
               <section>
                 <h4
-                  className="
-                  text-foreground/80 mb-2 px-1 text-xs font-semibold
-                "
+                  className="text-foreground/80 mb-2 px-1 text-xs font-semibold"
                 >
                   نقشه حمل و نقل عمومی
                 </h4>
@@ -151,9 +147,7 @@ export default function MapStyleSelector() {
             {rasterStyles.length > 0 && (
               <section>
                 <h4
-                  className="
-                  text-foreground/80 mb-2 px-1 text-xs font-semibold
-                "
+                  className="text-foreground/80 mb-2 px-1 text-xs font-semibold"
                 >
                   استایل‌های تصویری
                 </h4>

@@ -129,5 +129,12 @@
 }
 
 .deck-tooltip-reset {
-  @apply p-0 m-0 bg-background text-foreground border border-border rounded-md shadow-lg;
+  background-color: var(--background, #ffffff) !important;
+  color: var(--foreground, #000000) !important;
+  border: 1px solid var(--border, #d1d5db) !important;
+  border-radius: var(--radius, 0.5rem) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  padding: 0.5rem !important;
+  pointer-events: none;
+  font-family: var(--font-iran-sans), sans-serif;
 }
