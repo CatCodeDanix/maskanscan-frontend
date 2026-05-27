@@ -1,9 +1,97 @@
+"use client";
+
+import { AppSidebar, placeholderUser } from "@/components/AppSidebar";
+import { BottomBar } from "@/components/BottomBar";
+import { ContentDrawer } from "@/components/ContentDrawer";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import BaseMapWrapper from "@/components/BaseMapWrapper";
+import { useNavigationStore } from "@/store/navigation-store";
+import { useRef, useState } from "react";
+import { NavUser } from "@/components/NavUser";
+import Image from "next/image";
 
 export default function Page() {
+  const isMobile = useIsMobile();
+  const activeItemId = useNavigationStore((s) => s.activeItemId);
+  const setActiveItemId = useNavigationStore((s) => s.setActiveItemId);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleItemClick = (itemId: string) => {
+    if (isMobile) {
+      if (itemId === activeItemId) {
+        triggerRef.current?.click();
+      } else {
+        setActiveItemId(itemId);
+        if (!drawerOpen) {
+          triggerRef.current?.click();
+        }
+      }
+    } else {
+      setActiveItemId(itemId);
+    }
+  };
+
   return (
-    <main>
-      <BaseMapWrapper />
-    </main>
+    <>
+      <AppSidebar onItemClick={handleItemClick} />
+
+      <SidebarInset className="flex flex-col overflow-hidden">
+        <header
+          className="
+    bg-background
+    sticky top-0 z-10
+    h-16 border-b px-4
+  "
+        >
+          <div className="flex h-full items-center">
+            {/* Right action */}
+            <div className="flex w-12 items-center justify-start">
+              {isMobile ? (
+                <div className="w-12">
+                  <NavUser user={placeholderUser} />
+                </div>
+              ) : (
+                <SidebarTrigger />
+              )}
+            </div>
+
+            {/* Center content */}
+            <div className="flex flex-1 items-center justify-center p-12">
+              <Image
+                src={"/logo.svg"}
+                className="block"
+                width={50}
+                height={50}
+                alt="MaskanScan Logo - A blended house and map marker"
+              />
+              <span className="text-primary text-base font-semibold md:text-lg">
+                مسکن‌اسکن
+              </span>
+            </div>
+
+            {/* Left spacer for perfect balance */}
+            <div className="w-12" />
+          </div>
+        </header>
+
+        <div
+          className="
+            flex-1 pb-14
+            md:pb-0
+          "
+        >
+          <BaseMapWrapper />
+        </div>
+      </SidebarInset>
+
+      {isMobile && (
+        <>
+          <BottomBar onItemClick={handleItemClick} />
+          <ContentDrawer triggerRef={triggerRef} onOpenChange={setDrawerOpen} />
+        </>
+      )}
+    </>
   );
 }

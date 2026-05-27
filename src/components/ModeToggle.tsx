@@ -12,13 +12,19 @@ import {
 import { useMapStore } from "@/store/map-store";
 
 export function ModeToggle() {
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme } = useTheme();
   const setMapTheme = useMapStore((state) => state.setMapTheme);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button
+          variant="outline"
+          size="icon"
+          style={{
+            marginTop: "env(safe-area-inset-top, 0px)",
+          }}
+        >
           <Sun
             className="
               size-[1.2rem] scale-100 rotate-0 transition-all

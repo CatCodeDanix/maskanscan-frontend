@@ -22,9 +22,18 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-unused-vars": "warn",
       "better-tailwindcss/no-unknown-classes": "off",
       "@typescript-eslint/no-unused-expressions": "off",
+      "react-hooks/purity": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "better-tailwindcss/enforce-consistent-line-wrapping": "off",
     },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "public/**"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "public/**",
+  ]),
 ]);
 
 export default eslintConfig;

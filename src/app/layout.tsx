@@ -1,10 +1,16 @@
+import { ModeToggle } from "@/components/ModeToggle";
+import Providers from "@/components/Providers";
 import { DirectionProvider } from "@/components/ui/direction";
+import "@/styles/globals.css";
 import { ThemeProvider } from "@wrksz/themes/next";
 import type { Metadata } from "next";
-import "@/styles/globals.css";
 import localFont from "next/font/local";
-import Providers from "@/components/Providers";
-import { ModeToggle } from "@/components/ModeToggle";
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 const iranSansX = localFont({
   src: [
@@ -87,28 +93,28 @@ export default function RootLayout({
       lang="fa"
       dir="rtl"
       className={`
-        h-full antialiased
+        antialiased
         ${iranSansX.variable}
       `}
       suppressHydrationWarning
     >
-      <ThemeProvider
-        storage="cookie"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        <DirectionProvider dir="rtl">
-          <Providers>
-            <body className="flex min-h-full flex-col">
+      <body className="flex min-h-dvh flex-col">
+        <ThemeProvider
+          storage="cookie"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <DirectionProvider dir="rtl" direction="rtl">
+            <Providers>
               <div className="fixed top-4 left-4 z-50">
                 <ModeToggle />
               </div>
               {children}
-            </body>
-          </Providers>
-        </DirectionProvider>
-      </ThemeProvider>
+            </Providers>
+          </DirectionProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

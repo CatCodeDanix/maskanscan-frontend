@@ -41,10 +41,10 @@ export default function MapStyleSelector() {
       <PopoverTrigger asChild>
         <button
           className="
-            bg-background absolute bottom-6 left-6 z-10 overflow-hidden
-            rounded-xl border shadow-lg transition
-            hover:shadow-xl
+            bg-background absolute bottom-6 left-6
+            z-10 overflow-hidden rounded-xl border border-solid border-black shadow-lg transition hover:shadow-xl
           "
+          style={{ bottom: `calc(1.5rem + env(safe-area-inset-bottom, 0px))` }}
         >
           {/* Thumbnail */}
           <div className="relative h-[70px] w-[71px]">
@@ -83,7 +83,7 @@ export default function MapStyleSelector() {
       <PopoverContent
         align="end"
         side="top"
-        className="flex max-h-[500px] w-85 flex-col p-3"
+        className="flex max-h-125 w-65 flex-col p-3"
       >
         {/* Sticky header with horizontal lines */}
         <div className="mb-3 flex shrink-0 items-center gap-2">
@@ -102,12 +102,10 @@ export default function MapStyleSelector() {
           <div className="space-y-4">
             {vectorStyles.length > 0 && (
               <section>
-                <h4
-                  className="text-foreground/80 mb-2 px-1 text-xs font-semibold"
-                >
+                <h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
                   استایل‌های برداری
                 </h4>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {vectorStyles.map((style) => (
                     <StyleCard
                       key={style.id}
@@ -123,12 +121,10 @@ export default function MapStyleSelector() {
             {/* Public transport overlays – now using the same grid as style cards */}
             {OVERLAYS.length > 0 && (
               <section>
-                <h4
-                  className="text-foreground/80 mb-2 px-1 text-xs font-semibold"
-                >
+                <h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
                   نقشه حمل و نقل عمومی
                 </h4>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {OVERLAYS.map((overlay) => {
                     const isActive = activeOverlays.includes(overlay.id);
                     return (
@@ -146,12 +142,10 @@ export default function MapStyleSelector() {
 
             {rasterStyles.length > 0 && (
               <section>
-                <h4
-                  className="text-foreground/80 mb-2 px-1 text-xs font-semibold"
-                >
+                <h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
                   استایل‌های تصویری
                 </h4>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {rasterStyles.map((style) => (
                     <StyleCard
                       key={style.id}
@@ -186,7 +180,7 @@ function StyleCard({
         flex flex-col items-center gap-1 rounded-xl border-2 p-1.5 transition
         ${
           isSelected
-            ? "border-rose-500 shadow-sm"
+            ? "border-amber-500 shadow-sm"
             : `
               hover:border-ring
               border
@@ -196,7 +190,7 @@ function StyleCard({
     >
       <div
         className="
-          bg-muted relative aspect-4/3 w-full overflow-hidden rounded-lg
+          bg-muted relative aspect-[1.2/1] w-full overflow-hidden rounded-lg
         "
       >
         {style.preview ? (
@@ -211,7 +205,7 @@ function StyleCard({
           <div
             className="
               flex size-full items-center justify-center bg-linear-to-br
-              from-blue-200 to-purple-200 text-[10px] text-gray-600
+              from-blue-200 to-purple-200 text-[11px] text-gray-600
               dark:from-blue-900 dark:to-purple-900 dark:text-white/70
             "
           >
@@ -221,7 +215,7 @@ function StyleCard({
       </div>
       <span
         className="
-          text-foreground text-center text-[10px] leading-tight font-medium
+          text-foreground text-center text-[11px] leading-tight font-medium
         "
       >
         {style.name}
@@ -256,7 +250,7 @@ function OverlayCard({
     >
       <div
         className="
-          bg-muted relative aspect-4/3 w-full overflow-hidden rounded-lg
+          bg-muted relative aspect-[1.2/1] w-full overflow-hidden rounded-lg
         "
       >
         {overlay.preview ? (
@@ -271,7 +265,7 @@ function OverlayCard({
           <div
             className="
               flex size-full items-center justify-center bg-linear-to-br
-              from-yellow-100 to-yellow-200 text-[10px] text-gray-600
+              from-yellow-100 to-yellow-200 text-[11px] text-gray-600
               dark:from-yellow-900 dark:to-yellow-800 dark:text-white/70
             "
           >
@@ -281,7 +275,7 @@ function OverlayCard({
       </div>
       <span
         className="
-          text-foreground text-center text-[10px] leading-tight font-medium
+          text-foreground text-center text-[11px] leading-tight font-medium
         "
       >
         {overlay.name}

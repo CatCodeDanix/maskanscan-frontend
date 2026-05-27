@@ -8,7 +8,7 @@ const BaseMap = dynamic(() => import("@/components/BaseMap"), {
   loading: () => (
     <div
       className="
-        bg-background text-muted-foreground flex h-screen w-full items-center
+        bg-background text-muted-foreground flex size-full items-center
         justify-center
       "
     >
@@ -19,7 +19,7 @@ const BaseMap = dynamic(() => import("@/components/BaseMap"), {
 
 export default function BaseMapWrapper() {
   return (
-    <div className="relative h-screen w-full">
+    <div className="relative size-full">
       <BaseMap />
       <MapStyleSelector />
     </div>

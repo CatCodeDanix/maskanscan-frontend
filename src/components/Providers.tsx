@@ -1,22 +1,25 @@
-"use client";
-
-import { useEffect } from "react";
-import type { ReactNode } from "react";
-import { MapProvider } from "react-map-gl/maplibre";
-import { useTheme } from "@wrksz/themes/client";
-import { useMapStore } from "@/store/map-store";
+import { ReactNode } from "react";
+import CustomMapProvider from "./CustomMapProvider";
+import { TooltipProvider } from "./ui/tooltip";
+import { SidebarProvider } from "./ui/sidebar";
 
 const Providers = ({ children }: { children: ReactNode }) => {
-  const { resolvedTheme } = useTheme();
-  const setMapTheme = useMapStore((state) => state.setMapTheme);
-
-  useEffect(() => {
-    if (resolvedTheme) {
-      setMapTheme(resolvedTheme);
-    }
-  }, [resolvedTheme, setMapTheme]);
-
-  return <MapProvider>{children}</MapProvider>;
+  return (
+    <CustomMapProvider>
+      <TooltipProvider>
+        <SidebarProvider
+          className="h-svh overflow-hidden"
+          style={
+            {
+              "--sidebar-width": "350px",
+            } as React.CSSProperties
+          }
+        >
+          {children}
+        </SidebarProvider>
+      </TooltipProvider>
+    </CustomMapProvider>
+  );
 };
 
 export default Providers;
