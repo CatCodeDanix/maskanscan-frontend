@@ -61,9 +61,10 @@ export default function Page() {
 						<div className="flex flex-1 items-center justify-center p-12">
 							<Image
 								src={"/logo.svg"}
-								className="block"
+								className="block size-[50px] shrink-0"
 								width={50}
 								height={50}
+								priority
 								alt="MaskanScan Logo - A blended house and map marker"
 							/>
 							<span className="text-primary text-base font-semibold md:text-lg">

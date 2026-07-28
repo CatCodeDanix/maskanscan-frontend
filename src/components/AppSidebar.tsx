@@ -24,7 +24,7 @@ import { useNavigationStore } from "@/store/navigation-store";
 export const placeholderUser = {
 	name: "کاربر",
 	email: "user@example.com",
-	avatar: "/avatars/default.jpg",
+	avatar: "",
 };
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {

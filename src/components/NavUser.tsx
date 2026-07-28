@@ -39,7 +39,7 @@ export function NavUser({
 	user: {
 		name: string;
 		email: string;
-		avatar: string;
+		avatar?: string;
 	};
 }) {
 	const { isMobile } = useSidebar();
@@ -61,7 +61,7 @@ export function NavUser({
               "
 						>
 							<Avatar className="size-8 rounded-lg">
-								<AvatarImage src={user.avatar} alt={user.name} />
+								<AvatarImage src={user.avatar || undefined} alt={user.name} />
 
 								<AvatarFallback className="rounded-lg">
 									{initials}
@@ -108,7 +108,7 @@ export function NavUser({
                 "
 							>
 								<Avatar className="size-8 rounded-lg">
-									<AvatarImage src={user.avatar} alt={user.name} />
+									<AvatarImage src={user.avatar || undefined} alt={user.name} />
 
 									<AvatarFallback className="rounded-lg">
 										{initials}
