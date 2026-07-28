@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "maskanscan-next",
+      "name": "maskanscan-frontend",
       "dependencies": {
         "@wrksz/themes": "^1.0.0",
         "better-auth": "^1.6.25",
