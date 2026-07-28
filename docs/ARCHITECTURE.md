@@ -1,4 +1,4 @@
-# RFC: MaskanScan – A Scalable Housing Search Platform
+# MaskanScan – A Scalable Housing Search Platform
 
 **Status:** v1.0 
 **Author:** Danial Abdoli
@@ -19,7 +19,7 @@ The Iranian property market lacks a unified, user-friendly platform that consoli
 - Scraping 4–5 major listing sources via their open APIs (no login required).
 - Normalizing all data into a single, coherent structure.
 - Displaying results on an interactive map with powerful filtering.
-- Offering paid subscriptions for advanced features like cron-based alerts, ad-free browsing, and exclusive filters.
+- Offering paid subscriptions for advanced features like cron-based alerts, ad-free browsing, exclusive filters, and extra analytical data (like showing items which are valid with convertable listing price in mind).
 
 The project is built by a single developer, so pragmatism, simplicity, and maintainability are paramount.
 
@@ -289,5 +289,5 @@ MaskanScan is designed as a practical, maintainable platform that respects Irani
 
 ---
 
-*This document is a living RFC. As implementation progresses, it should be updated to reflect discovered complexities and refined decisions.*
+*This document is a living Spec. As implementation progresses, it should be updated to reflect discovered complexities and refined decisions.*
 

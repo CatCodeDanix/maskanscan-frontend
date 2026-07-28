@@ -1,12 +1,12 @@
 export function SavedSearchesPanel() {
-  return (
-    <div
-      className="
+	return (
+		<div
+			className="
         text-muted-foreground
         flex h-32 items-center justify-center
       "
-    >
-      جستجوهای ذخیره‌شده
-    </div>
-  );
+		>
+			جستجوهای ذخیره‌شده
+		</div>
+	);
 }

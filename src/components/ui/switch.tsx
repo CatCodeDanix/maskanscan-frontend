@@ -1,23 +1,23 @@
 "use client";
 
-import * as React from "react";
 import { Switch as SwitchPrimitive } from "radix-ui";
+import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
 function Switch({
-  className,
-  size = "default",
-  ...props
+	className,
+	size = "default",
+	...props
 }: React.ComponentProps<typeof SwitchPrimitive.Root> & {
-  size?: "sm" | "default";
+	size?: "sm" | "default";
 }) {
-  return (
-    <SwitchPrimitive.Root
-      data-slot="switch"
-      data-size={size}
-      className={cn(
-        `
+	return (
+		<SwitchPrimitive.Root
+			data-slot="switch"
+			data-size={size}
+			className={cn(
+				`
           peer group/switch
           focus-visible:border-ring focus-visible:ring-ring/50
           aria-invalid:border-destructive aria-invalid:ring-destructive/20
@@ -35,13 +35,13 @@ function Switch({
           data-[size=default]:h-[18.4px] data-[size=default]:w-8
           data-[size=sm]:h-3.5 data-[size=sm]:w-6
         `,
-        className
-      )}
-      {...props}
-    >
-      <SwitchPrimitive.Thumb
-        data-slot="switch-thumb"
-        className="
+				className,
+			)}
+			{...props}
+		>
+			<SwitchPrimitive.Thumb
+				data-slot="switch-thumb"
+				className="
           bg-background
           dark:data-checked:bg-primary-foreground
           dark:data-unchecked:bg-foreground
@@ -53,9 +53,9 @@ function Switch({
           group-data-[size=default]/switch:data-unchecked:translate-x-0
           group-data-[size=sm]/switch:data-unchecked:translate-x-0
         "
-      />
-    </SwitchPrimitive.Root>
-  );
+			/>
+		</SwitchPrimitive.Root>
+	);
 }
 
 export { Switch };

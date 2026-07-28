@@ -1,238 +1,238 @@
 {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [46.3631542, 38.0198841],
-          [46.3600965, 38.0296121],
-          [46.3552993, 38.0397305],
-          [46.3516086, 38.0467943],
-          [46.3469308, 38.0539249],
-          [46.3409568, 38.0604943],
-          [46.3291589, 38.0648531],
-          [46.3203613, 38.0672519],
-          [46.3121644, 38.0695832],
-          [46.3045829, 38.0716441],
-          [46.2972015, 38.0742792],
-          [46.2895114, 38.0763396],
-          [46.2788255, 38.0757483],
-          [46.2718303, 38.0678259],
-          [46.2616828, 38.0633199],
-          [46.2496431, 38.0572668],
-          [46.2402042, 38.053539],
-          [46.2315568, 38.0516466]
-        ]
-      },
-      "properties": {
-        "name": "خط 1 مترو تبریز",
-        "description": null,
-        "type": "line",
-        "city": "Tabriz",
-        "stroke": "#0097A7",
-        "stroke-width": 4.875,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3631542, 38.0198841] },
-      "properties": {
-        "name": "تبریز 1 - ایستگاه ائل گولی",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3600965, 38.0296121] },
-      "properties": {
-        "name": "تبریز 1 - سهند",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3552993, 38.0397305] },
-      "properties": {
-        "name": "تبریز 1 - امام رضا",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3516086, 38.0467943] },
-      "properties": {
-        "name": "تبریز 1 - خیام",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3469308, 38.0539249] },
-      "properties": {
-        "name": "تبریز 1 - 29 بهمن",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3409568, 38.0604943] },
-      "properties": {
-        "name": "تبریز 1 - استاد شهریار",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3291589, 38.0648531] },
-      "properties": {
-        "name": "تبریز 1 - دانشگاه",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3203613, 38.0672519] },
-      "properties": {
-        "name": "تبریز 1 - آبرسان",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3121644, 38.0695832] },
-      "properties": {
-        "name": "تبریز 1 - قطب زمین (سالار ملی)",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.3045829, 38.0716441] },
-      "properties": {
-        "name": "تبریز 1 - شهید بهشتی",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.2972015, 38.0742792] },
-      "properties": {
-        "name": "تبریز 1 - میدان ساعت",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.2895114, 38.0763396] },
-      "properties": {
-        "name": "تبریز 1 - میدان کن",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.2788255, 38.0757483] },
-      "properties": {
-        "name": "تبریز 1 - فونقا",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.2718303, 38.0678259] },
-      "properties": {
-        "name": "تبریز 1 - گازران",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.2616828, 38.0633199] },
-      "properties": {
-        "name": "تبریز 1 - لاله",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.2496431, 38.0572668] },
-      "properties": {
-        "name": "تبریز 1 - امام حسین",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.2402042, 38.053539] },
-      "properties": {
-        "name": "تبریز 1 - باکری",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [46.2315568, 38.0516466] },
-      "properties": {
-        "name": "تبریز 1 - نور",
-        "description": null,
-        "type": "station",
-        "city": "Tabriz",
-        "marker-color": "#0097A7"
-      }
-    }
-  ]
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[46.3631542, 38.0198841],
+					[46.3600965, 38.0296121],
+					[46.3552993, 38.0397305],
+					[46.3516086, 38.0467943],
+					[46.3469308, 38.0539249],
+					[46.3409568, 38.0604943],
+					[46.3291589, 38.0648531],
+					[46.3203613, 38.0672519],
+					[46.3121644, 38.0695832],
+					[46.3045829, 38.0716441],
+					[46.2972015, 38.0742792],
+					[46.2895114, 38.0763396],
+					[46.2788255, 38.0757483],
+					[46.2718303, 38.0678259],
+					[46.2616828, 38.0633199],
+					[46.2496431, 38.0572668],
+					[46.2402042, 38.053539],
+					[46.2315568, 38.0516466]
+				]
+			},
+			"properties": {
+				"name": "خط 1 مترو تبریز",
+				"description": null,
+				"type": "line",
+				"city": "Tabriz",
+				"stroke": "#0097A7",
+				"stroke-width": 4.875,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3631542, 38.0198841] },
+			"properties": {
+				"name": "تبریز 1 - ایستگاه ائل گولی",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3600965, 38.0296121] },
+			"properties": {
+				"name": "تبریز 1 - سهند",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3552993, 38.0397305] },
+			"properties": {
+				"name": "تبریز 1 - امام رضا",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3516086, 38.0467943] },
+			"properties": {
+				"name": "تبریز 1 - خیام",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3469308, 38.0539249] },
+			"properties": {
+				"name": "تبریز 1 - 29 بهمن",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3409568, 38.0604943] },
+			"properties": {
+				"name": "تبریز 1 - استاد شهریار",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3291589, 38.0648531] },
+			"properties": {
+				"name": "تبریز 1 - دانشگاه",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3203613, 38.0672519] },
+			"properties": {
+				"name": "تبریز 1 - آبرسان",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3121644, 38.0695832] },
+			"properties": {
+				"name": "تبریز 1 - قطب زمین (سالار ملی)",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.3045829, 38.0716441] },
+			"properties": {
+				"name": "تبریز 1 - شهید بهشتی",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.2972015, 38.0742792] },
+			"properties": {
+				"name": "تبریز 1 - میدان ساعت",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.2895114, 38.0763396] },
+			"properties": {
+				"name": "تبریز 1 - میدان کن",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.2788255, 38.0757483] },
+			"properties": {
+				"name": "تبریز 1 - فونقا",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.2718303, 38.0678259] },
+			"properties": {
+				"name": "تبریز 1 - گازران",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.2616828, 38.0633199] },
+			"properties": {
+				"name": "تبریز 1 - لاله",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.2496431, 38.0572668] },
+			"properties": {
+				"name": "تبریز 1 - امام حسین",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.2402042, 38.053539] },
+			"properties": {
+				"name": "تبریز 1 - باکری",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [46.2315568, 38.0516466] },
+			"properties": {
+				"name": "تبریز 1 - نور",
+				"description": null,
+				"type": "station",
+				"city": "Tabriz",
+				"marker-color": "#0097A7"
+			}
+		}
+	]
 }

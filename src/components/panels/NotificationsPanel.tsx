@@ -1,12 +1,12 @@
 export function NotificationsPanel() {
-  return (
-    <div
-      className="
+	return (
+		<div
+			className="
         text-muted-foreground
         flex h-32 items-center justify-center
       "
-    >
-      اعلان‌های شما
-    </div>
-  );
+		>
+			اعلان‌های شما
+		</div>
+	);
 }

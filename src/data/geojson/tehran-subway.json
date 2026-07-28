@@ -1,1907 +1,1907 @@
 {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [51.4335161, 35.8046834],
-          [51.4342028, 35.7931273],
-          [51.4376947, 35.7729241],
-          [51.4438745, 35.7624777],
-          [51.4337046, 35.7598841],
-          [51.4269062, 35.7564288],
-          [51.4257712, 35.7484776],
-          [51.4268012, 35.7312002],
-          [51.4273161, 35.7243719],
-          [51.4261145, 35.715409],
-          [51.4252562, 35.707046],
-          [51.4257054, 35.7015588],
-          [51.4244997, 35.6932016],
-          [51.4198914, 35.6854667],
-          [51.4174881, 35.6780069],
-          [51.4160532, 35.6681852],
-          [51.4140255, 35.6575769],
-          [51.4163429, 35.65083],
-          [51.4148334, 35.640644],
-          [51.4157347, 35.62942],
-          [51.4197557, 35.6103441],
-          [51.4223414, 35.5948013],
-          [51.4001589, 35.5598014],
-          [51.3817365, 35.5475505],
-          [51.3735783, 35.5446458],
-          [51.3692867, 35.5218232]
-        ]
-      },
-      "properties": {
-        "name": "خط یک مترو تهران - شاخه فرودگاه امام و شهر آفتاب Line1 to IKIA",
-        "description": "Line1 to Imam Khomeini International Airport",
-        "type": "line",
-        "folder": "خط یک - Line 1",
-        "stroke": "#A52714",
-        "stroke-width": 4.1,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [51.3817365, 35.5475505],
-          [51.348797, 35.5402485],
-          [51.1544834, 35.4078097],
-          [50.9782513, 35.4635317]
-        ]
-      },
-      "properties": {
-        "name": "خط 8 مترو تهران",
-        "description": null,
-        "type": "line",
-        "folder": "خط یک - Line 1",
-        "stroke": "#558B2F",
-        "stroke-width": 4.681,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4335161, 35.8046834] },
-      "properties": {
-        "name": "تجریش میدان قدس - خط یک - Tajrish",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4342028, 35.7931273] },
-      "properties": {
-        "name": "قیطریه - Gheytariyeh",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4356348, 35.7853186] },
-      "properties": {
-        "name": "صدر - Sadr",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4376947, 35.7729241] },
-      "properties": {
-        "name": "قلهک - Gholhak",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4438745, 35.7624777] },
-      "properties": {
-        "name": "شریعتی - Shariati",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4335171, 35.7605012] },
-      "properties": {
-        "name": "میرداماد - MirDamad",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4269062, 35.7564288] },
-      "properties": {
-        "name": "حقانی - Haqhani",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4257712, 35.7484776] },
-      "properties": {
-        "name": "همت - Hemmat",
-        "description": "فقط دسترسی به شمال بزرگراه همت است",
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4268012, 35.7403967] },
-      "properties": {
-        "name": "مصلی شمال - Mosalla",
-        "description": "بزرگراه رسالت",
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4268012, 35.7312002] },
-      "properties": {
-        "name": "بهشتی - Beheshti",
-        "description": "جنوب مصلی",
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4273161, 35.7243719] },
-      "properties": {
-        "name": "مفتح - خیابان مطهری - Mofatteh",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4261145, 35.715409] },
-      "properties": {
-        "name": "هفت تیر - Haft-e Tir - 7th of Tir",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4252562, 35.707046] },
-      "properties": {
-        "name": "طالقانی - Taleghani",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4244997, 35.6932016] },
-      "properties": {
-        "name": "سعدی - Saadi",
-        "description": "خ جمهوری - مخبرالدوله استقلال",
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4198914, 35.6854667] },
-      "properties": {
-        "name": "ایستگاه امام خمینی Imam Khomeini Central Station",
-        "description": "جنوب لاله زار- دسترسی با تاکسی به بازار بزرگ تهران - سردر باغ ملی - جنوب خ فردوسی",
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4174881, 35.6780069] },
-      "properties": {
-        "name": "پانزده خرداد - گلوبندک - 15th Khourdad",
-        "description": "چهارراه گلوبندک - راسته طلا فروشان - کاخ گلستان - رادیو تهران - سبزه میدان - ناصرخسرو - شمس العماره - کوچه مری",
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4167935, 35.6731239] },
-      "properties": {
-        "name": "خیام - جنوب بازار بزرگ تهران - Khayyam",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4160532, 35.6681852] },
-      "properties": {
-        "name": "میدان محمدیه Mohammadiyeh Sq.",
-        "description": "تقاطع خط 1 و 7",
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4140255, 35.6575769] },
-      "properties": {
-        "name": "شوش - Shoush",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4163429, 35.65083] },
-      "properties": {
-        "name": "ترمینال جنوب - South Bus Terminal",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4148334, 35.640644] },
-      "properties": {
-        "name": "خزانه - Khazaneh",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4157347, 35.62942] },
-      "properties": {
-        "name": "علی آباد - Ali Abaad",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4197557, 35.6103441] },
-      "properties": {
-        "name": "جوانمرد قصاب - JavanMard Ghassab",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4223414, 35.5948013] },
-      "properties": {
-        "name": "شهر ری - Shahr-e Rey",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4001589, 35.5598014] },
-      "properties": {
-        "name": "باقر شهر - باقرآباد - BagherShahr",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3817365, 35.5475505] },
-      "properties": {
-        "name": "شاهد Shahed - (تقاطع 1 و 8)",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3735783, 35.5446458] },
-      "properties": {
-        "name": "حرم مطهر- Haram Motahar",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3692867, 35.5218232] },
-      "properties": {
-        "name": "کهریزک - خط یک - Kahrizak",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.348797, 35.5402485] },
-      "properties": {
-        "name": "شهر آفتاب - Aftab City",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#558B2F"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.1544834, 35.4078097] },
-      "properties": {
-        "name": "فرودگاه امام خمینی Imam Khomeini Airport",
-        "description": null,
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#558B2F"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [50.9782513, 35.4635317] },
-      "properties": {
-        "name": "ایستگاه مترو پرند - خط یک - Parand City",
-        "description": "در کنار ایستگاه قطار پرند (خط تهران - قم)",
-        "type": "station",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#558B2F"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4016552, 35.6864357] },
-      "properties": {
-        "name": "هشدار : اینجا مترو ایستگاه تقاطعی ندارد",
-        "description": null,
-        "type": "warning",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#FF5252"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4263332, 35.7488045] },
-      "properties": {
-        "name": "هشدار - ورودی ایستگاه همت فقط برای شمال بزرگراه و از طریق پل هوایی در دسترس است - در جنوب بزرگراه هیچ دسترسی ای به ایستگاه مترو همت وجود ندارد",
-        "description": null,
-        "type": "warning",
-        "folder": "خط یک - Line 1",
-        "marker-color": "#E65100"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [51.5467877, 35.7297376],
-          [51.5316815, 35.7310614],
-          [51.5164757, 35.733082],
-          [51.5048691, 35.7345095],
-          [51.494784, 35.735241],
-          [51.4843556, 35.7334993],
-          [51.4759361, 35.7265637],
-          [51.4644244, 35.7182589],
-          [51.4529231, 35.709478],
-          [51.4457133, 35.7022296],
-          [51.4327426, 35.6918352],
-          [51.4269061, 35.6884892],
-          [51.4198914, 35.6854667],
-          [51.4100009, 35.6864571],
-          [51.3992292, 35.6872588],
-          [51.3882792, 35.6909884],
-          [51.3785481, 35.6949966],
-          [51.3636679, 35.7006271],
-          [51.3535301, 35.7058545],
-          [51.345117, 35.7145823],
-          [51.3308691, 35.7176834]
-        ]
-      },
-      "properties": {
-        "name": "خط دو مترو تهران - Line2",
-        "description": "شرقی غربی",
-        "type": "line",
-        "folder": "خط 2",
-        "stroke": "#3949AB",
-        "stroke-width": 3.906,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3308691, 35.7176834] },
-      "properties": {
-        "name": "صادقیه - (تقاطع 2و5) - Sadeghiyeh",
-        "description": "- غرب تهران",
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.345117, 35.7145823] },
-      "properties": {
-        "name": "طرشت - Tarasht",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3535301, 35.7058545] },
-      "properties": {
-        "name": "دانشگاه شریف - Sharif University",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3636679, 35.7006271] },
-      "properties": {
-        "name": "شادمان خط 2و4 - Shademan",
-        "description": "(خ آزادی - بهبودی - آذربایجان)",
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3804364, 35.6942298] },
-      "properties": {
-        "name": "نواب صفوی Navvab Safavi",
-        "description": "خیابان آذربایجان",
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3882792, 35.6909884] },
-      "properties": {
-        "name": "میدان حر - Hour Sq.",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3992292, 35.6872588] },
-      "properties": {
-        "name": "دانشگاه امام علی - Imam Ali University",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4100009, 35.6864571] },
-      "properties": {
-        "name": "حسن آباد (حافظ-امام) - HasanAbaad",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4269061, 35.6884892] },
-      "properties": {
-        "name": "ملت - Mellat",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4327426, 35.6918352] },
-      "properties": {
-        "name": "بهارستان - Baharestan",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4378924, 35.6990846] },
-      "properties": {
-        "name": "دروازه شمیران - تقاطع 2 و 4 - Darvazeh Shemiran",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#F9A825"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4457133, 35.7022296] },
-      "properties": {
-        "name": "امام حسین ع - تقاطع خط 6 و 2 - Imam Hosain",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4529231, 35.709478] },
-      "properties": {
-        "name": "شهید مدنی - Madani",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4644244, 35.7182589] },
-      "properties": {
-        "name": "سبلان - Sabalan",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4759361, 35.7265637] },
-      "properties": {
-        "name": "فدک - Fadak",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4843556, 35.7334993] },
-      "properties": {
-        "name": "گلبرگ - خ جانبازان - Golbarg",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.494784, 35.735241] },
-      "properties": {
-        "name": "سرسبز - آیت - Ayat",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.5048691, 35.7345095] },
-      "properties": {
-        "name": "دانشگاه علم و صنعت - Elm-o Sanat University",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.5164757, 35.733082] },
-      "properties": {
-        "name": "شهید باقری - Bagheri",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.5316815, 35.7310614] },
-      "properties": {
-        "name": "تهرانپارس حجربن عدی - TehranPars",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.5467877, 35.7297376] },
-      "properties": {
-        "name": "فرهنگسرا - خط 2 - FarhangSara",
-        "description": null,
-        "type": "station",
-        "folder": "خط 2",
-        "marker-color": "#1A237E"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [51.3348141, 35.6274121],
-          [51.3468843, 35.6339659],
-          [51.3602738, 35.6385699],
-          [51.3690286, 35.6447081],
-          [51.3731515, 35.6527196],
-          [51.3876139, 35.6584035],
-          [51.3975703, 35.6597634],
-          [51.3985627, 35.6673156],
-          [51.4015423, 35.68103],
-          [51.4053297, 35.7011057],
-          [51.408321, 35.720733],
-          [51.4172904, 35.7280146],
-          [51.4268011, 35.7312842],
-          [51.4356152, 35.731986],
-          [51.4445416, 35.7316029],
-          [51.4584462, 35.7353304],
-          [51.46336, 35.7436564],
-          [51.4648867, 35.7607702],
-          [51.4736791, 35.7716703],
-          [51.4792048, 35.7795677],
-          [51.4782251, 35.7908827],
-          [51.4837779, 35.8003977],
-          [51.5081518, 35.7973613],
-          [51.5208997, 35.7986657]
-        ]
-      },
-      "properties": {
-        "name": "خط سه مترو تهران - Line3",
-        "description": "بلندترین خط مترو خاور میانه",
-        "type": "line",
-        "folder": "خط 3",
-        "stroke": "#0288D1",
-        "stroke-width": 4.1,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.5208997, 35.7986657] },
-      "properties": {
-        "name": "قائم - Ghaem",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.5081518, 35.7973613] },
-      "properties": {
-        "name": "محلاتی - Mahallati",
-        "description": "- مینی سیتی - بزرگراه ارتش",
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.478225, 35.7907843] },
-      "properties": {
-        "name": "نوبنیاد - NouBonyad",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4792048, 35.7795677] },
-      "properties": {
-        "name": "حسین آباد - HousainAbad",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4736791, 35.7716703] },
-      "properties": {
-        "name": "هروی - پاسداران - Heravi Pasdaran",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4648867, 35.7607702] },
-      "properties": {
-        "name": "شهید زین الدین - Zeyn-od-Din",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.46336, 35.7436564] },
-      "properties": {
-        "name": "خواجه عبدالله انصاری - بزرگراه رسالت - Khaje Abdolah Ansari",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4584462, 35.7353304] },
-      "properties": {
-        "name": "صیاد شیرازی - مسیل باختر - Sayad Shirazi",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4445416, 35.7316029] },
-      "properties": {
-        "name": "قدوسی - خ شریعتی - Ghouddosi",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4356152, 35.731986] },
-      "properties": {
-        "name": "سهروردی - Sohrevardi",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4172904, 35.7280146] },
-      "properties": {
-        "name": "میرزا شیرازی - سینما آزادی - Mirza-e Shirazi",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.408321, 35.720733] },
-      "properties": {
-        "name": "میدان جهاد - فاطمی - یوسف آباد - Jahaad - Fatemi",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4069478, 35.7115691] },
-      "properties": {
-        "name": "میدان ولیعصر عج - ValiAsr Sq. Aj",
-        "description": "(بلوار کشاورز) - تقاطع خط 6 و خط 3",
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4053297, 35.7011057] },
-      "properties": {
-        "name": "تئاترشهر (چهارراه ولیعصر) (خط 4 و 3) - Theater-e Shahr",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4015423, 35.68103] },
-      "properties": {
-        "name": "منیریه (نزدیک بازار تهران) Moniriyeh",
-        "description": "دسترسی به بازار با تاکسی",
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3985627, 35.6673156] },
-      "properties": {
-        "name": "مهدیه (رازی) (تقاطع 3 و 7) Mahdiyeh",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3975703, 35.6597634] },
-      "properties": {
-        "name": "راه آهن تهران - اول خ ولیعصر - Tehran railway station - Hbf",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3876139, 35.6584035] },
-      "properties": {
-        "name": "جوادیه - Javadiyeh",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3731515, 35.6527196] },
-      "properties": {
-        "name": "زمزم - ZanZam",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3690286, 35.6447081] },
-      "properties": {
-        "name": "شهرک شریعتی (قلعه مرغی) - Shahrak SRT",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3602738, 35.6385699] },
-      "properties": {
-        "name": "عبدل آباد - AbdolAbad",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3468843, 35.6339659] },
-      "properties": {
-        "name": "نعمت آباد - Nemat Abad",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3348141, 35.6273283] },
-      "properties": {
-        "name": "آزادگان - Azadegan",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [51.4837779477239, 35.8003977454386]
-      },
-      "properties": {
-        "name": "اقدسیه - Aghdasiyeh",
-        "description": null,
-        "type": "station",
-        "folder": "خط 3",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [51.3072614, 35.7307232],
-          [51.3019608, 35.7177299],
-          [51.3076307, 35.7057059],
-          [51.3201727, 35.6989624],
-          [51.3332086, 35.7010012],
-          [51.344667, 35.7001299],
-          [51.3636679, 35.7006271],
-          [51.4053297, 35.7011057],
-          [51.4257054, 35.7015588],
-          [51.4378924, 35.6990846],
-          [51.447484, 35.6904297],
-          [51.4565867, 35.690593],
-          [51.4678842, 35.6909067],
-          [51.4774302, 35.6916038],
-          [51.4886102, 35.6927983],
-          [51.5003475, 35.6988278]
-        ]
-      },
-      "properties": {
-        "name": "خط چهار مترو تهران - Line4",
-        "description": "خط خیابان انقلاب آزادی",
-        "type": "line",
-        "folder": "خط 4",
-        "stroke": "#FFD600",
-        "stroke-width": 4.1,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [51.3201727, 35.6989624],
-          [51.3230805, 35.6923841],
-          [51.3310628, 35.6885935]
-        ]
-      },
-      "properties": {
-        "name": "خط حاشیه چهار برای فرودگاه - Line4 Mehrabad Airport",
-        "description": null,
-        "type": "line",
-        "folder": "خط 4",
-        "stroke": "#FFD600",
-        "stroke-width": 4.294,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3072614, 35.7307232] },
-      "properties": {
-        "name": "علامه محمد تقی جعفری",
-        "description": "افتتاح اردیبهشت 1402",
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3019608, 35.7177299] },
-      "properties": {
-        "name": "ارم سبز - (تقاطع 5و4) Eram-e Sabz",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3076307, 35.7057059] },
-      "properties": {
-        "name": "اکباتان - Ekbatan",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3201727, 35.6989624] },
-      "properties": {
-        "name": "بیمه - اول مسیر فرودگاه - Bimeh",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3230805, 35.6923841] },
-      "properties": {
-        "name": "فرودگاه مهرآباد ترمینال 1 و 2 - Mehrabad Airport 1st&2nd Terminal",
-        "description": "هما - ایران ایر",
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3310628, 35.6885935] },
-      "properties": {
-        "name": "فرودگاه مهراباد - ترمینال 4 و 6 - Mehrabad Airport 4th&6th Terminal",
-        "description": "ماهان",
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3332086, 35.7010012] },
-      "properties": {
-        "name": "میدان آزادی - Azadi Sq.",
-        "description": "ترمینال اتوبوس بین شهری (ترمینال غرب)",
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.344667, 35.7001299] },
-      "properties": {
-        "name": "استاد معین - Ostad Moiin",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3560395, 35.7006527] },
-      "properties": {
-        "name": "حبیب الله - Habibolah",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3790232, 35.7007572] },
-      "properties": {
-        "name": "ایستگاه توحید (چهارراه نواب) (تقاطع خط4 و خط7) - Tohid",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3900089, 35.7012103] },
-      "properties": {
-        "name": "میدان انقلاب - Enghelab Sq.",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4185047, 35.7014194] },
-      "properties": {
-        "name": "فردوسی - Ferdousi Sq.",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4257054, 35.7015588] },
-      "properties": {
-        "name": "دروازه دولت (خ انقلاب) - Darvazeh Doulat",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.447484, 35.6904297] },
-      "properties": {
-        "name": "میدان شهدا (خ پیروزی) - Shohada Sq.",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4565867, 35.690593] },
-      "properties": {
-        "name": "شیخ الرییس (ابن سینا) - Seykh ol Raiis Ebn-e Sina",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4678842, 35.6909067] },
-      "properties": {
-        "name": "پیروزی - Piroozi",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4774302, 35.6916038] },
-      "properties": {
-        "name": "نبرد - Nabard",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4886102, 35.6927983] },
-      "properties": {
-        "name": "نیروی هوایی - Niroo Havaii",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.5003475, 35.6988278] },
-      "properties": {
-        "name": "کلاهدوز بصیر - Kolahdooz",
-        "description": null,
-        "type": "station",
-        "folder": "خط 4",
-        "marker-color": "#FFD600"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [50.7196745, 35.9591728],
-          [50.7923591, 35.9172527],
-          [50.8223154, 35.9166401],
-          [50.845301, 35.9090255],
-          [50.8613942, 35.901437],
-          [50.8870229, 35.8819546],
-          [50.8993156, 35.872421],
-          [50.9106086, 35.8573595],
-          [50.9116604, 35.8342089],
-          [50.920639, 35.8271212],
-          [50.9325346, 35.825043],
-          [50.9644713, 35.8016841],
-          [51.0024804, 35.7872034],
-          [51.0460824, 35.7668701],
-          [51.0816396, 35.7511292],
-          [51.1511624, 35.7447205],
-          [51.1968243, 35.7254913],
-          [51.2435162, 35.71699],
-          [51.2810315, 35.7167237],
-          [51.3019608, 35.7177299],
-          [51.3308691, 35.7176834]
-        ]
-      },
-      "properties": {
-        "name": "خط پنج مترو تهران - Line5",
-        "description": "Tehran Karaj Hashtgerd Line\nخط مترو تهران کرج هشتگرد",
-        "type": "line",
-        "folder": "خط 5 (تهران کرج)",
-        "stroke": "#0F9D58",
-        "stroke-width": 3.906,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.2810315, 35.7167237] },
-      "properties": {
-        "name": "ورزشگاه آزادی",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.2435162, 35.71699] },
-      "properties": {
-        "name": "چیتگر",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.1968243, 35.7254913] },
-      "properties": {
-        "name": "ایران خودرو",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.1511624, 35.7447205] },
-      "properties": {
-        "name": "وردآورد",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.0816396, 35.7511292] },
-      "properties": {
-        "name": "گرم دره",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.0460824, 35.7668701] },
-      "properties": {
-        "name": "اتمسفر - البرز",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.0024804, 35.7872034] },
-      "properties": {
-        "name": "کرج",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [50.9644713, 35.8016841] },
-      "properties": {
-        "name": "محمد شهر (ماهدشت)ا",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [50.9325346, 35.825043] },
-      "properties": {
-        "name": "گلشهر",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [50.7196745, 35.9591728] },
-      "properties": {
-        "name": "شهید قاسم سلیمانی (هشتگرد)",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [50.7923591, 35.9172527] },
-      "properties": {
-        "name": "شهید فخری زاده - ماموت",
-        "description": null,
-        "type": "station",
-        "folder": "خط 5 (تهران کرج)",
-        "marker-color": "#006064"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [51.355851, 35.7769794],
-          [51.3658503, 35.7671604],
-          [51.3670584, 35.7544122],
-          [51.378048, 35.7486315],
-          [51.3820311, 35.7326568],
-          [51.3815265, 35.7242468],
-          [51.3785547, 35.7067425],
-          [51.3790232, 35.7007572],
-          [51.3804364, 35.6942298],
-          [51.381971, 35.6819311],
-          [51.3807961, 35.6731724],
-          [51.3876174, 35.6679954],
-          [51.3985627, 35.6673156],
-          [51.4160532, 35.6681852],
-          [51.4276306, 35.6692486],
-          [51.4373272, 35.6699691],
-          [51.4459515, 35.6680596],
-          [51.4622657, 35.6680602],
-          [51.4755063, 35.6676307],
-          [51.4904577, 35.6665727]
-        ]
-      },
-      "properties": {
-        "name": "خط هفت مترو تهران - Line7",
-        "description": "این خط در حال تکمیل است - فقط ایستگاه های راه اندازی شده روی نقشه ثبت شده است\n(بسیج جنوب شرق - میدان صنعت شمال غرب)",
-        "type": "line",
-        "folder": "خط 7",
-        "stroke": "#9C27B0",
-        "stroke-width": 4.1,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3556278, 35.777099] },
-      "properties": {
-        "name": "میدان کتاب (فرحزاد)",
-        "description": "مرکز خرید اوپال",
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#9C27B0"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3658503, 35.7671604] },
-      "properties": {
-        "name": "دادمان",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#9C27B0"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3670584, 35.7544122] },
-      "properties": {
-        "name": "میدان صنعت (شهرک غرب)",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#673AB7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.378048, 35.7486315] },
-      "properties": {
-        "name": "برج میلاد",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#9C27B0"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3820311, 35.7326568] },
-      "properties": {
-        "name": "بوستان گفتگو",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#9C27B0"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3815265, 35.7242468] },
-      "properties": {
-        "name": "دانشگاه تربیت مدرس TMU (پل نصر)(پل گیشا)",
-        "description": "تقاطع خط 6 و 7",
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3785547, 35.7067425] },
-      "properties": {
-        "name": "مدافعان سلامت (میدان توحید)",
-        "description": "بیمارستان امام خمینی",
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#9C27B0"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3811789, 35.6879357] },
-      "properties": {
-        "name": "رودکی - خیابان امام خمینی سپه",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#673AB7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.381971, 35.6819311] },
-      "properties": {
-        "name": "کمیل",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#673AB7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3807961, 35.6731724] },
-      "properties": {
-        "name": "بریانک - قزوین",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#673AB7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3876174, 35.6679954] },
-      "properties": {
-        "name": "هلال احمر",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#673AB7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4373272, 35.6699691] },
-      "properties": {
-        "name": "میدان قیام",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#673AB7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4276306, 35.6692486] },
-      "properties": {
-        "name": "مولوی",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#3949AB"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4622657, 35.6680602] },
-      "properties": {
-        "name": "دروازه دولاب (سعیدی)",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#673AB7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4904577, 35.6665727] },
-      "properties": {
-        "name": "بسیج (انتهای محلاتی)",
-        "description": null,
-        "type": "station",
-        "folder": "خط 7",
-        "marker-color": "#673AB7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4477784, 35.6693725] },
-      "properties": {
-        "name": "هشدار - این ایستگاه افتتاح نشده و خط 6 و 7 در اینجا تقاطع ندارند",
-        "description": null,
-        "type": "warning",
-        "folder": "خط 7",
-        "marker-color": "#FF5252"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [51.4646676, 35.6191107],
-          [51.4485006, 35.6329805],
-          [51.4441035, 35.6452884],
-          [51.4446989, 35.6525035],
-          [51.4448007, 35.665538],
-          [51.4471272, 35.6827034],
-          [51.447484, 35.6904297],
-          [51.4457133, 35.7022296],
-          [51.4393139, 35.7161758],
-          [51.4261145, 35.715409],
-          [51.4069478, 35.7115691],
-          [51.3933602, 35.7081397],
-          [51.3893428, 35.7147386],
-          [51.3815265, 35.7242468],
-          [51.3696222, 35.7293519],
-          [51.3593375, 35.7344812],
-          [51.3464051, 35.7350823],
-          [51.3339781, 35.7350649],
-          [51.3199474, 35.7368741],
-          [51.3019267, 35.7401569],
-          [51.2947037, 35.7456803],
-          [51.288151, 35.7539255],
-          [51.2838272, 35.7633222],
-          [51.2806864, 35.7693726]
-        ]
-      },
-      "properties": {
-        "name": "خط شش مترو تهران - Line6",
-        "description": "این خط در حال تکمیل است و فقط ایستگاه های افتتاح شده بر روی مسیر درج شده است!\nشمال غربی به جنوب شرقی",
-        "type": "line",
-        "folder": "خط 6",
-        "stroke": "#F48FB1",
-        "stroke-width": 4.1,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4646676, 35.6191107] },
-      "properties": {
-        "name": "دولت آباد",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4485006, 35.6329805] },
-      "properties": {
-        "name": "کیانشهر",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4441035, 35.6452884] },
-      "properties": {
-        "name": "بعثت",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4446989, 35.6525035] },
-      "properties": {
-        "name": "رضایی",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4448007, 35.665538] },
-      "properties": {
-        "name": "میدان خراسان - خط 6",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#FF5252"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4471272, 35.6827034] },
-      "properties": {
-        "name": "امیر کبیر",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.447484, 35.6904297] },
-      "properties": {
-        "name": "میدان شهدا - تقاطع خط 4 و 6 - Shohada Sq.",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#F57C00"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.4393139, 35.7161758] },
-      "properties": {
-        "name": "بهار شیراز",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3933602, 35.7081397] },
-      "properties": {
-        "name": "بوستان لاله",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3893428, 35.7147386] },
-      "properties": {
-        "name": "خیابان کارگر",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3696222, 35.7293519] },
-      "properties": {
-        "name": "شهرک آزمایش",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [51.3593375310302, 35.7344812216729]
-      },
-      "properties": {
-        "name": "مرزداران",
-        "description": "مرزداران",
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3464051, 35.7350823] },
-      "properties": {
-        "name": "یادگار امام",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3339781, 35.7350649] },
-      "properties": {
-        "name": "اشرفی اصفهانی",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3199474, 35.7368741] },
-      "properties": {
-        "name": "ستاری",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.3019267, 35.7401569] },
-      "properties": {
-        "name": "آیت الله کاشانی",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.2947037, 35.7456803] },
-      "properties": {
-        "name": "شهر زیبا",
-        "description": "میدان کودک شهر زیبا",
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.288151, 35.7539255] },
-      "properties": {
-        "name": "شهران (بزرگراه همت)",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.2838272, 35.7633222] },
-      "properties": {
-        "name": "شهدای کن",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [51.2806864, 35.7693726] },
-      "properties": {
-        "name": "آرمان وردی (کوهسار)",
-        "description": null,
-        "type": "station",
-        "folder": "خط 6",
-        "marker-color": "#C2185B"
-      }
-    }
-  ]
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[51.4335161, 35.8046834],
+					[51.4342028, 35.7931273],
+					[51.4376947, 35.7729241],
+					[51.4438745, 35.7624777],
+					[51.4337046, 35.7598841],
+					[51.4269062, 35.7564288],
+					[51.4257712, 35.7484776],
+					[51.4268012, 35.7312002],
+					[51.4273161, 35.7243719],
+					[51.4261145, 35.715409],
+					[51.4252562, 35.707046],
+					[51.4257054, 35.7015588],
+					[51.4244997, 35.6932016],
+					[51.4198914, 35.6854667],
+					[51.4174881, 35.6780069],
+					[51.4160532, 35.6681852],
+					[51.4140255, 35.6575769],
+					[51.4163429, 35.65083],
+					[51.4148334, 35.640644],
+					[51.4157347, 35.62942],
+					[51.4197557, 35.6103441],
+					[51.4223414, 35.5948013],
+					[51.4001589, 35.5598014],
+					[51.3817365, 35.5475505],
+					[51.3735783, 35.5446458],
+					[51.3692867, 35.5218232]
+				]
+			},
+			"properties": {
+				"name": "خط یک مترو تهران - شاخه فرودگاه امام و شهر آفتاب Line1 to IKIA",
+				"description": "Line1 to Imam Khomeini International Airport",
+				"type": "line",
+				"folder": "خط یک - Line 1",
+				"stroke": "#A52714",
+				"stroke-width": 4.1,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[51.3817365, 35.5475505],
+					[51.348797, 35.5402485],
+					[51.1544834, 35.4078097],
+					[50.9782513, 35.4635317]
+				]
+			},
+			"properties": {
+				"name": "خط 8 مترو تهران",
+				"description": null,
+				"type": "line",
+				"folder": "خط یک - Line 1",
+				"stroke": "#558B2F",
+				"stroke-width": 4.681,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4335161, 35.8046834] },
+			"properties": {
+				"name": "تجریش میدان قدس - خط یک - Tajrish",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4342028, 35.7931273] },
+			"properties": {
+				"name": "قیطریه - Gheytariyeh",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4356348, 35.7853186] },
+			"properties": {
+				"name": "صدر - Sadr",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4376947, 35.7729241] },
+			"properties": {
+				"name": "قلهک - Gholhak",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4438745, 35.7624777] },
+			"properties": {
+				"name": "شریعتی - Shariati",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4335171, 35.7605012] },
+			"properties": {
+				"name": "میرداماد - MirDamad",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4269062, 35.7564288] },
+			"properties": {
+				"name": "حقانی - Haqhani",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4257712, 35.7484776] },
+			"properties": {
+				"name": "همت - Hemmat",
+				"description": "فقط دسترسی به شمال بزرگراه همت است",
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4268012, 35.7403967] },
+			"properties": {
+				"name": "مصلی شمال - Mosalla",
+				"description": "بزرگراه رسالت",
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4268012, 35.7312002] },
+			"properties": {
+				"name": "بهشتی - Beheshti",
+				"description": "جنوب مصلی",
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4273161, 35.7243719] },
+			"properties": {
+				"name": "مفتح - خیابان مطهری - Mofatteh",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4261145, 35.715409] },
+			"properties": {
+				"name": "هفت تیر - Haft-e Tir - 7th of Tir",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4252562, 35.707046] },
+			"properties": {
+				"name": "طالقانی - Taleghani",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4244997, 35.6932016] },
+			"properties": {
+				"name": "سعدی - Saadi",
+				"description": "خ جمهوری - مخبرالدوله استقلال",
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4198914, 35.6854667] },
+			"properties": {
+				"name": "ایستگاه امام خمینی Imam Khomeini Central Station",
+				"description": "جنوب لاله زار- دسترسی با تاکسی به بازار بزرگ تهران - سردر باغ ملی - جنوب خ فردوسی",
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4174881, 35.6780069] },
+			"properties": {
+				"name": "پانزده خرداد - گلوبندک - 15th Khourdad",
+				"description": "چهارراه گلوبندک - راسته طلا فروشان - کاخ گلستان - رادیو تهران - سبزه میدان - ناصرخسرو - شمس العماره - کوچه مری",
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4167935, 35.6731239] },
+			"properties": {
+				"name": "خیام - جنوب بازار بزرگ تهران - Khayyam",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4160532, 35.6681852] },
+			"properties": {
+				"name": "میدان محمدیه Mohammadiyeh Sq.",
+				"description": "تقاطع خط 1 و 7",
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4140255, 35.6575769] },
+			"properties": {
+				"name": "شوش - Shoush",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4163429, 35.65083] },
+			"properties": {
+				"name": "ترمینال جنوب - South Bus Terminal",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4148334, 35.640644] },
+			"properties": {
+				"name": "خزانه - Khazaneh",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4157347, 35.62942] },
+			"properties": {
+				"name": "علی آباد - Ali Abaad",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4197557, 35.6103441] },
+			"properties": {
+				"name": "جوانمرد قصاب - JavanMard Ghassab",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4223414, 35.5948013] },
+			"properties": {
+				"name": "شهر ری - Shahr-e Rey",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4001589, 35.5598014] },
+			"properties": {
+				"name": "باقر شهر - باقرآباد - BagherShahr",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3817365, 35.5475505] },
+			"properties": {
+				"name": "شاهد Shahed - (تقاطع 1 و 8)",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3735783, 35.5446458] },
+			"properties": {
+				"name": "حرم مطهر- Haram Motahar",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3692867, 35.5218232] },
+			"properties": {
+				"name": "کهریزک - خط یک - Kahrizak",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.348797, 35.5402485] },
+			"properties": {
+				"name": "شهر آفتاب - Aftab City",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#558B2F"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.1544834, 35.4078097] },
+			"properties": {
+				"name": "فرودگاه امام خمینی Imam Khomeini Airport",
+				"description": null,
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#558B2F"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [50.9782513, 35.4635317] },
+			"properties": {
+				"name": "ایستگاه مترو پرند - خط یک - Parand City",
+				"description": "در کنار ایستگاه قطار پرند (خط تهران - قم)",
+				"type": "station",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#558B2F"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4016552, 35.6864357] },
+			"properties": {
+				"name": "هشدار : اینجا مترو ایستگاه تقاطعی ندارد",
+				"description": null,
+				"type": "warning",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#FF5252"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4263332, 35.7488045] },
+			"properties": {
+				"name": "هشدار - ورودی ایستگاه همت فقط برای شمال بزرگراه و از طریق پل هوایی در دسترس است - در جنوب بزرگراه هیچ دسترسی ای به ایستگاه مترو همت وجود ندارد",
+				"description": null,
+				"type": "warning",
+				"folder": "خط یک - Line 1",
+				"marker-color": "#E65100"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[51.5467877, 35.7297376],
+					[51.5316815, 35.7310614],
+					[51.5164757, 35.733082],
+					[51.5048691, 35.7345095],
+					[51.494784, 35.735241],
+					[51.4843556, 35.7334993],
+					[51.4759361, 35.7265637],
+					[51.4644244, 35.7182589],
+					[51.4529231, 35.709478],
+					[51.4457133, 35.7022296],
+					[51.4327426, 35.6918352],
+					[51.4269061, 35.6884892],
+					[51.4198914, 35.6854667],
+					[51.4100009, 35.6864571],
+					[51.3992292, 35.6872588],
+					[51.3882792, 35.6909884],
+					[51.3785481, 35.6949966],
+					[51.3636679, 35.7006271],
+					[51.3535301, 35.7058545],
+					[51.345117, 35.7145823],
+					[51.3308691, 35.7176834]
+				]
+			},
+			"properties": {
+				"name": "خط دو مترو تهران - Line2",
+				"description": "شرقی غربی",
+				"type": "line",
+				"folder": "خط 2",
+				"stroke": "#3949AB",
+				"stroke-width": 3.906,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3308691, 35.7176834] },
+			"properties": {
+				"name": "صادقیه - (تقاطع 2و5) - Sadeghiyeh",
+				"description": "- غرب تهران",
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.345117, 35.7145823] },
+			"properties": {
+				"name": "طرشت - Tarasht",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3535301, 35.7058545] },
+			"properties": {
+				"name": "دانشگاه شریف - Sharif University",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3636679, 35.7006271] },
+			"properties": {
+				"name": "شادمان خط 2و4 - Shademan",
+				"description": "(خ آزادی - بهبودی - آذربایجان)",
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3804364, 35.6942298] },
+			"properties": {
+				"name": "نواب صفوی Navvab Safavi",
+				"description": "خیابان آذربایجان",
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3882792, 35.6909884] },
+			"properties": {
+				"name": "میدان حر - Hour Sq.",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3992292, 35.6872588] },
+			"properties": {
+				"name": "دانشگاه امام علی - Imam Ali University",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4100009, 35.6864571] },
+			"properties": {
+				"name": "حسن آباد (حافظ-امام) - HasanAbaad",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4269061, 35.6884892] },
+			"properties": {
+				"name": "ملت - Mellat",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4327426, 35.6918352] },
+			"properties": {
+				"name": "بهارستان - Baharestan",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4378924, 35.6990846] },
+			"properties": {
+				"name": "دروازه شمیران - تقاطع 2 و 4 - Darvazeh Shemiran",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#F9A825"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4457133, 35.7022296] },
+			"properties": {
+				"name": "امام حسین ع - تقاطع خط 6 و 2 - Imam Hosain",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4529231, 35.709478] },
+			"properties": {
+				"name": "شهید مدنی - Madani",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4644244, 35.7182589] },
+			"properties": {
+				"name": "سبلان - Sabalan",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4759361, 35.7265637] },
+			"properties": {
+				"name": "فدک - Fadak",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4843556, 35.7334993] },
+			"properties": {
+				"name": "گلبرگ - خ جانبازان - Golbarg",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.494784, 35.735241] },
+			"properties": {
+				"name": "سرسبز - آیت - Ayat",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.5048691, 35.7345095] },
+			"properties": {
+				"name": "دانشگاه علم و صنعت - Elm-o Sanat University",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.5164757, 35.733082] },
+			"properties": {
+				"name": "شهید باقری - Bagheri",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.5316815, 35.7310614] },
+			"properties": {
+				"name": "تهرانپارس حجربن عدی - TehranPars",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.5467877, 35.7297376] },
+			"properties": {
+				"name": "فرهنگسرا - خط 2 - FarhangSara",
+				"description": null,
+				"type": "station",
+				"folder": "خط 2",
+				"marker-color": "#1A237E"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[51.3348141, 35.6274121],
+					[51.3468843, 35.6339659],
+					[51.3602738, 35.6385699],
+					[51.3690286, 35.6447081],
+					[51.3731515, 35.6527196],
+					[51.3876139, 35.6584035],
+					[51.3975703, 35.6597634],
+					[51.3985627, 35.6673156],
+					[51.4015423, 35.68103],
+					[51.4053297, 35.7011057],
+					[51.408321, 35.720733],
+					[51.4172904, 35.7280146],
+					[51.4268011, 35.7312842],
+					[51.4356152, 35.731986],
+					[51.4445416, 35.7316029],
+					[51.4584462, 35.7353304],
+					[51.46336, 35.7436564],
+					[51.4648867, 35.7607702],
+					[51.4736791, 35.7716703],
+					[51.4792048, 35.7795677],
+					[51.4782251, 35.7908827],
+					[51.4837779, 35.8003977],
+					[51.5081518, 35.7973613],
+					[51.5208997, 35.7986657]
+				]
+			},
+			"properties": {
+				"name": "خط سه مترو تهران - Line3",
+				"description": "بلندترین خط مترو خاور میانه",
+				"type": "line",
+				"folder": "خط 3",
+				"stroke": "#0288D1",
+				"stroke-width": 4.1,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.5208997, 35.7986657] },
+			"properties": {
+				"name": "قائم - Ghaem",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.5081518, 35.7973613] },
+			"properties": {
+				"name": "محلاتی - Mahallati",
+				"description": "- مینی سیتی - بزرگراه ارتش",
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.478225, 35.7907843] },
+			"properties": {
+				"name": "نوبنیاد - NouBonyad",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4792048, 35.7795677] },
+			"properties": {
+				"name": "حسین آباد - HousainAbad",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4736791, 35.7716703] },
+			"properties": {
+				"name": "هروی - پاسداران - Heravi Pasdaran",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4648867, 35.7607702] },
+			"properties": {
+				"name": "شهید زین الدین - Zeyn-od-Din",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.46336, 35.7436564] },
+			"properties": {
+				"name": "خواجه عبدالله انصاری - بزرگراه رسالت - Khaje Abdolah Ansari",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4584462, 35.7353304] },
+			"properties": {
+				"name": "صیاد شیرازی - مسیل باختر - Sayad Shirazi",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4445416, 35.7316029] },
+			"properties": {
+				"name": "قدوسی - خ شریعتی - Ghouddosi",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4356152, 35.731986] },
+			"properties": {
+				"name": "سهروردی - Sohrevardi",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4172904, 35.7280146] },
+			"properties": {
+				"name": "میرزا شیرازی - سینما آزادی - Mirza-e Shirazi",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.408321, 35.720733] },
+			"properties": {
+				"name": "میدان جهاد - فاطمی - یوسف آباد - Jahaad - Fatemi",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4069478, 35.7115691] },
+			"properties": {
+				"name": "میدان ولیعصر عج - ValiAsr Sq. Aj",
+				"description": "(بلوار کشاورز) - تقاطع خط 6 و خط 3",
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4053297, 35.7011057] },
+			"properties": {
+				"name": "تئاترشهر (چهارراه ولیعصر) (خط 4 و 3) - Theater-e Shahr",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4015423, 35.68103] },
+			"properties": {
+				"name": "منیریه (نزدیک بازار تهران) Moniriyeh",
+				"description": "دسترسی به بازار با تاکسی",
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3985627, 35.6673156] },
+			"properties": {
+				"name": "مهدیه (رازی) (تقاطع 3 و 7) Mahdiyeh",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3975703, 35.6597634] },
+			"properties": {
+				"name": "راه آهن تهران - اول خ ولیعصر - Tehran railway station - Hbf",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3876139, 35.6584035] },
+			"properties": {
+				"name": "جوادیه - Javadiyeh",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3731515, 35.6527196] },
+			"properties": {
+				"name": "زمزم - ZanZam",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3690286, 35.6447081] },
+			"properties": {
+				"name": "شهرک شریعتی (قلعه مرغی) - Shahrak SRT",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3602738, 35.6385699] },
+			"properties": {
+				"name": "عبدل آباد - AbdolAbad",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3468843, 35.6339659] },
+			"properties": {
+				"name": "نعمت آباد - Nemat Abad",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3348141, 35.6273283] },
+			"properties": {
+				"name": "آزادگان - Azadegan",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [51.4837779477239, 35.8003977454386]
+			},
+			"properties": {
+				"name": "اقدسیه - Aghdasiyeh",
+				"description": null,
+				"type": "station",
+				"folder": "خط 3",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[51.3072614, 35.7307232],
+					[51.3019608, 35.7177299],
+					[51.3076307, 35.7057059],
+					[51.3201727, 35.6989624],
+					[51.3332086, 35.7010012],
+					[51.344667, 35.7001299],
+					[51.3636679, 35.7006271],
+					[51.4053297, 35.7011057],
+					[51.4257054, 35.7015588],
+					[51.4378924, 35.6990846],
+					[51.447484, 35.6904297],
+					[51.4565867, 35.690593],
+					[51.4678842, 35.6909067],
+					[51.4774302, 35.6916038],
+					[51.4886102, 35.6927983],
+					[51.5003475, 35.6988278]
+				]
+			},
+			"properties": {
+				"name": "خط چهار مترو تهران - Line4",
+				"description": "خط خیابان انقلاب آزادی",
+				"type": "line",
+				"folder": "خط 4",
+				"stroke": "#FFD600",
+				"stroke-width": 4.1,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[51.3201727, 35.6989624],
+					[51.3230805, 35.6923841],
+					[51.3310628, 35.6885935]
+				]
+			},
+			"properties": {
+				"name": "خط حاشیه چهار برای فرودگاه - Line4 Mehrabad Airport",
+				"description": null,
+				"type": "line",
+				"folder": "خط 4",
+				"stroke": "#FFD600",
+				"stroke-width": 4.294,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3072614, 35.7307232] },
+			"properties": {
+				"name": "علامه محمد تقی جعفری",
+				"description": "افتتاح اردیبهشت 1402",
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3019608, 35.7177299] },
+			"properties": {
+				"name": "ارم سبز - (تقاطع 5و4) Eram-e Sabz",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3076307, 35.7057059] },
+			"properties": {
+				"name": "اکباتان - Ekbatan",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3201727, 35.6989624] },
+			"properties": {
+				"name": "بیمه - اول مسیر فرودگاه - Bimeh",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3230805, 35.6923841] },
+			"properties": {
+				"name": "فرودگاه مهرآباد ترمینال 1 و 2 - Mehrabad Airport 1st&2nd Terminal",
+				"description": "هما - ایران ایر",
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3310628, 35.6885935] },
+			"properties": {
+				"name": "فرودگاه مهراباد - ترمینال 4 و 6 - Mehrabad Airport 4th&6th Terminal",
+				"description": "ماهان",
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3332086, 35.7010012] },
+			"properties": {
+				"name": "میدان آزادی - Azadi Sq.",
+				"description": "ترمینال اتوبوس بین شهری (ترمینال غرب)",
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.344667, 35.7001299] },
+			"properties": {
+				"name": "استاد معین - Ostad Moiin",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3560395, 35.7006527] },
+			"properties": {
+				"name": "حبیب الله - Habibolah",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3790232, 35.7007572] },
+			"properties": {
+				"name": "ایستگاه توحید (چهارراه نواب) (تقاطع خط4 و خط7) - Tohid",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3900089, 35.7012103] },
+			"properties": {
+				"name": "میدان انقلاب - Enghelab Sq.",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4185047, 35.7014194] },
+			"properties": {
+				"name": "فردوسی - Ferdousi Sq.",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4257054, 35.7015588] },
+			"properties": {
+				"name": "دروازه دولت (خ انقلاب) - Darvazeh Doulat",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.447484, 35.6904297] },
+			"properties": {
+				"name": "میدان شهدا (خ پیروزی) - Shohada Sq.",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4565867, 35.690593] },
+			"properties": {
+				"name": "شیخ الرییس (ابن سینا) - Seykh ol Raiis Ebn-e Sina",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4678842, 35.6909067] },
+			"properties": {
+				"name": "پیروزی - Piroozi",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4774302, 35.6916038] },
+			"properties": {
+				"name": "نبرد - Nabard",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4886102, 35.6927983] },
+			"properties": {
+				"name": "نیروی هوایی - Niroo Havaii",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.5003475, 35.6988278] },
+			"properties": {
+				"name": "کلاهدوز بصیر - Kolahdooz",
+				"description": null,
+				"type": "station",
+				"folder": "خط 4",
+				"marker-color": "#FFD600"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[50.7196745, 35.9591728],
+					[50.7923591, 35.9172527],
+					[50.8223154, 35.9166401],
+					[50.845301, 35.9090255],
+					[50.8613942, 35.901437],
+					[50.8870229, 35.8819546],
+					[50.8993156, 35.872421],
+					[50.9106086, 35.8573595],
+					[50.9116604, 35.8342089],
+					[50.920639, 35.8271212],
+					[50.9325346, 35.825043],
+					[50.9644713, 35.8016841],
+					[51.0024804, 35.7872034],
+					[51.0460824, 35.7668701],
+					[51.0816396, 35.7511292],
+					[51.1511624, 35.7447205],
+					[51.1968243, 35.7254913],
+					[51.2435162, 35.71699],
+					[51.2810315, 35.7167237],
+					[51.3019608, 35.7177299],
+					[51.3308691, 35.7176834]
+				]
+			},
+			"properties": {
+				"name": "خط پنج مترو تهران - Line5",
+				"description": "Tehran Karaj Hashtgerd Line\nخط مترو تهران کرج هشتگرد",
+				"type": "line",
+				"folder": "خط 5 (تهران کرج)",
+				"stroke": "#0F9D58",
+				"stroke-width": 3.906,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.2810315, 35.7167237] },
+			"properties": {
+				"name": "ورزشگاه آزادی",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.2435162, 35.71699] },
+			"properties": {
+				"name": "چیتگر",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.1968243, 35.7254913] },
+			"properties": {
+				"name": "ایران خودرو",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.1511624, 35.7447205] },
+			"properties": {
+				"name": "وردآورد",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.0816396, 35.7511292] },
+			"properties": {
+				"name": "گرم دره",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.0460824, 35.7668701] },
+			"properties": {
+				"name": "اتمسفر - البرز",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.0024804, 35.7872034] },
+			"properties": {
+				"name": "کرج",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [50.9644713, 35.8016841] },
+			"properties": {
+				"name": "محمد شهر (ماهدشت)ا",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [50.9325346, 35.825043] },
+			"properties": {
+				"name": "گلشهر",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [50.7196745, 35.9591728] },
+			"properties": {
+				"name": "شهید قاسم سلیمانی (هشتگرد)",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [50.7923591, 35.9172527] },
+			"properties": {
+				"name": "شهید فخری زاده - ماموت",
+				"description": null,
+				"type": "station",
+				"folder": "خط 5 (تهران کرج)",
+				"marker-color": "#006064"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[51.355851, 35.7769794],
+					[51.3658503, 35.7671604],
+					[51.3670584, 35.7544122],
+					[51.378048, 35.7486315],
+					[51.3820311, 35.7326568],
+					[51.3815265, 35.7242468],
+					[51.3785547, 35.7067425],
+					[51.3790232, 35.7007572],
+					[51.3804364, 35.6942298],
+					[51.381971, 35.6819311],
+					[51.3807961, 35.6731724],
+					[51.3876174, 35.6679954],
+					[51.3985627, 35.6673156],
+					[51.4160532, 35.6681852],
+					[51.4276306, 35.6692486],
+					[51.4373272, 35.6699691],
+					[51.4459515, 35.6680596],
+					[51.4622657, 35.6680602],
+					[51.4755063, 35.6676307],
+					[51.4904577, 35.6665727]
+				]
+			},
+			"properties": {
+				"name": "خط هفت مترو تهران - Line7",
+				"description": "این خط در حال تکمیل است - فقط ایستگاه های راه اندازی شده روی نقشه ثبت شده است\n(بسیج جنوب شرق - میدان صنعت شمال غرب)",
+				"type": "line",
+				"folder": "خط 7",
+				"stroke": "#9C27B0",
+				"stroke-width": 4.1,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3556278, 35.777099] },
+			"properties": {
+				"name": "میدان کتاب (فرحزاد)",
+				"description": "مرکز خرید اوپال",
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#9C27B0"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3658503, 35.7671604] },
+			"properties": {
+				"name": "دادمان",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#9C27B0"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3670584, 35.7544122] },
+			"properties": {
+				"name": "میدان صنعت (شهرک غرب)",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#673AB7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.378048, 35.7486315] },
+			"properties": {
+				"name": "برج میلاد",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#9C27B0"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3820311, 35.7326568] },
+			"properties": {
+				"name": "بوستان گفتگو",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#9C27B0"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3815265, 35.7242468] },
+			"properties": {
+				"name": "دانشگاه تربیت مدرس TMU (پل نصر)(پل گیشا)",
+				"description": "تقاطع خط 6 و 7",
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3785547, 35.7067425] },
+			"properties": {
+				"name": "مدافعان سلامت (میدان توحید)",
+				"description": "بیمارستان امام خمینی",
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#9C27B0"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3811789, 35.6879357] },
+			"properties": {
+				"name": "رودکی - خیابان امام خمینی سپه",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#673AB7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.381971, 35.6819311] },
+			"properties": {
+				"name": "کمیل",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#673AB7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3807961, 35.6731724] },
+			"properties": {
+				"name": "بریانک - قزوین",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#673AB7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3876174, 35.6679954] },
+			"properties": {
+				"name": "هلال احمر",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#673AB7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4373272, 35.6699691] },
+			"properties": {
+				"name": "میدان قیام",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#673AB7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4276306, 35.6692486] },
+			"properties": {
+				"name": "مولوی",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#3949AB"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4622657, 35.6680602] },
+			"properties": {
+				"name": "دروازه دولاب (سعیدی)",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#673AB7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4904577, 35.6665727] },
+			"properties": {
+				"name": "بسیج (انتهای محلاتی)",
+				"description": null,
+				"type": "station",
+				"folder": "خط 7",
+				"marker-color": "#673AB7"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4477784, 35.6693725] },
+			"properties": {
+				"name": "هشدار - این ایستگاه افتتاح نشده و خط 6 و 7 در اینجا تقاطع ندارند",
+				"description": null,
+				"type": "warning",
+				"folder": "خط 7",
+				"marker-color": "#FF5252"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[51.4646676, 35.6191107],
+					[51.4485006, 35.6329805],
+					[51.4441035, 35.6452884],
+					[51.4446989, 35.6525035],
+					[51.4448007, 35.665538],
+					[51.4471272, 35.6827034],
+					[51.447484, 35.6904297],
+					[51.4457133, 35.7022296],
+					[51.4393139, 35.7161758],
+					[51.4261145, 35.715409],
+					[51.4069478, 35.7115691],
+					[51.3933602, 35.7081397],
+					[51.3893428, 35.7147386],
+					[51.3815265, 35.7242468],
+					[51.3696222, 35.7293519],
+					[51.3593375, 35.7344812],
+					[51.3464051, 35.7350823],
+					[51.3339781, 35.7350649],
+					[51.3199474, 35.7368741],
+					[51.3019267, 35.7401569],
+					[51.2947037, 35.7456803],
+					[51.288151, 35.7539255],
+					[51.2838272, 35.7633222],
+					[51.2806864, 35.7693726]
+				]
+			},
+			"properties": {
+				"name": "خط شش مترو تهران - Line6",
+				"description": "این خط در حال تکمیل است و فقط ایستگاه های افتتاح شده بر روی مسیر درج شده است!\nشمال غربی به جنوب شرقی",
+				"type": "line",
+				"folder": "خط 6",
+				"stroke": "#F48FB1",
+				"stroke-width": 4.1,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4646676, 35.6191107] },
+			"properties": {
+				"name": "دولت آباد",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4485006, 35.6329805] },
+			"properties": {
+				"name": "کیانشهر",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4441035, 35.6452884] },
+			"properties": {
+				"name": "بعثت",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4446989, 35.6525035] },
+			"properties": {
+				"name": "رضایی",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4448007, 35.665538] },
+			"properties": {
+				"name": "میدان خراسان - خط 6",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#FF5252"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4471272, 35.6827034] },
+			"properties": {
+				"name": "امیر کبیر",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.447484, 35.6904297] },
+			"properties": {
+				"name": "میدان شهدا - تقاطع خط 4 و 6 - Shohada Sq.",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#F57C00"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.4393139, 35.7161758] },
+			"properties": {
+				"name": "بهار شیراز",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3933602, 35.7081397] },
+			"properties": {
+				"name": "بوستان لاله",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3893428, 35.7147386] },
+			"properties": {
+				"name": "خیابان کارگر",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3696222, 35.7293519] },
+			"properties": {
+				"name": "شهرک آزمایش",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "Point",
+				"coordinates": [51.3593375310302, 35.7344812216729]
+			},
+			"properties": {
+				"name": "مرزداران",
+				"description": "مرزداران",
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3464051, 35.7350823] },
+			"properties": {
+				"name": "یادگار امام",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3339781, 35.7350649] },
+			"properties": {
+				"name": "اشرفی اصفهانی",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3199474, 35.7368741] },
+			"properties": {
+				"name": "ستاری",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.3019267, 35.7401569] },
+			"properties": {
+				"name": "آیت الله کاشانی",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.2947037, 35.7456803] },
+			"properties": {
+				"name": "شهر زیبا",
+				"description": "میدان کودک شهر زیبا",
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.288151, 35.7539255] },
+			"properties": {
+				"name": "شهران (بزرگراه همت)",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.2838272, 35.7633222] },
+			"properties": {
+				"name": "شهدای کن",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [51.2806864, 35.7693726] },
+			"properties": {
+				"name": "آرمان وردی (کوهسار)",
+				"description": null,
+				"type": "station",
+				"folder": "خط 6",
+				"marker-color": "#C2185B"
+			}
+		}
+	]
 }

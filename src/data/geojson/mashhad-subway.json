@@ -1,530 +1,530 @@
 {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [59.6391925, 36.2292804],
-          [59.6235118, 36.2431801],
-          [59.6198778, 36.2567392],
-          [59.5857699, 36.2911936],
-          [59.5639579, 36.3002198],
-          [59.5403416, 36.3155176],
-          [59.4425319, 36.3459991]
-        ]
-      },
-      "properties": {
-        "name": "خط 1 مترو مشهد",
-        "description": null,
-        "type": "line",
-        "city": "Mashhad",
-        "stroke": "#097138",
-        "stroke-width": 4.681,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6391925, 36.2292804] },
-      "properties": {
-        "name": "مشهد 1 - ایستگاه فرودگاه شهید هاشمی نژاد",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6238171, 36.2436839] },
-      "properties": {
-        "name": "مشهد 1 - بوستان ریحانه - ترمینال خارجی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6198778, 36.2567392] },
-      "properties": {
-        "name": "مشهد 1 - غدیر",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6142362, 36.2625466] },
-      "properties": {
-        "name": "مشهد 1 - پروین اعتصامی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6089577, 36.2678061] },
-      "properties": {
-        "name": "مشهد 1 - هفده شهریور",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6031252, 36.273765] },
-      "properties": {
-        "name": "مشهد 3 و 1 - بسیج",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#F9A825"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5958256, 36.2811609] },
-      "properties": {
-        "name": "مشهد 1 - امام خمینی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.585767, 36.2910927] },
-      "properties": {
-        "name": "مشهد 1 و 2 - شریعتی - تقی آباد",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#F9A825"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5790378, 36.2941304] },
-      "properties": {
-        "name": "مشهد 1 - قائم",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5726005, 36.2972088] },
-      "properties": {
-        "name": "مشهد 1 - طالقانی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5639579, 36.3002198] },
-      "properties": {
-        "name": "مشهد 1 - فلسظین",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5524303, 36.307446] },
-      "properties": {
-        "name": "مشهد 1 - خیام",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5443867, 36.3127305] },
-      "properties": {
-        "name": "مشهد 1 - آزادی",
-        "description": "زیر سطحی - تونل",
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5338052, 36.317281] },
-      "properties": {
-        "name": "مشهد 1 - پارک ملت",
-        "description": "رو سطحی",
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.524992, 36.3199436] },
-      "properties": {
-        "name": "مشهد 1 - کوثر",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5168327, 36.3226233] },
-      "properties": {
-        "name": "مشهد 1 - سید رضی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5091298, 36.3249873] },
-      "properties": {
-        "name": "مشهد 1 - دانش آموز",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.4999922, 36.3278368] },
-      "properties": {
-        "name": "مشهد 1 - هفت تیر",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.4933833, 36.3297959] },
-      "properties": {
-        "name": "مشهد 1 - صدف",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.4849204, 36.3325932] },
-      "properties": {
-        "name": "مشهد 1 - صیاد شیرازی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.4743148, 36.3358638] },
-      "properties": {
-        "name": "مشهد 1 - اقبال لاهوری ، دندانپزشکان",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.4633928, 36.3393035] },
-      "properties": {
-        "name": "مشهد 1 - نمایشگاه",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.4520288, 36.3429271] },
-      "properties": {
-        "name": "مشهد 1 - کوهستان پارک",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.4425123, 36.3449493] },
-      "properties": {
-        "name": "مشهد 1 - وکیل آباد",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#097138"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [59.6754217, 36.3252151],
-          [59.6622338, 36.3170404],
-          [59.6549493, 36.3125296],
-          [59.6440977, 36.3057015],
-          [59.6328199, 36.2987519],
-          [59.6240959, 36.3044681],
-          [59.5772323, 36.288004],
-          [59.5504086, 36.2844423],
-          [59.5412585, 36.2825555]
-        ]
-      },
-      "properties": {
-        "name": "خط 2 مترو مشهد",
-        "description": null,
-        "type": "line",
-        "city": "Mashhad",
-        "stroke": "#0288D1",
-        "stroke-width": 5.456,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5412585, 36.2825555] },
-      "properties": {
-        "name": "مشهد 2 - ایستگاه فکوری",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5504086, 36.2844423] },
-      "properties": {
-        "name": "مشهد 2 - شهید کاوه",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.563224, 36.2833759] },
-      "properties": {
-        "name": "مشهد 2 - کوهسنگی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5776453, 36.2882129] },
-      "properties": {
-        "name": "مشهد 2 - الندشت",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5983748, 36.295359] },
-      "properties": {
-        "name": "مشهد 2 - سعدی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6059342, 36.297937] },
-      "properties": {
-        "name": "مشهد 2 و 3 - شهدا",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#F9A825"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6240959, 36.3044681] },
-      "properties": {
-        "name": "مشهد 2 - ایستگاه راه آهن",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6328199, 36.2987519] },
-      "properties": {
-        "name": "مشهد 2 - مفتح",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6440977, 36.3057015] },
-      "properties": {
-        "name": "مشهد 2 - نبوت",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6549493, 36.3125296] },
-      "properties": {
-        "name": "مشهد 2 - فجر",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6622338, 36.3170404] },
-      "properties": {
-        "name": "مشهد 2 - ولایت",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6754217, 36.3252151] },
-      "properties": {
-        "name": "مشهد 2 - طبرسی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#0288D1"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [59.6057863, 36.2978202],
-          [59.6064982, 36.2908612],
-          [59.6105966, 36.2862086],
-          [59.6076304, 36.279122],
-          [59.6031252, 36.273765],
-          [59.5985118, 36.2686961],
-          [59.5923656, 36.2622714]
-        ]
-      },
-      "properties": {
-        "name": "خط 3 مترو مشهد",
-        "description": null,
-        "type": "line",
-        "city": "Mashhad",
-        "stroke": "#A52714",
-        "stroke-width": 5.263,
-        "stroke-opacity": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5923656, 36.2622714] },
-      "properties": {
-        "name": "مشهد 3 - ترمینال مسافربری امام رضا (ع)",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.5985118, 36.2686961] },
-      "properties": {
-        "name": "مشهد 3 - 15 خرداد",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6076304, 36.279122] },
-      "properties": {
-        "name": "مشهد 3 - مصباح",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6105966, 36.2862086] },
-      "properties": {
-        "name": "مشهد 3 - باب الجواد",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#A52714"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [59.6064982, 36.2908612] },
-      "properties": {
-        "name": "مشهد 3 - خسروی",
-        "description": null,
-        "type": "station",
-        "city": "Mashhad",
-        "marker-color": "#A52714"
-      }
-    }
-  ]
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[59.6391925, 36.2292804],
+					[59.6235118, 36.2431801],
+					[59.6198778, 36.2567392],
+					[59.5857699, 36.2911936],
+					[59.5639579, 36.3002198],
+					[59.5403416, 36.3155176],
+					[59.4425319, 36.3459991]
+				]
+			},
+			"properties": {
+				"name": "خط 1 مترو مشهد",
+				"description": null,
+				"type": "line",
+				"city": "Mashhad",
+				"stroke": "#097138",
+				"stroke-width": 4.681,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6391925, 36.2292804] },
+			"properties": {
+				"name": "مشهد 1 - ایستگاه فرودگاه شهید هاشمی نژاد",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6238171, 36.2436839] },
+			"properties": {
+				"name": "مشهد 1 - بوستان ریحانه - ترمینال خارجی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6198778, 36.2567392] },
+			"properties": {
+				"name": "مشهد 1 - غدیر",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6142362, 36.2625466] },
+			"properties": {
+				"name": "مشهد 1 - پروین اعتصامی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6089577, 36.2678061] },
+			"properties": {
+				"name": "مشهد 1 - هفده شهریور",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6031252, 36.273765] },
+			"properties": {
+				"name": "مشهد 3 و 1 - بسیج",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#F9A825"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5958256, 36.2811609] },
+			"properties": {
+				"name": "مشهد 1 - امام خمینی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.585767, 36.2910927] },
+			"properties": {
+				"name": "مشهد 1 و 2 - شریعتی - تقی آباد",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#F9A825"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5790378, 36.2941304] },
+			"properties": {
+				"name": "مشهد 1 - قائم",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5726005, 36.2972088] },
+			"properties": {
+				"name": "مشهد 1 - طالقانی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5639579, 36.3002198] },
+			"properties": {
+				"name": "مشهد 1 - فلسظین",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5524303, 36.307446] },
+			"properties": {
+				"name": "مشهد 1 - خیام",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5443867, 36.3127305] },
+			"properties": {
+				"name": "مشهد 1 - آزادی",
+				"description": "زیر سطحی - تونل",
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5338052, 36.317281] },
+			"properties": {
+				"name": "مشهد 1 - پارک ملت",
+				"description": "رو سطحی",
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.524992, 36.3199436] },
+			"properties": {
+				"name": "مشهد 1 - کوثر",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5168327, 36.3226233] },
+			"properties": {
+				"name": "مشهد 1 - سید رضی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5091298, 36.3249873] },
+			"properties": {
+				"name": "مشهد 1 - دانش آموز",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.4999922, 36.3278368] },
+			"properties": {
+				"name": "مشهد 1 - هفت تیر",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.4933833, 36.3297959] },
+			"properties": {
+				"name": "مشهد 1 - صدف",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.4849204, 36.3325932] },
+			"properties": {
+				"name": "مشهد 1 - صیاد شیرازی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.4743148, 36.3358638] },
+			"properties": {
+				"name": "مشهد 1 - اقبال لاهوری ، دندانپزشکان",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.4633928, 36.3393035] },
+			"properties": {
+				"name": "مشهد 1 - نمایشگاه",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.4520288, 36.3429271] },
+			"properties": {
+				"name": "مشهد 1 - کوهستان پارک",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.4425123, 36.3449493] },
+			"properties": {
+				"name": "مشهد 1 - وکیل آباد",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#097138"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[59.6754217, 36.3252151],
+					[59.6622338, 36.3170404],
+					[59.6549493, 36.3125296],
+					[59.6440977, 36.3057015],
+					[59.6328199, 36.2987519],
+					[59.6240959, 36.3044681],
+					[59.5772323, 36.288004],
+					[59.5504086, 36.2844423],
+					[59.5412585, 36.2825555]
+				]
+			},
+			"properties": {
+				"name": "خط 2 مترو مشهد",
+				"description": null,
+				"type": "line",
+				"city": "Mashhad",
+				"stroke": "#0288D1",
+				"stroke-width": 5.456,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5412585, 36.2825555] },
+			"properties": {
+				"name": "مشهد 2 - ایستگاه فکوری",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5504086, 36.2844423] },
+			"properties": {
+				"name": "مشهد 2 - شهید کاوه",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.563224, 36.2833759] },
+			"properties": {
+				"name": "مشهد 2 - کوهسنگی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5776453, 36.2882129] },
+			"properties": {
+				"name": "مشهد 2 - الندشت",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5983748, 36.295359] },
+			"properties": {
+				"name": "مشهد 2 - سعدی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6059342, 36.297937] },
+			"properties": {
+				"name": "مشهد 2 و 3 - شهدا",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#F9A825"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6240959, 36.3044681] },
+			"properties": {
+				"name": "مشهد 2 - ایستگاه راه آهن",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6328199, 36.2987519] },
+			"properties": {
+				"name": "مشهد 2 - مفتح",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6440977, 36.3057015] },
+			"properties": {
+				"name": "مشهد 2 - نبوت",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6549493, 36.3125296] },
+			"properties": {
+				"name": "مشهد 2 - فجر",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6622338, 36.3170404] },
+			"properties": {
+				"name": "مشهد 2 - ولایت",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6754217, 36.3252151] },
+			"properties": {
+				"name": "مشهد 2 - طبرسی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#0288D1"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[59.6057863, 36.2978202],
+					[59.6064982, 36.2908612],
+					[59.6105966, 36.2862086],
+					[59.6076304, 36.279122],
+					[59.6031252, 36.273765],
+					[59.5985118, 36.2686961],
+					[59.5923656, 36.2622714]
+				]
+			},
+			"properties": {
+				"name": "خط 3 مترو مشهد",
+				"description": null,
+				"type": "line",
+				"city": "Mashhad",
+				"stroke": "#A52714",
+				"stroke-width": 5.263,
+				"stroke-opacity": 1
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5923656, 36.2622714] },
+			"properties": {
+				"name": "مشهد 3 - ترمینال مسافربری امام رضا (ع)",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.5985118, 36.2686961] },
+			"properties": {
+				"name": "مشهد 3 - 15 خرداد",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6076304, 36.279122] },
+			"properties": {
+				"name": "مشهد 3 - مصباح",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6105966, 36.2862086] },
+			"properties": {
+				"name": "مشهد 3 - باب الجواد",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#A52714"
+			}
+		},
+		{
+			"type": "Feature",
+			"geometry": { "type": "Point", "coordinates": [59.6064982, 36.2908612] },
+			"properties": {
+				"name": "مشهد 3 - خسروی",
+				"description": null,
+				"type": "station",
+				"city": "Mashhad",
+				"marker-color": "#A52714"
+			}
+		}
+	]
 }

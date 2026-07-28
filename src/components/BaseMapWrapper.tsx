@@ -4,24 +4,24 @@ import dynamic from "next/dynamic";
 import MapStyleSelector from "@/components/map/MapStyleSelector";
 
 const BaseMap = dynamic(() => import("@/components/BaseMap"), {
-  ssr: false,
-  loading: () => (
-    <div
-      className="
+	ssr: false,
+	loading: () => (
+		<div
+			className="
         bg-background text-muted-foreground flex size-full items-center
         justify-center
       "
-    >
-      در حال بارگذاری نقشه...
-    </div>
-  ),
+		>
+			در حال بارگذاری نقشه...
+		</div>
+	),
 });
 
 export default function BaseMapWrapper() {
-  return (
-    <div className="relative size-full">
-      <BaseMap />
-      <MapStyleSelector />
-    </div>
-  );
+	return (
+		<div className="relative size-full">
+			<BaseMap />
+			<MapStyleSelector />
+		</div>
+	);
 }
