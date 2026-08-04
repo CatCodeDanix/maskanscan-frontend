@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import MapStyleSelector from "@/components/map/MapStyleSelector";
+import { PropertyDetailSheet } from "@/components/PropertyDetailSheet";
 
 const BaseMap = dynamic(() => import("@/components/BaseMap"), {
 	ssr: false,
@@ -22,6 +23,7 @@ export default function BaseMapWrapper() {
 		<div className="relative size-full">
 			<BaseMap />
 			<MapStyleSelector />
+			<PropertyDetailSheet />
 		</div>
 	);
 }

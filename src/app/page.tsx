@@ -1,17 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { AppSidebar, placeholderUser } from "@/components/AppSidebar";
 import BaseMapWrapper from "@/components/BaseMapWrapper";
 import { BottomBar } from "@/components/BottomBar";
 import { ContentDrawer } from "@/components/ContentDrawer";
 import { NavUser } from "@/components/NavUser";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { useFilterSync } from "@/hooks/use-filter-sync";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigationStore } from "@/store/navigation-store";
 
-export default function Page() {
+function AppContent() {
+	useFilterSync();
+
 	const isMobile = useIsMobile();
 	const activeItemId = useNavigationStore((s) => s.activeItemId);
 	const setActiveItemId = useNavigationStore((s) => s.setActiveItemId);
@@ -68,7 +71,7 @@ export default function Page() {
 								alt="MaskanScan Logo - A blended house and map marker"
 							/>
 							<span className="text-primary text-base font-semibold md:text-lg">
-								مسکن‌اسکن
+								مسکناسکن
 							</span>
 						</div>
 
@@ -94,5 +97,13 @@ export default function Page() {
 				</>
 			)}
 		</>
+	);
+}
+
+export default function Page() {
+	return (
+		<Suspense>
+			<AppContent />
+		</Suspense>
 	);
 }
