@@ -1,7 +1,7 @@
 "use client";
 
 import type { PickingInfo } from "@deck.gl/core";
-import { IconLayer } from "@deck.gl/layers";
+import { IconLayer, TextLayer } from "@deck.gl/layers";
 import type { Feature, LineString, MultiLineString, Point } from "geojson";
 import { useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -34,6 +34,10 @@ function isCluster(f: AnyFeature): f is ClusterFeature {
 	return (f as ClusterFeature).properties.cluster === true;
 }
 
+function toPersianDigits(n: number): string {
+	return n.toLocaleString("fa-IR");
+}
+
 // ── Icon atlas (SVG data URIs rendered as 1×1 atlas with offsets) ─────────────
 // We use a simple circle SVG encoded as a data URI for each marker type.
 
@@ -51,16 +55,41 @@ const ICON_ATLAS =
 </svg>`);
 
 const ICON_MAPPING = {
-	rent: { x: 0, y: 0, width: 64, height: 64, mask: false, anchorY: 64 },
-	buy: { x: 64, y: 0, width: 64, height: 64, mask: false, anchorY: 64 },
-	cluster: { x: 0, y: 64, width: 64, height: 64, mask: false, anchorY: 64 },
+	rent: {
+		x: 0,
+		y: 0,
+		width: 64,
+		height: 64,
+		mask: false,
+		anchorY: 32,
+		anchorX: 32,
+	},
+	buy: {
+		x: 64,
+		y: 0,
+		width: 64,
+		height: 64,
+		mask: false,
+		anchorY: 32,
+		anchorX: 32,
+	},
+	cluster: {
+		x: 0,
+		y: 64,
+		width: 64,
+		height: 64,
+		mask: false,
+		anchorY: 32,
+		anchorX: 32,
+	},
 	"rent-fallback": {
 		x: 64,
 		y: 64,
 		width: 64,
 		height: 64,
 		mask: false,
-		anchorY: 64,
+		anchorY: 32,
+		anchorX: 32,
 	},
 };
 
@@ -81,7 +110,7 @@ function getTooltip(
 		const cluster = obj as ClusterFeature;
 		return {
 			html: `<div style="font-family:inherit;direction:rtl;text-align:right;padding:4px 2px">
-        <p style="font-size:12px;font-weight:600;margin:0">${cluster.properties.point_count.toLocaleString("fa-IR")} آگهی</p>
+        <p style="font-size:12px;font-weight:600;margin:0">${toPersianDigits(cluster.properties.point_count)} آگهی</p>
         <p style="font-size:11px;margin:4px 0 0;opacity:0.7">برای زوم کلیک کنید</p>
       </div>`,
 			className: "deck-tooltip-reset",
@@ -160,6 +189,12 @@ const DeckMap = () => {
 		) as AnyFeature[];
 	}, [points, zoom]);
 
+	// Filter cluster features only for TextLayer
+	const clusterPointsOnly = useMemo<ClusterFeature[]>(
+		() => clusters.filter(isCluster),
+		[clusters],
+	);
+
 	// Build listing layer from clusters
 	const clusterLayer = useMemo(
 		() =>
@@ -194,9 +229,31 @@ const DeckMap = () => {
 		[clusters, setSelectedListing],
 	);
 
+	// Text layer to draw count in Persian digits centered inside cluster circles
+	const clusterTextLayer = useMemo(
+		() =>
+			new TextLayer<ClusterFeature>({
+				id: "property-cluster-counts",
+				data: clusterPointsOnly,
+				getPosition: (d) => d.geometry.coordinates as [number, number],
+				getText: (d) => toPersianDigits(d.properties.point_count),
+				getSize: (d) => {
+					const count = d.properties.point_count;
+					return Math.min(22, Math.max(12, 13 + Math.log2(count + 1) * 2));
+				},
+				getColor: [255, 255, 255, 255],
+				getTextAnchor: "middle",
+				getAlignmentBaseline: "center",
+				fontFamily: "Vazirmatn, IRANSans, system-ui, sans-serif",
+				fontWeight: "bold",
+				pickable: false,
+			}),
+		[clusterPointsOnly],
+	);
+
 	const layers = useMemo(
-		() => [...transitLayers, clusterLayer],
-		[transitLayers, clusterLayer],
+		() => [...transitLayers, clusterLayer, clusterTextLayer],
+		[transitLayers, clusterLayer, clusterTextLayer],
 	);
 
 	return (
