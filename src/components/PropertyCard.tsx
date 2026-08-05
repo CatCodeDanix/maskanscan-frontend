@@ -77,7 +77,7 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 				</div>
 
 				{/* Fallback badge */}
-				{listing.location.isFallback && (
+				{listing.location?.isFallback && (
 					<div className="absolute bottom-2 left-2">
 						<span className="rounded-md bg-amber-500/80 px-1.5 py-0.5 text-[10px] font-medium text-white">
 							محدوده محله

@@ -132,7 +132,7 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 					</div>
 
 					{/* Fallback badge */}
-					{listing.location.isFallback && (
+					{listing.location?.isFallback && (
 						<div className="inline-flex items-center gap-1.5 rounded-lg bg-amber-100 px-3 py-1.5 text-xs text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
 							⚠️ موقعیت تقریبی (محدوده محله)
 						</div>

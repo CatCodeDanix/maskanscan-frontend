@@ -96,7 +96,7 @@ function getTooltip(
         <p style="font-size:12px;font-weight:600;margin:0 0 4px">${listing.title}</p>
         <p style="font-size:11px;margin:0;opacity:0.7">${listing.cityPersian}${listing.districtPersian ? ` • ${listing.districtPersian}` : ""}</p>
         <p style="font-size:12px;font-weight:600;margin:4px 0 0;color:${listing.dealType === "rent" ? "#f59e0b" : "#10b981"}">${formatListingPriceShort(listing)}</p>
-        ${listing.location.isFallback ? '<p style="font-size:10px;margin:4px 0 0;opacity:0.6">⚠️ موقعیت تقریبی</p>' : ""}
+        ${listing.location?.isFallback ? '<p style="font-size:10px;margin:4px 0 0;opacity:0.6">⚠️ موقعیت تقریبی</p>' : ""}
       </div>`,
 			className: "deck-tooltip-reset",
 		};
@@ -138,8 +138,9 @@ const DeckMap = () => {
 					geometry: {
 						type: "Point",
 						coordinates: [
-							listing.location.longitude,
-							listing.location.latitude,
+							// location is guaranteed non-null by the filter above
+							listing.location!.longitude,
+							listing.location!.latitude,
 						],
 					},
 					properties: { listing },
@@ -171,7 +172,7 @@ const DeckMap = () => {
 					if (isCluster(d)) return "cluster";
 					const listing = (d as PointFeature).properties.listing;
 					if (listing.dealType === "buy") return "buy";
-					return listing.location.isFallback ? "rent-fallback" : "rent";
+					return listing.location?.isFallback ? "rent-fallback" : "rent";
 				},
 				getPosition: (d) => d.geometry.coordinates as [number, number],
 				getSize: (d) => {

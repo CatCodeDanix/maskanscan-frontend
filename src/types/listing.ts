@@ -84,7 +84,7 @@ export interface UnifiedListing {
 	isAgreedPrice?: boolean;
 
 	// Map
-	location: ListingLocation;
+	location: ListingLocation | null | undefined;
 
 	// Attributes
 	attributes: ListingAttributes;
