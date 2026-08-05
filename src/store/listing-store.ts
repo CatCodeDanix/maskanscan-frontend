@@ -151,10 +151,38 @@ export const useListingStore = create<ListingState>((set, get) => ({
 			const json = (await res.json()) as {
 				success: boolean;
 				count: number;
-				items: UnifiedListing[];
+				items: (UnifiedListing & {
+					latitude?: number;
+					longitude?: number;
+					isFuzzy?: boolean;
+					isFallback?: boolean;
+				})[];
 			};
+
+			const normalizedListings: UnifiedListing[] = (json.items ?? []).map(
+				(item) => {
+					const lat = item.location?.latitude ?? item.latitude;
+					const lng = item.location?.longitude ?? item.longitude;
+					const location =
+						lat != null && lng != null
+							? {
+									latitude: lat,
+									longitude: lng,
+									isFuzzy: item.location?.isFuzzy ?? item.isFuzzy ?? false,
+									isFallback:
+										item.location?.isFallback ?? item.isFallback ?? false,
+								}
+							: null;
+
+					return {
+						...item,
+						location,
+					};
+				},
+			);
+
 			set({
-				listings: json.items ?? [],
+				listings: normalizedListings,
 				total: json.count ?? 0,
 				isLoading: false,
 				hasFetched: true,
