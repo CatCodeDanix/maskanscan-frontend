@@ -87,6 +87,10 @@ function getTooltipContent(
 	return { html, className: "deck-tooltip-reset" };
 }
 
+// Stable module-level cursor function — never recreated
+const getCursor = ({ isHovering }: { isHovering: boolean }) =>
+	isHovering ? "pointer" : "grab";
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 const DeckMap = () => {
@@ -108,7 +112,7 @@ const DeckMap = () => {
 		<DeckGLOverlay
 			layers={layers}
 			getTooltip={getTooltipContent}
-			getCursor={({ isHovering }) => (isHovering ? "pointer" : "grab")}
+			getCursor={getCursor}
 		/>
 	);
 };

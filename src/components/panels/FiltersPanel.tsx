@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { useListingStore } from "@/store/listing-store";
 
-// ── Small sub-components ────────────────────────────────────────────────────────
+// ── Small sub-components ───────────────────────────────────────────────────────
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
 	return (
@@ -27,7 +27,6 @@ function RangeRow({
 	onMaxChange,
 	placeholderMin,
 	placeholderMax,
-	suffix,
 }: {
 	minValue: number | undefined;
 	maxValue: number | undefined;
@@ -35,7 +34,6 @@ function RangeRow({
 	onMaxChange: (v: number | undefined) => void;
 	placeholderMin: string;
 	placeholderMax: string;
-	suffix?: string;
 }) {
 	const handleMin = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const v = e.target.value ? Number(e.target.value) : undefined;
@@ -65,9 +63,6 @@ function RangeRow({
 				className="h-8 text-sm"
 				dir="ltr"
 			/>
-			{suffix && (
-				<span className="shrink-0 text-xs text-muted-foreground">{suffix}</span>
-			)}
 		</div>
 	);
 }
@@ -79,28 +74,69 @@ const BEDROOM_OPTIONS = [
 	{ label: "۲", value: 2 },
 	{ label: "۳", value: 3 },
 	{ label: "۴+", value: 4 },
-];
+] as const;
 
-// ── Main component ───────────────────────────────────────────────────────────────
+// ── Main component ─────────────────────────────────────────────────────────────
+// Each selector is granular so this component only re-renders when the specific
+// slice it cares about changes — NOT on every isLoading / listings update.
 
 export function FiltersPanel() {
-	const store = useListingStore();
+	// ── Filter state (granular selectors = only re-render when THIS value changes)
+	const dealType = useListingStore((s) => s.dealType);
+	const city = useListingStore((s) => s.city);
+	const district = useListingStore((s) => s.district);
+	const bedrooms = useListingStore((s) => s.bedrooms);
+	const hasParking = useListingStore((s) => s.hasParking);
+	const hasElevator = useListingStore((s) => s.hasElevator);
+	const hasStorage = useListingStore((s) => s.hasStorage);
+	const minArea = useListingStore((s) => s.minArea);
+	const maxArea = useListingStore((s) => s.maxArea);
+	const minDeposit = useListingStore((s) => s.minDeposit);
+	const maxDeposit = useListingStore((s) => s.maxDeposit);
+	const minRent = useListingStore((s) => s.minRent);
+	const maxRent = useListingStore((s) => s.maxRent);
+	const minPrice = useListingStore((s) => s.minPrice);
+	const maxPrice = useListingStore((s) => s.maxPrice);
+	const locationTree = useListingStore((s) => s.locationTree);
+	const isLoading = useListingStore((s) => s.isLoading);
+	const total = useListingStore((s) => s.total);
 
+	// ── Stable action selectors (Zustand actions are referentially stable)
+	const setDealType = useListingStore((s) => s.setDealType);
+	const setCity = useListingStore((s) => s.setCity);
+	const setDistrict = useListingStore((s) => s.setDistrict);
+	const setBedrooms = useListingStore((s) => s.setBedrooms);
+	const setHasParking = useListingStore((s) => s.setHasParking);
+	const setHasElevator = useListingStore((s) => s.setHasElevator);
+	const setHasStorage = useListingStore((s) => s.setHasStorage);
+	const setMinArea = useListingStore((s) => s.setMinArea);
+	const setMaxArea = useListingStore((s) => s.setMaxArea);
+	const setMinDeposit = useListingStore((s) => s.setMinDeposit);
+	const setMaxDeposit = useListingStore((s) => s.setMaxDeposit);
+	const setMinRent = useListingStore((s) => s.setMinRent);
+	const setMaxRent = useListingStore((s) => s.setMaxRent);
+	const setMinPrice = useListingStore((s) => s.setMinPrice);
+	const setMaxPrice = useListingStore((s) => s.setMaxPrice);
+	const applyFilters = useListingStore((s) => s.applyFilters);
+	const resetFilters = useListingStore((s) => s.resetFilters);
+	const fetchListings = useListingStore((s) => s.fetchListings);
+
+	// Stable callbacks (actions are already stable refs — useCallback is just safety)
 	const handleApply = useCallback(() => {
-		void store.applyFilters();
-	}, [store]);
+		void applyFilters();
+	}, [applyFilters]);
 
 	const handleReset = useCallback(() => {
-		store.resetFilters();
-		void store.fetchListings();
-	}, [store]);
+		resetFilters();
+		void fetchListings();
+	}, [resetFilters, fetchListings]);
 
-	// Get cities for selected province
-	const selectedProvince = store.locationTree.find((p) =>
-		p.cities.some((c) => c.cityId === store.city),
+	// Cascading location
+	const selectedProvince = locationTree.find((p) =>
+		p.cities.some((c) => c.cityId === city),
 	);
 	const cities = selectedProvince?.cities ?? [];
-	const selectedCity = cities.find((c) => c.cityId === store.city);
+	const selectedCity = cities.find((c) => c.cityId === city);
 	const districts = selectedCity?.districts ?? [];
 
 	return (
@@ -115,10 +151,10 @@ export function FiltersPanel() {
 								<button
 									key={t}
 									type="button"
-									onClick={() => store.setDealType(t)}
+									onClick={() => setDealType(t)}
 									className={cn(
 										"flex-1 rounded-lg border py-2 text-sm font-medium transition-all",
-										store.dealType === t
+										dealType === t
 											? "border-primary bg-primary text-primary-foreground shadow-sm"
 											: "hover:border-primary/50 hover:bg-accent",
 									)}
@@ -135,32 +171,29 @@ export function FiltersPanel() {
 					<div className="space-y-2">
 						<SectionLabel>موقعیت</SectionLabel>
 
-						{/* Province selector */}
 						<select
 							className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
 							value={selectedProvince?.provinceId ?? ""}
 							onChange={(e) => {
-								const prov = store.locationTree.find(
+								const prov = locationTree.find(
 									(p) => p.provinceId === e.target.value,
 								);
-								const firstCity = prov?.cities[0];
-								store.setCity(firstCity?.cityId ?? "");
+								setCity(prov?.cities[0]?.cityId ?? "");
 							}}
 						>
-							<option value="">همه استانها</option>
-							{store.locationTree.map((p) => (
+							<option value="">همه استان‌ها</option>
+							{locationTree.map((p) => (
 								<option key={p.provinceId} value={p.provinceId}>
 									{p.provinceName}
 								</option>
 							))}
 						</select>
 
-						{/* City selector */}
 						{cities.length > 0 && (
 							<select
 								className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
-								value={store.city}
-								onChange={(e) => store.setCity(e.target.value)}
+								value={city}
+								onChange={(e) => setCity(e.target.value)}
 							>
 								<option value="">همه شهرها</option>
 								{cities.map((c) => (
@@ -171,14 +204,13 @@ export function FiltersPanel() {
 							</select>
 						)}
 
-						{/* District selector */}
 						{districts.length > 0 && (
 							<select
 								className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
-								value={store.district}
-								onChange={(e) => store.setDistrict(e.target.value)}
+								value={district}
+								onChange={(e) => setDistrict(e.target.value)}
 							>
-								<option value="">همه محلهها</option>
+								<option value="">همه محله‌ها</option>
 								{districts.map((d) => (
 									<option key={d.districtId} value={d.districtId}>
 										{d.districtName}
@@ -194,10 +226,10 @@ export function FiltersPanel() {
 					<div>
 						<SectionLabel>متراژ (متر مربع)</SectionLabel>
 						<RangeRow
-							minValue={store.minArea}
-							maxValue={store.maxArea}
-							onMinChange={store.setMinArea}
-							onMaxChange={store.setMaxArea}
+							minValue={minArea}
+							maxValue={maxArea}
+							onMinChange={setMinArea}
+							onMaxChange={setMaxArea}
 							placeholderMin="حداقل"
 							placeholderMax="حداکثر"
 						/>
@@ -211,10 +243,10 @@ export function FiltersPanel() {
 								<button
 									key={String(opt.value)}
 									type="button"
-									onClick={() => store.setBedrooms(opt.value)}
+									onClick={() => setBedrooms(opt.value)}
 									className={cn(
 										"rounded-lg border px-3 py-1.5 text-xs font-medium transition-all",
-										store.bedrooms === opt.value
+										bedrooms === opt.value
 											? "border-primary bg-primary text-primary-foreground"
 											: "hover:border-primary/40 hover:bg-accent",
 									)}
@@ -227,16 +259,16 @@ export function FiltersPanel() {
 
 					<Separator />
 
-					{/* Price section — rent */}
-					{store.dealType === "rent" && (
+					{/* Price — rent */}
+					{dealType === "rent" && (
 						<>
 							<div>
 								<SectionLabel>رهن (تومان)</SectionLabel>
 								<RangeRow
-									minValue={store.minDeposit}
-									maxValue={store.maxDeposit}
-									onMinChange={store.setMinDeposit}
-									onMaxChange={store.setMaxDeposit}
+									minValue={minDeposit}
+									maxValue={maxDeposit}
+									onMinChange={setMinDeposit}
+									onMaxChange={setMaxDeposit}
 									placeholderMin="حداقل"
 									placeholderMax="حداکثر"
 								/>
@@ -244,10 +276,10 @@ export function FiltersPanel() {
 							<div>
 								<SectionLabel>اجاره ماهانه (تومان)</SectionLabel>
 								<RangeRow
-									minValue={store.minRent}
-									maxValue={store.maxRent}
-									onMinChange={store.setMinRent}
-									onMaxChange={store.setMaxRent}
+									minValue={minRent}
+									maxValue={maxRent}
+									onMinChange={setMinRent}
+									onMaxChange={setMaxRent}
 									placeholderMin="حداقل"
 									placeholderMax="حداکثر"
 								/>
@@ -255,15 +287,15 @@ export function FiltersPanel() {
 						</>
 					)}
 
-					{/* Price section — buy */}
-					{store.dealType === "buy" && (
+					{/* Price — buy */}
+					{dealType === "buy" && (
 						<div>
 							<SectionLabel>قیمت کل (تومان)</SectionLabel>
 							<RangeRow
-								minValue={store.minPrice}
-								maxValue={store.maxPrice}
-								onMinChange={store.setMinPrice}
-								onMaxChange={store.setMaxPrice}
+								minValue={minPrice}
+								maxValue={maxPrice}
+								onMinChange={setMinPrice}
+								onMaxChange={setMaxPrice}
 								placeholderMin="حداقل"
 								placeholderMax="حداکثر"
 							/>
@@ -275,39 +307,36 @@ export function FiltersPanel() {
 					{/* Amenities */}
 					<div className="space-y-3">
 						<SectionLabel>امکانات</SectionLabel>
-						{(
-							[
-								{
-									label: "پارکینگ",
-									key: "hasParking",
-									value: store.hasParking,
-									set: store.setHasParking,
-								},
-								{
-									label: "آسانسور",
-									key: "hasElevator",
-									value: store.hasElevator,
-									set: store.setHasElevator,
-								},
-								{
-									label: "انباری",
-									key: "hasStorage",
-									value: store.hasStorage,
-									set: store.setHasStorage,
-								},
-							] as const
-						).map(({ label, key, value, set }) => (
-							<div key={key} className="flex items-center justify-between">
-								<label className="text-sm" htmlFor={`filter-${key}`}>
-									{label}
-								</label>
-								<Switch
-									id={`filter-${key}`}
-									checked={value}
-									onCheckedChange={set}
-								/>
-							</div>
-						))}
+						<div className="flex items-center justify-between">
+							<label className="text-sm" htmlFor="filter-hasParking">
+								پارکینگ
+							</label>
+							<Switch
+								id="filter-hasParking"
+								checked={hasParking}
+								onCheckedChange={setHasParking}
+							/>
+						</div>
+						<div className="flex items-center justify-between">
+							<label className="text-sm" htmlFor="filter-hasElevator">
+								آسانسور
+							</label>
+							<Switch
+								id="filter-hasElevator"
+								checked={hasElevator}
+								onCheckedChange={setHasElevator}
+							/>
+						</div>
+						<div className="flex items-center justify-between">
+							<label className="text-sm" htmlFor="filter-hasStorage">
+								انباری
+							</label>
+							<Switch
+								id="filter-hasStorage"
+								checked={hasStorage}
+								onCheckedChange={setHasStorage}
+							/>
+						</div>
 					</div>
 				</div>
 			</ScrollArea>
@@ -327,12 +356,12 @@ export function FiltersPanel() {
 					size="sm"
 					className="flex-1 gap-1.5"
 					onClick={handleApply}
-					disabled={store.isLoading}
+					disabled={isLoading}
 				>
 					<Search className="size-3.5" />
-					{store.isLoading
+					{isLoading
 						? "در حال جستجو..."
-						: `جستجو (${store.total.toLocaleString("fa-IR")})`}
+						: `جستجو (${total.toLocaleString("fa-IR")})`}
 				</Button>
 			</div>
 		</div>
