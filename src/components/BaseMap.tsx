@@ -1,35 +1,50 @@
 "use client";
 
-import Map from "react-map-gl/maplibre";
+import Map, { type ViewStateChangeEvent } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useMapStore } from "@/store/map-store";
 import DeckMap from "./DeckMap";
+import { MapViewStateContext, type ViewState } from "./MapViewStateContext";
 
 const API_KEY = process.env.NEXT_PUBLIC_MAPIR_API_KEY;
 
+const INITIAL_VIEW_STATE: ViewState = {
+	longitude: 51.389,
+	latitude: 35.689,
+	zoom: 10,
+};
+
 export default function BaseMap() {
 	const mapStyle = useMapStore((s) => s.mapStyle);
+	const [viewState, setViewState] = useState<ViewState>(INITIAL_VIEW_STATE);
 
-	// Memoized so react-map-gl doesn't see a new prop reference every render
+	// Stable — API_KEY is a module-level env constant, never changes
 	const transformRequest = useCallback(
 		(url: string) => ({ url, headers: { "x-api-key": API_KEY } }),
-		[], // API_KEY is a module-level constant — stable forever
+		[],
 	);
 
+	const onMove = useCallback((e: ViewStateChangeEvent) => {
+		setViewState({
+			longitude: e.viewState.longitude,
+			latitude: e.viewState.latitude,
+			zoom: e.viewState.zoom,
+		});
+	}, []);
+
 	return (
-		<Map
-			RTLTextPlugin="/mapbox-gl-rtl-text.js"
-			initialViewState={{
-				longitude: 51.389,
-				latitude: 35.689,
-				zoom: 11,
-			}}
-			style={{ width: "100%", height: "100%" }}
-			mapStyle={mapStyle}
-			transformRequest={transformRequest}
-		>
-			<DeckMap />
-		</Map>
+		<MapViewStateContext.Provider value={viewState}>
+			<Map
+				RTLTextPlugin="/mapbox-gl-rtl-text.js"
+				initialViewState={INITIAL_VIEW_STATE}
+				style={{ width: "100%", height: "100%" }}
+				mapStyle={mapStyle}
+				transformRequest={transformRequest}
+				onMove={onMove}
+			>
+				<DeckMap />
+			</Map>
+		</MapViewStateContext.Provider>
 	);
 }

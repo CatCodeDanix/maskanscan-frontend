@@ -98,7 +98,7 @@ function buildQueryString(state: ListingState): string {
 			params.set("maxPrice", String(state.maxPrice));
 	}
 
-	params.set("limit", "200");
+	params.set("limit", "2000");
 	return params.toString();
 }
 
@@ -151,10 +151,10 @@ export const useListingStore = create<ListingState>((set, get) => ({
 			const json = (await res.json()) as {
 				success: boolean;
 				count: number;
-				data: UnifiedListing[];
+				items: UnifiedListing[];
 			};
 			set({
-				listings: json.data ?? [],
+				listings: json.items ?? [],
 				total: json.count ?? 0,
 				isLoading: false,
 				hasFetched: true,
