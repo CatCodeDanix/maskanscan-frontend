@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Suspense, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { AppSidebar, placeholderUser } from "@/components/AppSidebar";
 import BaseMapWrapper from "@/components/BaseMapWrapper";
 import { BottomBar } from "@/components/BottomBar";
@@ -101,9 +101,5 @@ function AppContent() {
 }
 
 export default function Page() {
-	return (
-		<Suspense>
-			<AppContent />
-		</Suspense>
-	);
+	return <AppContent />;
 }

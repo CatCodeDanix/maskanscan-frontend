@@ -1,68 +1,33 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useListingStore } from "@/store/listing-store";
 import type { DealType } from "@/types/listing";
 
 /**
  * Syncs URL search params <-> listing store filters.
- * - On mount: hydrates filters from URL, then fetches listings + location tree.
- * - On filter change: pushes updated URL params (no page reload).
+ *
+ * Design principles to avoid infinite loops:
+ * - Reads the initial URL via window.location.search (not useSearchParams).
+ *   This avoids subscribing to Next.js navigation events, so no re-render
+ *   cascade is triggered.
+ * - Writes the URL via window.history.replaceState (not router.replace).
+ *   This is a silent browser-level update — it does NOT trigger Next.js
+ *   navigation, does NOT fire useSearchParams hooks, does NOT cause re-renders.
+ * - Mount effect runs exactly once (empty deps + isInitialized guard).
+ * - URL push effect skips the very first render so it only fires on user-driven
+ *   filter changes, not on the initial hydration.
  */
 export function useFilterSync() {
-	const router = useRouter();
-	const searchParams = useSearchParams();
-	const hasMounted = useRef(false);
+	const isInitialized = useRef(false);
+	const skipFirstURLPush = useRef(true);
 
+	// Stable Zustand action selectors (referentially stable across renders)
 	const patchFilters = useListingStore((s) => s.patchFilters);
 	const fetchLocationTree = useListingStore((s) => s.fetchLocationTree);
 	const fetchListings = useListingStore((s) => s.fetchListings);
 
-	// ── Mount: hydrate from URL ─────────────────────────────────────────────
-	useEffect(() => {
-		if (hasMounted.current) return;
-		hasMounted.current = true;
-
-		const dealType = searchParams.get("dealType") as DealType | null;
-		const city = searchParams.get("city");
-		const district = searchParams.get("district");
-		const bedrooms = searchParams.get("bedrooms");
-		const hasParking = searchParams.get("hasParking");
-		const hasElevator = searchParams.get("hasElevator");
-		const hasStorage = searchParams.get("hasStorage");
-		const minArea = searchParams.get("minArea");
-		const maxArea = searchParams.get("maxArea");
-		const minDeposit = searchParams.get("minDeposit");
-		const maxDeposit = searchParams.get("maxDeposit");
-		const minRent = searchParams.get("minRent");
-		const maxRent = searchParams.get("maxRent");
-		const minPrice = searchParams.get("minPrice");
-		const maxPrice = searchParams.get("maxPrice");
-
-		patchFilters({
-			...(dealType ? { dealType } : {}),
-			...(city ? { city } : {}),
-			...(district ? { district } : {}),
-			...(bedrooms ? { bedrooms: Number(bedrooms) } : {}),
-			...(hasParking === "true" ? { hasParking: true } : {}),
-			...(hasElevator === "true" ? { hasElevator: true } : {}),
-			...(hasStorage === "true" ? { hasStorage: true } : {}),
-			...(minArea ? { minArea: Number(minArea) } : {}),
-			...(maxArea ? { maxArea: Number(maxArea) } : {}),
-			...(minDeposit ? { minDeposit: Number(minDeposit) } : {}),
-			...(maxDeposit ? { maxDeposit: Number(maxDeposit) } : {}),
-			...(minRent ? { minRent: Number(minRent) } : {}),
-			...(maxRent ? { maxRent: Number(maxRent) } : {}),
-			...(minPrice ? { minPrice: Number(minPrice) } : {}),
-			...(maxPrice ? { maxPrice: Number(maxPrice) } : {}),
-		});
-
-		// Fetch initial data
-		void fetchLocationTree();
-		void fetchListings();
-	}, [searchParams, patchFilters, fetchLocationTree, fetchListings]);
-
+	// Filter state values (for the URL push effect)
 	const dealType = useListingStore((s) => s.dealType);
 	const city = useListingStore((s) => s.city);
 	const district = useListingStore((s) => s.district);
@@ -79,35 +44,96 @@ export function useFilterSync() {
 	const minPrice = useListingStore((s) => s.minPrice);
 	const maxPrice = useListingStore((s) => s.maxPrice);
 
-	// ── Push URL when filters change ────────────────────────────────────────
+	// ── Mount: hydrate from URL once ─────────────────────────────────────────
+	// Uses window.location.search so we never subscribe to Next.js navigation.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only effect
 	useEffect(() => {
-		if (!hasMounted.current) return;
+		if (isInitialized.current) return;
+		isInitialized.current = true;
 
-		const params = new URLSearchParams();
+		const params = new URLSearchParams(window.location.search);
 
-		if (dealType) params.set("dealType", dealType);
-		if (city) params.set("city", city);
-		if (district) params.set("district", district);
-		if (bedrooms !== undefined) params.set("bedrooms", String(bedrooms));
-		if (hasParking) params.set("hasParking", "true");
-		if (hasElevator) params.set("hasElevator", "true");
-		if (hasStorage) params.set("hasStorage", "true");
-		if (minArea !== undefined) params.set("minArea", String(minArea));
-		if (maxArea !== undefined) params.set("maxArea", String(maxArea));
-		if (dealType === "rent") {
-			if (minDeposit !== undefined)
-				params.set("minDeposit", String(minDeposit));
-			if (maxDeposit !== undefined)
-				params.set("maxDeposit", String(maxDeposit));
-			if (minRent !== undefined) params.set("minRent", String(minRent));
-			if (maxRent !== undefined) params.set("maxRent", String(maxRent));
-		} else {
-			if (minPrice !== undefined) params.set("minPrice", String(minPrice));
-			if (maxPrice !== undefined) params.set("maxPrice", String(maxPrice));
+		patchFilters({
+			...(params.get("dealType")
+				? { dealType: params.get("dealType") as DealType }
+				: {}),
+			...(params.get("city") ? { city: params.get("city") as string } : {}),
+			...(params.get("district")
+				? { district: params.get("district") as string }
+				: {}),
+			...(params.get("bedrooms")
+				? { bedrooms: Number(params.get("bedrooms")) }
+				: {}),
+			...(params.get("hasParking") === "true" ? { hasParking: true } : {}),
+			...(params.get("hasElevator") === "true" ? { hasElevator: true } : {}),
+			...(params.get("hasStorage") === "true" ? { hasStorage: true } : {}),
+			...(params.get("minArea")
+				? { minArea: Number(params.get("minArea")) }
+				: {}),
+			...(params.get("maxArea")
+				? { maxArea: Number(params.get("maxArea")) }
+				: {}),
+			...(params.get("minDeposit")
+				? { minDeposit: Number(params.get("minDeposit")) }
+				: {}),
+			...(params.get("maxDeposit")
+				? { maxDeposit: Number(params.get("maxDeposit")) }
+				: {}),
+			...(params.get("minRent")
+				? { minRent: Number(params.get("minRent")) }
+				: {}),
+			...(params.get("maxRent")
+				? { maxRent: Number(params.get("maxRent")) }
+				: {}),
+			...(params.get("minPrice")
+				? { minPrice: Number(params.get("minPrice")) }
+				: {}),
+			...(params.get("maxPrice")
+				? { maxPrice: Number(params.get("maxPrice")) }
+				: {}),
+		});
+
+		void fetchLocationTree();
+		void fetchListings();
+	}, []);
+
+	// ── Push URL when filters change (silently, no navigation event) ─────────
+	// Uses window.history.replaceState so Next.js never sees a navigation,
+	// so useSearchParams hooks never fire, so no component re-renders occur.
+	useEffect(() => {
+		// Skip the very first render — filters are at their default/hydrated state,
+		// and we don't want to push a URL before the mount effect even ran.
+		if (skipFirstURLPush.current) {
+			skipFirstURLPush.current = false;
+			return;
 		}
 
-		const qs = params.toString();
-		router.replace(qs ? `/?${qs}` : "/", { scroll: false });
+		const qs_params = new URLSearchParams();
+
+		if (dealType) qs_params.set("dealType", dealType);
+		if (city) qs_params.set("city", city);
+		if (district) qs_params.set("district", district);
+		if (bedrooms !== undefined) qs_params.set("bedrooms", String(bedrooms));
+		if (hasParking) qs_params.set("hasParking", "true");
+		if (hasElevator) qs_params.set("hasElevator", "true");
+		if (hasStorage) qs_params.set("hasStorage", "true");
+		if (minArea !== undefined) qs_params.set("minArea", String(minArea));
+		if (maxArea !== undefined) qs_params.set("maxArea", String(maxArea));
+		if (dealType === "rent") {
+			if (minDeposit !== undefined)
+				qs_params.set("minDeposit", String(minDeposit));
+			if (maxDeposit !== undefined)
+				qs_params.set("maxDeposit", String(maxDeposit));
+			if (minRent !== undefined) qs_params.set("minRent", String(minRent));
+			if (maxRent !== undefined) qs_params.set("maxRent", String(maxRent));
+		} else {
+			if (minPrice !== undefined) qs_params.set("minPrice", String(minPrice));
+			if (maxPrice !== undefined) qs_params.set("maxPrice", String(maxPrice));
+		}
+
+		const qs = qs_params.toString();
+		// Silent URL update — no Next.js navigation, no re-renders
+		window.history.replaceState(null, "", qs ? `/?${qs}` : "/");
 	}, [
 		dealType,
 		city,
@@ -124,6 +150,5 @@ export function useFilterSync() {
 		maxRent,
 		minPrice,
 		maxPrice,
-		router,
 	]);
 }
