@@ -1,5 +1,15 @@
 import { relations } from "drizzle-orm";
-import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+	bigint,
+	boolean,
+	doublePrecision,
+	index,
+	jsonb,
+	pgTable,
+	text,
+	timestamp,
+	varchar,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
@@ -91,3 +101,52 @@ export const accountRelations = relations(account, ({ one }) => ({
 		references: [user.id],
 	}),
 }));
+
+export const scrapedListings = pgTable(
+	"scraped_listings",
+	{
+		id: text("id").primaryKey(), // Or serial if integer autoincrement
+		source: varchar("source", { length: 50 }).notNull(),
+		externalId: varchar("external_id", { length: 255 }).notNull(),
+		fingerprintHash: varchar("fingerprint_hash", { length: 64 }),
+		url: text("url").notNull(),
+		title: text("title").notNull(),
+		description: text("description"),
+		dealType: varchar("deal_type", { length: 20 }).notNull(),
+		city: varchar("city", { length: 100 }).notNull(),
+		district: varchar("district", { length: 100 }),
+		cityPersian: varchar("city_persian", { length: 100 }).notNull(),
+		districtPersian: varchar("district_persian", { length: 100 }),
+		depositTomans: bigint("deposit_tomans", { mode: "number" }),
+		rentTomans: bigint("rent_tomans", { mode: "number" }),
+		equivalentFullDepositTomans: bigint("equivalent_full_deposit_tomans", {
+			mode: "number",
+		}),
+		totalPriceTomans: bigint("total_price_tomans", { mode: "number" }),
+		pricePerSqMeterTomans: bigint("price_per_sq_meter_tomans", {
+			mode: "number",
+		}),
+		isAgreedDeposit: boolean("is_agreed_deposit").default(false),
+		isAgreedRent: boolean("is_agreed_rent").default(false),
+		isAgreedPrice: boolean("is_agreed_price").default(false),
+		latitude: doublePrecision("latitude").notNull(),
+		longitude: doublePrecision("longitude").notNull(),
+		isFuzzy: boolean("is_fuzzy").default(false),
+		isFallback: boolean("is_fallback").default(false),
+		attributes: jsonb("attributes"),
+		images: jsonb("images"),
+		publisherType: varchar("publisher_type", { length: 50 }),
+		publisherPhone: varchar("publisher_phone", { length: 50 }),
+		alternateSources: jsonb("alternate_sources"),
+		publishedAt: timestamp("published_at", { withTimezone: true }),
+		scrapedAt: timestamp("scraped_at", { withTimezone: true }),
+		lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
+		ingestionStrategy: varchar("ingestion_strategy", { length: 50 }),
+		isActive: boolean("is_active").default(true),
+	},
+	(table) => [
+		index("scraped_listings_city_district_idx").on(table.city, table.district),
+		index("scraped_listings_deal_type_idx").on(table.dealType),
+		index("scraped_listings_is_active_idx").on(table.isActive),
+	],
+);

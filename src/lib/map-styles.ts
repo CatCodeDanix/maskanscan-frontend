@@ -12,30 +12,34 @@ export type MapStyleDef = {
 
 export const MAP_STYLES: MapStyleDef[] = [
 	{
-		id: "default",
-		name: "پیش‌فرض",
-		url: `https://map.ir/vector/styles/main/mapir-xyz-style.json?x-api-key=${API_KEY}`,
+		id: "carto-light",
+		name: "نقشه روشن (Carto)",
+		url: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
 		type: "vector",
 		preview: "/stylespreview/mapir-xyz-no-building.png",
 	},
 	{
-		id: "dove",
-		name: "کبوتر",
-		url: `https://map.ir/vector/styles/main/mapir-Dove-style.json?x-api-key=${API_KEY}`,
+		id: "carto-dark",
+		name: "نقشه تاریک (Carto)",
+		url: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
 		type: "vector",
-		preview: "/stylespreview/mapir-Dove-style.png",
+		preview: "/stylespreview/mapir-style-dark.png",
 	},
 	{
-		id: "minpoi",
-		name: "کم‌جزئیات",
-		url: `https://map.ir/vector/styles/main/mapir-xyz-style-min-poi.json?x-api-key=${API_KEY}`,
+		id: "default",
+		name: "پیش‌فرض map.ir",
+		url: API_KEY
+			? `https://map.ir/vector/styles/main/mapir-xyz-style.json?x-api-key=${API_KEY}`
+			: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
 		type: "vector",
-		preview: "/stylespreview/mapir-xyz-style-min-poi.png",
+		preview: "/stylespreview/mapir-xyz-no-building.png",
 	},
 	{
 		id: "dark",
-		name: "شب",
-		url: `https://map.ir/vector/styles/main/mapir-style-dark.json?x-api-key=${API_KEY}`,
+		name: "شب map.ir",
+		url: API_KEY
+			? `https://map.ir/vector/styles/main/mapir-style-dark.json?x-api-key=${API_KEY}`
+			: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
 		type: "vector",
 		preview: "/stylespreview/mapir-style-dark.png",
 	},

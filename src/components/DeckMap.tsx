@@ -5,6 +5,7 @@ import { IconLayer, TextLayer } from "@deck.gl/layers";
 import type { Feature, LineString, MultiLineString, Point } from "geojson";
 import { useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { useMap } from "react-map-gl/maplibre";
 import Supercluster from "supercluster";
 import TransitTooltip from "@/components/map/TransitTooltip";
 import type { TransitProperties } from "@/data";
@@ -38,20 +39,21 @@ function toPersianDigits(n: number): string {
 	return n.toLocaleString("fa-IR");
 }
 
-// ── Icon atlas (SVG data URIs rendered as 1×1 atlas with offsets) ─────────────
-// We use a simple circle SVG encoded as a data URI for each marker type.
+// ── SVG Icon Atlas ─────────────────────────────────────────────────────────────
 
 const ICON_ATLAS =
 	"data:image/svg+xml;charset=utf-8," +
 	encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128">
   <!-- rent pin: amber -->
-  <circle cx="32" cy="32" r="28" fill="#f59e0b" stroke="#fff" stroke-width="4"/>
+  <circle cx="32" cy="32" r="26" fill="#f59e0b" stroke="#ffffff" stroke-width="4"/>
+  <circle cx="32" cy="32" r="10" fill="#ffffff"/>
   <!-- buy pin: emerald -->
-  <circle cx="96" cy="32" r="28" fill="#10b981" stroke="#fff" stroke-width="4"/>
-  <!-- cluster: indigo -->
-  <circle cx="32" cy="96" r="28" fill="#6366f1" stroke="#fff" stroke-width="4"/>
+  <circle cx="96" cy="32" r="26" fill="#10b981" stroke="#ffffff" stroke-width="4"/>
+  <circle cx="96" cy="32" r="10" fill="#ffffff"/>
+  <!-- cluster: indigo with outer glow -->
+  <circle cx="32" cy="96" r="28" fill="#4f46e5" stroke="#ffffff" stroke-width="4"/>
   <!-- fallback rent: muted amber -->
-  <circle cx="96" cy="96" r="28" fill="#f59e0b" stroke="#fff" stroke-width="4" fill-opacity="0.5"/>
+  <circle cx="96" cy="96" r="26" fill="#f59e0b" stroke="#ffffff" stroke-width="3" fill-opacity="0.6"/>
 </svg>`);
 
 const ICON_MAPPING = {
@@ -105,27 +107,27 @@ function getTooltip(
 
 	const obj = info.object as AnyFeature;
 
-	// Cluster
+	// Cluster Tooltip
 	if ("properties" in obj && obj.properties && "cluster" in obj.properties) {
 		const cluster = obj as ClusterFeature;
 		return {
-			html: `<div style="font-family:inherit;direction:rtl;text-align:right;padding:4px 2px">
-        <p style="font-size:12px;font-weight:600;margin:0">${toPersianDigits(cluster.properties.point_count)} آگهی</p>
-        <p style="font-size:11px;margin:4px 0 0;opacity:0.7">برای زوم کلیک کنید</p>
+			html: `<div style="font-family:inherit;direction:rtl;text-align:right;padding:4px 6px">
+        <p style="font-size:12px;font-weight:700;margin:0;color:#ffffff">${toPersianDigits(cluster.properties.point_count)} آگهی ملک</p>
+        <p style="font-size:10px;margin:2px 0 0;opacity:0.8;color:#e0e7ff">جهت نمایش آگهی‌ها کلیک کنید</p>
       </div>`,
 			className: "deck-tooltip-reset",
 		};
 	}
 
-	// Single listing point
+	// Single listing point Tooltip
 	if ("properties" in obj && obj.properties && "listing" in obj.properties) {
 		const listing = (obj as PointFeature).properties.listing;
 		return {
-			html: `<div style="font-family:inherit;direction:rtl;text-align:right;min-width:160px;padding:4px 2px">
-        <p style="font-size:12px;font-weight:600;margin:0 0 4px">${listing.title}</p>
-        <p style="font-size:11px;margin:0;opacity:0.7">${listing.cityPersian}${listing.districtPersian ? ` • ${listing.districtPersian}` : ""}</p>
-        <p style="font-size:12px;font-weight:600;margin:4px 0 0;color:${listing.dealType === "rent" ? "#f59e0b" : "#10b981"}">${formatListingPriceShort(listing)}</p>
-        ${listing.location?.isFallback ? '<p style="font-size:10px;margin:4px 0 0;opacity:0.6">⚠️ موقعیت تقریبی</p>' : ""}
+			html: `<div style="font-family:inherit;direction:rtl;text-align:right;min-width:170px;padding:6px 8px">
+        <p style="font-size:12px;font-weight:700;margin:0 0 4px;line-height:1.3">${listing.title}</p>
+        <p style="font-size:11px;margin:0;opacity:0.8">${listing.cityPersian}${listing.districtPersian ? ` • ${listing.districtPersian}` : ""}</p>
+        <p style="font-size:12px;font-weight:700;margin:4px 0 0;color:${listing.dealType === "rent" ? "#f59e0b" : "#10b981"}">${formatListingPriceShort(listing)}</p>
+        ${listing.location?.isFallback ? '<p style="font-size:10px;margin:4px 0 0;color:#f59e0b">⚠️ موقعیت تقریبی محله</p>' : ""}
       </div>`,
 			className: "deck-tooltip-reset",
 		};
@@ -142,13 +144,13 @@ function getTooltip(
 	return { html, className: "deck-tooltip-reset" };
 }
 
-// Module-level stable cursor function
 const getCursor = ({ isHovering }: { isHovering: boolean }) =>
 	isHovering ? "pointer" : "grab";
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 const DeckMap = () => {
+	const { current: mapInstance } = useMap();
 	const transitLayers = useTransitLayers();
 	const listings = useListingStore((s) => s.listings);
 	const setSelectedListing = useListingStore((s) => s.setSelectedListing);
@@ -162,32 +164,36 @@ const DeckMap = () => {
 				.filter(
 					(l) => l.location?.latitude != null && l.location?.longitude != null,
 				)
-				.map((listing) => ({
-					type: "Feature",
-					geometry: {
-						type: "Point",
-						coordinates: [
-							// location is guaranteed non-null by the filter above
-							listing.location!.longitude,
-							listing.location!.latitude,
-						],
-					},
-					properties: { listing },
-				})),
+				.map((listing) => {
+					const lng = listing.location?.longitude ?? 0;
+					const lat = listing.location?.latitude ?? 0;
+					return {
+						type: "Feature",
+						geometry: {
+							type: "Point",
+							coordinates: [lng, lat],
+						},
+						properties: { listing },
+					};
+				}),
 		[listings],
 	);
+
+	// Supercluster instance
+	const superclusterInstance = useMemo(() => {
+		const index = new Supercluster(SUPERCLUSTER_OPTIONS);
+		index.load(points);
+		return index;
+	}, [points]);
 
 	// Run supercluster on the current viewport zoom
 	const clusters = useMemo<AnyFeature[]>(() => {
 		if (points.length === 0) return [];
-		const index = new Supercluster(SUPERCLUSTER_OPTIONS);
-		index.load(points);
-		// Use a world-spanning bbox so all items cluster correctly
-		return index.getClusters(
+		return superclusterInstance.getClusters(
 			[-180, -85, 180, 85],
 			Math.round(zoom),
 		) as AnyFeature[];
-	}, [points, zoom]);
+	}, [points, superclusterInstance, zoom]);
 
 	// Filter cluster features only for TextLayer
 	const clusterPointsOnly = useMemo<ClusterFeature[]>(
@@ -195,7 +201,7 @@ const DeckMap = () => {
 		[clusters],
 	);
 
-	// Build listing layer from clusters
+	// Build IconLayer
 	const clusterLayer = useMemo(
 		() =>
 			new IconLayer<AnyFeature>({
@@ -213,23 +219,35 @@ const DeckMap = () => {
 				getSize: (d) => {
 					if (isCluster(d)) {
 						const count = (d as ClusterFeature).properties.point_count;
-						// Logarithmic scaling: small clusters ~40px, large ~80px
-						return Math.min(80, 36 + Math.log2(count + 1) * 8);
+						return Math.min(84, 42 + Math.log2(count + 1) * 8);
 					}
-					return 36;
+					return 38;
 				},
 				pickable: true,
 				onClick: ({ object }) => {
 					if (!object) return;
-					if (isCluster(object)) return; // zoom handled by map
+					if (isCluster(object)) {
+						const clusterId = object.properties.cluster_id;
+						const [lng, lat] = object.geometry.coordinates;
+						const expansionZoom = Math.min(
+							20,
+							superclusterInstance.getClusterExpansionZoom(clusterId),
+						);
+						mapInstance?.flyTo({
+							center: [lng, lat],
+							zoom: expansionZoom,
+							duration: 500,
+						});
+						return;
+					}
 					const listing = (object as PointFeature).properties.listing;
 					setSelectedListing(listing);
 				},
 			}),
-		[clusters, setSelectedListing],
+		[clusters, mapInstance, setSelectedListing, superclusterInstance],
 	);
 
-	// Text layer to draw count in Persian digits centered inside cluster circles
+	// Text layer rendering centered Persian count digits inside cluster nodes
 	const clusterTextLayer = useMemo(
 		() =>
 			new TextLayer<ClusterFeature>({
@@ -239,13 +257,15 @@ const DeckMap = () => {
 				getText: (d) => toPersianDigits(d.properties.point_count),
 				getSize: (d) => {
 					const count = d.properties.point_count;
-					return Math.min(22, Math.max(12, 13 + Math.log2(count + 1) * 2));
+					return Math.min(22, Math.max(13, 14 + Math.log2(count + 1) * 2));
 				},
 				getColor: [255, 255, 255, 255],
 				getTextAnchor: "middle",
 				getAlignmentBaseline: "center",
 				fontFamily: "Vazirmatn, IRANSans, system-ui, sans-serif",
 				fontWeight: "bold",
+				characterSet: "auto",
+				billboard: true,
 				pickable: false,
 			}),
 		[clusterPointsOnly],

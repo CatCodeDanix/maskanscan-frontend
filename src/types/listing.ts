@@ -119,12 +119,19 @@ export interface ListingFilters {
 	maxEquivalentDeposit?: number;
 	minPrice?: number;
 	maxPrice?: number;
+	minPricePerSqMeter?: number;
+	maxPricePerSqMeter?: number;
 	minArea?: number;
 	maxArea?: number;
 	bedrooms?: number;
+	minBedrooms?: number;
+	maxBedrooms?: number;
 	hasParking?: boolean;
 	hasElevator?: boolean;
 	hasStorage?: boolean;
+	hasBalcony?: boolean;
+	isConvertible?: boolean;
+	publisherType?: "all" | "personal" | "agency";
 	page?: number;
 	limit?: number;
 }

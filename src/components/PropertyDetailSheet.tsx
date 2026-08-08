@@ -6,6 +6,7 @@ import {
 	Calendar,
 	Car,
 	ExternalLink,
+	Heart,
 	Layers,
 	Maximize2,
 	User,
@@ -38,6 +39,7 @@ import {
 	getSourceLabel,
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { useFavoritesStore } from "@/store/favorites-store";
 import { useListingStore } from "@/store/listing-store";
 import type { UnifiedListing } from "@/types/listing";
 
@@ -82,6 +84,10 @@ function BoolRow({
 
 function DetailContent({ listing }: { listing: UnifiedListing }) {
 	const [activeImage, setActiveImage] = useState(0);
+	const isFav = useFavoritesStore((s) =>
+		s.isFavorite(listing.source, listing.externalId),
+	);
+	const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
 
 	return (
 		<div className="flex flex-col">
@@ -120,15 +126,32 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 			<ScrollArea className="flex-1">
 				<div className="space-y-4 p-4">
 					{/* Title & Location */}
-					<div>
-						<h2 className="text-base font-semibold leading-snug">
-							{listing.title}
-						</h2>
-						<p className="mt-1 text-sm text-muted-foreground">
-							{listing.districtPersian
-								? `${listing.cityPersian} • ${listing.districtPersian}`
-								: listing.cityPersian}
-						</p>
+					<div className="flex items-start justify-between gap-2">
+						<div className="flex-1">
+							<h2 className="text-base font-semibold leading-snug">
+								{listing.title}
+							</h2>
+							<p className="mt-1 text-sm text-muted-foreground">
+								{listing.districtPersian
+									? `${listing.cityPersian} • ${listing.districtPersian}`
+									: listing.cityPersian}
+							</p>
+						</div>
+						<Button
+							variant="outline"
+							size="icon"
+							className="size-9 shrink-0 rounded-full"
+							onClick={() => toggleFavorite(listing)}
+						>
+							<Heart
+								className={cn(
+									"size-4 transition-all",
+									isFav
+										? "fill-red-500 text-red-500 scale-110"
+										: "text-muted-foreground",
+								)}
+							/>
+						</Button>
 					</div>
 
 					{/* Fallback badge */}

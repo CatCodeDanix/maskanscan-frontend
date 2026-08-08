@@ -1,5 +1,6 @@
 "use client";
 
+import * as maplibregl from "maplibre-gl";
 import Map, { type ViewStateChangeEvent } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useState } from "react";
@@ -19,11 +20,12 @@ export default function BaseMap() {
 	const mapStyle = useMapStore((s) => s.mapStyle);
 	const [viewState, setViewState] = useState<ViewState>(INITIAL_VIEW_STATE);
 
-	// Stable — API_KEY is a module-level env constant, never changes
-	const transformRequest = useCallback(
-		(url: string) => ({ url, headers: { "x-api-key": API_KEY } }),
-		[],
-	);
+	const transformRequest = useCallback((url: string) => {
+		if (API_KEY && url.includes("map.ir")) {
+			return { url, headers: { "x-api-key": API_KEY } };
+		}
+		return { url };
+	}, []);
 
 	const onMove = useCallback((e: ViewStateChangeEvent) => {
 		setViewState({
@@ -36,7 +38,8 @@ export default function BaseMap() {
 	return (
 		<MapViewStateContext.Provider value={viewState}>
 			<Map
-				RTLTextPlugin="/mapbox-gl-rtl-text.js"
+				mapLib={maplibregl}
+				reuseMaps
 				initialViewState={INITIAL_VIEW_STATE}
 				style={{ width: "100%", height: "100%" }}
 				mapStyle={mapStyle}

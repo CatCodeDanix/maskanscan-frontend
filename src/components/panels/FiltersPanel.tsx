@@ -1,22 +1,46 @@
 "use client";
 
-import { RotateCcw, Search } from "lucide-react";
+import {
+	Building2,
+	Home,
+	Info,
+	MapPin,
+	Maximize2,
+	RotateCcw,
+	Search,
+	SlidersHorizontal,
+	User,
+} from "lucide-react";
 import { useCallback } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { formatToman } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useListingStore } from "@/store/listing-store";
 
-// ── Small sub-components ───────────────────────────────────────────────────────
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function SectionHeader({
+	icon: Icon,
+	title,
+	subtitle,
+}: {
+	icon?: React.ComponentType<{ className?: string }>;
+	title: string;
+	subtitle?: string;
+}) {
 	return (
-		<p className="mb-2 text-xs font-semibold text-muted-foreground">
-			{children}
-		</p>
+		<div className="mb-3 space-y-0.5">
+			<div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+				{Icon && <Icon className="size-3.5 text-primary" />}
+				<span>{title}</span>
+			</div>
+			{subtitle && (
+				<p className="text-[11px] text-muted-foreground">{subtitle}</p>
+			)}
+		</div>
 	);
 }
 
@@ -27,6 +51,7 @@ function RangeRow({
 	onMaxChange,
 	placeholderMin,
 	placeholderMax,
+	suffix = "",
 }: {
 	minValue: number | undefined;
 	maxValue: number | undefined;
@@ -34,104 +59,140 @@ function RangeRow({
 	onMaxChange: (v: number | undefined) => void;
 	placeholderMin: string;
 	placeholderMax: string;
+	suffix?: string;
 }) {
-	const handleMin = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const v = e.target.value ? Number(e.target.value) : undefined;
-		onMinChange(v);
-	};
-	const handleMax = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const v = e.target.value ? Number(e.target.value) : undefined;
-		onMaxChange(v);
-	};
-
 	return (
-		<div className="flex items-center gap-2">
-			<Input
-				type="number"
-				placeholder={placeholderMin}
-				value={minValue ?? ""}
-				onChange={handleMin}
-				className="h-8 text-sm"
-				dir="ltr"
-			/>
-			<span className="shrink-0 text-xs text-muted-foreground">تا</span>
-			<Input
-				type="number"
-				placeholder={placeholderMax}
-				value={maxValue ?? ""}
-				onChange={handleMax}
-				className="h-8 text-sm"
-				dir="ltr"
-			/>
+		<div className="space-y-1.5">
+			<div className="flex items-center gap-2">
+				<div className="relative flex-1">
+					<Input
+						type="number"
+						placeholder={placeholderMin}
+						value={minValue ?? ""}
+						onChange={(e) =>
+							onMinChange(e.target.value ? Number(e.target.value) : undefined)
+						}
+						className="h-9 text-xs ltr text-left pl-2 pr-2"
+						dir="ltr"
+					/>
+				</div>
+				<span className="shrink-0 text-xs font-medium text-muted-foreground">
+					تا
+				</span>
+				<div className="relative flex-1">
+					<Input
+						type="number"
+						placeholder={placeholderMax}
+						value={maxValue ?? ""}
+						onChange={(e) =>
+							onMaxChange(e.target.value ? Number(e.target.value) : undefined)
+						}
+						className="h-9 text-xs ltr text-left pl-2 pr-2"
+						dir="ltr"
+					/>
+				</div>
+			</div>
+			{(minValue !== undefined || maxValue !== undefined) && (
+				<div className="flex items-center justify-between text-[11px] text-primary font-medium px-1">
+					<span>
+						{minValue !== undefined
+							? `${formatToman(minValue)} ${suffix}`
+							: "از ابتدا"}
+					</span>
+					<span>
+						{maxValue !== undefined
+							? `${formatToman(maxValue)} ${suffix}`
+							: "بدون سقف"}
+					</span>
+				</div>
+			)}
 		</div>
 	);
 }
 
-const BEDROOM_OPTIONS = [
-	{ label: "همه", value: undefined },
-	{ label: "استودیو", value: 0 },
-	{ label: "۱", value: 1 },
-	{ label: "۲", value: 2 },
-	{ label: "۳", value: 3 },
-	{ label: "۴+", value: 4 },
+const BEDROOM_PRESETS = [
+	{ label: "همه", min: undefined, max: undefined },
+	{ label: "بدون خواب", min: 0, max: 0 },
+	{ label: "۱ خواب", min: 1, max: 1 },
+	{ label: "۲ خواب", min: 2, max: 2 },
+	{ label: "۳ خواب", min: 3, max: 3 },
+	{ label: "۴+ خواب", min: 4, max: undefined },
 ] as const;
 
-// ── Main component ─────────────────────────────────────────────────────────────
-// Each selector is granular so this component only re-renders when the specific
-// slice it cares about changes — NOT on every isLoading / listings update.
-
 export function FiltersPanel() {
-	// ── Filter state (granular selectors = only re-render when THIS value changes)
+	// Granular Zustand selectors
 	const dealType = useListingStore((s) => s.dealType);
 	const city = useListingStore((s) => s.city);
 	const district = useListingStore((s) => s.district);
 	const bedrooms = useListingStore((s) => s.bedrooms);
+	const minBedrooms = useListingStore((s) => s.minBedrooms);
+	const maxBedrooms = useListingStore((s) => s.maxBedrooms);
 	const hasParking = useListingStore((s) => s.hasParking);
 	const hasElevator = useListingStore((s) => s.hasElevator);
 	const hasStorage = useListingStore((s) => s.hasStorage);
+	const hasBalcony = useListingStore((s) => s.hasBalcony);
+	const isConvertible = useListingStore((s) => s.isConvertible);
+	const publisherType = useListingStore((s) => s.publisherType);
 	const minArea = useListingStore((s) => s.minArea);
 	const maxArea = useListingStore((s) => s.maxArea);
 	const minDeposit = useListingStore((s) => s.minDeposit);
 	const maxDeposit = useListingStore((s) => s.maxDeposit);
 	const minRent = useListingStore((s) => s.minRent);
 	const maxRent = useListingStore((s) => s.maxRent);
+	const minEquivalentDeposit = useListingStore((s) => s.minEquivalentDeposit);
+	const maxEquivalentDeposit = useListingStore((s) => s.maxEquivalentDeposit);
 	const minPrice = useListingStore((s) => s.minPrice);
 	const maxPrice = useListingStore((s) => s.maxPrice);
+	const minPricePerSqMeter = useListingStore((s) => s.minPricePerSqMeter);
+	const maxPricePerSqMeter = useListingStore((s) => s.maxPricePerSqMeter);
+
 	const locationTree = useListingStore((s) => s.locationTree);
 	const isLoading = useListingStore((s) => s.isLoading);
 	const total = useListingStore((s) => s.total);
 
-	// ── Stable action selectors (Zustand actions are referentially stable)
+	// Action selectors
 	const setDealType = useListingStore((s) => s.setDealType);
 	const setCity = useListingStore((s) => s.setCity);
 	const setDistrict = useListingStore((s) => s.setDistrict);
 	const setBedrooms = useListingStore((s) => s.setBedrooms);
+	const setMinBedrooms = useListingStore((s) => s.setMinBedrooms);
+	const setMaxBedrooms = useListingStore((s) => s.setMaxBedrooms);
 	const setHasParking = useListingStore((s) => s.setHasParking);
 	const setHasElevator = useListingStore((s) => s.setHasElevator);
 	const setHasStorage = useListingStore((s) => s.setHasStorage);
+	const setHasBalcony = useListingStore((s) => s.setHasBalcony);
+	const setIsConvertible = useListingStore((s) => s.setIsConvertible);
+	const setPublisherType = useListingStore((s) => s.setPublisherType);
 	const setMinArea = useListingStore((s) => s.setMinArea);
 	const setMaxArea = useListingStore((s) => s.setMaxArea);
 	const setMinDeposit = useListingStore((s) => s.setMinDeposit);
 	const setMaxDeposit = useListingStore((s) => s.setMaxDeposit);
 	const setMinRent = useListingStore((s) => s.setMinRent);
 	const setMaxRent = useListingStore((s) => s.setMaxRent);
+	const setMinEquivalentDeposit = useListingStore(
+		(s) => s.setMinEquivalentDeposit,
+	);
+	const setMaxEquivalentDeposit = useListingStore(
+		(s) => s.setMaxEquivalentDeposit,
+	);
 	const setMinPrice = useListingStore((s) => s.setMinPrice);
 	const setMaxPrice = useListingStore((s) => s.setMaxPrice);
+	const setMinPricePerSqMeter = useListingStore((s) => s.setMinPricePerSqMeter);
+	const setMaxPricePerSqMeter = useListingStore((s) => s.setMaxPricePerSqMeter);
+
 	const applyFilters = useListingStore((s) => s.applyFilters);
 	const resetFilters = useListingStore((s) => s.resetFilters);
-	const fetchListings = useListingStore((s) => s.fetchListings);
 
-	// Stable callbacks (actions are already stable refs — useCallback is just safety)
 	const handleApply = useCallback(() => {
 		void applyFilters();
 	}, [applyFilters]);
 
 	const handleReset = useCallback(() => {
 		resetFilters();
-		void fetchListings();
-	}, [resetFilters, fetchListings]);
+		void applyFilters();
+	}, [resetFilters, applyFilters]);
 
-	// Cascading location
+	// Location hierarchy resolution
 	const selectedProvince = locationTree.find((p) =>
 		p.cities.some((c) => c.cityId === city),
 	);
@@ -140,26 +201,26 @@ export function FiltersPanel() {
 	const districts = selectedCity?.districts ?? [];
 
 	return (
-		<div className="flex flex-col">
+		<div className="flex h-full flex-col bg-background text-right" dir="rtl">
 			<ScrollArea className="flex-1">
-				<div className="space-y-5 p-4">
-					{/* Deal Type */}
+				<div className="space-y-6 p-4">
+					{/* Deal Type Switcher */}
 					<div>
-						<SectionLabel>نوع معامله</SectionLabel>
-						<div className="flex gap-2">
+						<SectionHeader icon={Home} title="نوع معامله" />
+						<div className="grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">
 							{(["rent", "buy"] as const).map((t) => (
 								<button
 									key={t}
 									type="button"
 									onClick={() => setDealType(t)}
 									className={cn(
-										"flex-1 rounded-lg border py-2 text-sm font-medium transition-all",
+										"flex items-center justify-center rounded-lg py-2 text-xs font-semibold transition-all",
 										dealType === t
-											? "border-primary bg-primary text-primary-foreground shadow-sm"
-											: "hover:border-primary/50 hover:bg-accent",
+											? "bg-background text-primary shadow-sm"
+											: "text-muted-foreground hover:text-foreground",
 									)}
 								>
-									{t === "rent" ? "اجاره" : "خرید"}
+									{t === "rent" ? "رهن و اجاره" : "خرید و فروش"}
 								</button>
 							))}
 						</div>
@@ -167,186 +228,371 @@ export function FiltersPanel() {
 
 					<Separator />
 
-					{/* Location */}
-					<div className="space-y-2">
-						<SectionLabel>موقعیت</SectionLabel>
-
-						<select
-							className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
-							value={selectedProvince?.provinceId ?? ""}
-							onChange={(e) => {
-								const prov = locationTree.find(
-									(p) => p.provinceId === e.target.value,
-								);
-								setCity(prov?.cities[0]?.cityId ?? "");
-							}}
-						>
-							<option value="">همه استان‌ها</option>
-							{locationTree.map((p) => (
-								<option key={p.provinceId} value={p.provinceId}>
-									{p.provinceName}
-								</option>
-							))}
-						</select>
-
-						{cities.length > 0 && (
-							<select
-								className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
-								value={city}
-								onChange={(e) => setCity(e.target.value)}
-							>
-								<option value="">همه شهرها</option>
-								{cities.map((c) => (
-									<option key={c.cityId} value={c.cityId}>
-										{c.cityName}
-									</option>
-								))}
-							</select>
-						)}
-
-						{districts.length > 0 && (
-							<select
-								className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
-								value={district}
-								onChange={(e) => setDistrict(e.target.value)}
-							>
-								<option value="">همه محله‌ها</option>
-								{districts.map((d) => (
-									<option key={d.districtId} value={d.districtId}>
-										{d.districtName}
-									</option>
-								))}
-							</select>
-						)}
-					</div>
-
-					<Separator />
-
-					{/* Area */}
-					<div>
-						<SectionLabel>متراژ (متر مربع)</SectionLabel>
-						<RangeRow
-							minValue={minArea}
-							maxValue={maxArea}
-							onMinChange={setMinArea}
-							onMaxChange={setMaxArea}
-							placeholderMin="حداقل"
-							placeholderMax="حداکثر"
+					{/* Location taxonomy */}
+					<div className="space-y-3">
+						<SectionHeader
+							icon={MapPin}
+							title="استان و شهر"
+							subtitle="انتخاب محدوده جغرافیایی جستجو"
 						/>
-					</div>
+						<div className="space-y-2">
+							<select
+								className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs focus:ring-1 focus:ring-primary"
+								value={selectedProvince?.provinceId ?? ""}
+								onChange={(e) => {
+									const prov = locationTree.find(
+										(p) => p.provinceId === e.target.value,
+									);
+									setCity(prov?.cities[0]?.cityId ?? "");
+								}}
+							>
+								<option value="">همه استان‌ها (سراسر کشور)</option>
+								{locationTree.map((p) => (
+									<option key={p.provinceId} value={p.provinceId}>
+										{p.provinceName}
+									</option>
+								))}
+							</select>
 
-					{/* Bedrooms */}
-					<div>
-						<SectionLabel>تعداد خواب</SectionLabel>
-						<div className="flex flex-wrap gap-1.5">
-							{BEDROOM_OPTIONS.map((opt) => (
-								<button
-									key={String(opt.value)}
-									type="button"
-									onClick={() => setBedrooms(opt.value)}
-									className={cn(
-										"rounded-lg border px-3 py-1.5 text-xs font-medium transition-all",
-										bedrooms === opt.value
-											? "border-primary bg-primary text-primary-foreground"
-											: "hover:border-primary/40 hover:bg-accent",
-									)}
+							{cities.length > 0 && (
+								<select
+									className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs focus:ring-1 focus:ring-primary"
+									value={city}
+									onChange={(e) => setCity(e.target.value)}
 								>
-									{opt.label}
-								</button>
-							))}
+									<option value="">همه شهرهای استان</option>
+									{cities.map((c) => (
+										<option key={c.cityId} value={c.cityId}>
+											{c.cityName}
+										</option>
+									))}
+								</select>
+							)}
+
+							{districts.length > 0 && (
+								<select
+									className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs focus:ring-1 focus:ring-primary"
+									value={district}
+									onChange={(e) => setDistrict(e.target.value)}
+								>
+									<option value="">همه محله‌ها</option>
+									{districts.map((d) => (
+										<option key={d.districtId} value={d.districtId}>
+											{d.districtName}
+										</option>
+									))}
+								</select>
+							)}
 						</div>
 					</div>
 
 					<Separator />
 
-					{/* Price — rent */}
+					{/* Granular Bedrooms Range Filter */}
+					<div className="space-y-3">
+						<SectionHeader
+							icon={Building2}
+							title="تعداد اتاق خواب (بازه دقیق)"
+							subtitle="فیلتر کنید یا بازه حداقل و حداکثر تعیین کنید"
+						/>
+						<div className="flex flex-wrap gap-1.5">
+							{BEDROOM_PRESETS.map((preset) => {
+								const isSelected =
+									bedrooms === preset.min && preset.min === preset.max;
+								return (
+									<button
+										key={preset.label}
+										type="button"
+										onClick={() => {
+											if (preset.min === undefined) {
+												setBedrooms(undefined);
+												setMinBedrooms(undefined);
+												setMaxBedrooms(undefined);
+											} else {
+												setBedrooms(preset.min);
+											}
+										}}
+										className={cn(
+											"rounded-lg border px-3 py-1.5 text-xs font-medium transition-all",
+											isSelected
+												? "border-primary bg-primary text-primary-foreground shadow-xs"
+												: "border-input bg-background hover:border-primary/50 hover:bg-accent",
+										)}
+									>
+										{preset.label}
+									</button>
+								);
+							})}
+						</div>
+
+						<div className="pt-2">
+							<p className="mb-1 text-[11px] text-muted-foreground font-medium">
+								یا تعیین بازه اختصاصی خواب:
+							</p>
+							<div className="flex items-center gap-2">
+								<Input
+									type="number"
+									placeholder="حداقل خواب"
+									value={minBedrooms ?? ""}
+									onChange={(e) =>
+										setMinBedrooms(
+											e.target.value ? Number(e.target.value) : undefined,
+										)
+									}
+									className="h-8 text-xs"
+									dir="ltr"
+								/>
+								<span className="text-xs text-muted-foreground">تا</span>
+								<Input
+									type="number"
+									placeholder="حداکثر خواب"
+									value={maxBedrooms ?? ""}
+									onChange={(e) =>
+										setMaxBedrooms(
+											e.target.value ? Number(e.target.value) : undefined,
+										)
+									}
+									className="h-8 text-xs"
+									dir="ltr"
+								/>
+							</div>
+						</div>
+					</div>
+
+					<Separator />
+
+					{/* Absolute Converted Full Deposit (رهن کامل معادل) & Rent Filters */}
 					{dealType === "rent" && (
-						<>
+						<div className="space-y-4">
+							{/* Absolute Equivalent Deposit */}
+							<div className="rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2">
+								<div className="flex items-center justify-between">
+									<SectionHeader
+										icon={Info}
+										title="رهن کامل معادل (قیمت کل ارزش ملک)"
+										subtitle="تبدیل هوشمند اجاره به رهن جهت سنجش بودجه کلی"
+									/>
+									<Badge variant="amber" className="text-[10px] shrink-0">
+										پیشرفته
+									</Badge>
+								</div>
+								<RangeRow
+									minValue={minEquivalentDeposit}
+									maxValue={maxEquivalentDeposit}
+									onMinChange={setMinEquivalentDeposit}
+									onMaxChange={setMaxEquivalentDeposit}
+									placeholderMin="حداقل رهن معادل (تومان)"
+									placeholderMax="حداکثر رهن معادل (تومان)"
+								/>
+							</div>
+
 							<div>
-								<SectionLabel>رهن (تومان)</SectionLabel>
+								<SectionHeader title="مبلغ رهن اولیه (تومان)" />
 								<RangeRow
 									minValue={minDeposit}
 									maxValue={maxDeposit}
 									onMinChange={setMinDeposit}
 									onMaxChange={setMaxDeposit}
-									placeholderMin="حداقل"
-									placeholderMax="حداکثر"
+									placeholderMin="حداقل رهن"
+									placeholderMax="حداکثر رهن"
 								/>
 							</div>
+
 							<div>
-								<SectionLabel>اجاره ماهانه (تومان)</SectionLabel>
+								<SectionHeader title="اجاره ماهانه (تومان)" />
 								<RangeRow
 									minValue={minRent}
 									maxValue={maxRent}
 									onMinChange={setMinRent}
 									onMaxChange={setMaxRent}
-									placeholderMin="حداقل"
-									placeholderMax="حداکثر"
+									placeholderMin="حداقل اجاره"
+									placeholderMax="حداکثر اجاره"
 								/>
 							</div>
-						</>
+						</div>
 					)}
 
-					{/* Price — buy */}
+					{/* Buy Pricing Filters */}
 					{dealType === "buy" && (
-						<div>
-							<SectionLabel>قیمت کل (تومان)</SectionLabel>
-							<RangeRow
-								minValue={minPrice}
-								maxValue={maxPrice}
-								onMinChange={setMinPrice}
-								onMaxChange={setMaxPrice}
-								placeholderMin="حداقل"
-								placeholderMax="حداکثر"
-							/>
+						<div className="space-y-4">
+							<div>
+								<SectionHeader title="قیمت کل (تومان)" />
+								<RangeRow
+									minValue={minPrice}
+									maxValue={maxPrice}
+									onMinChange={setMinPrice}
+									onMaxChange={setMaxPrice}
+									placeholderMin="حداقل قیمت کل"
+									placeholderMax="حداکثر قیمت کل"
+								/>
+							</div>
+
+							<div>
+								<SectionHeader title="قیمت هر متر مربع (تومان)" />
+								<RangeRow
+									minValue={minPricePerSqMeter}
+									maxValue={maxPricePerSqMeter}
+									onMinChange={setMinPricePerSqMeter}
+									onMaxChange={setMaxPricePerSqMeter}
+									placeholderMin="حداقل هر متر"
+									placeholderMax="حداکثر هر متر"
+								/>
+							</div>
 						</div>
 					)}
 
 					<Separator />
 
-					{/* Amenities */}
+					{/* Area Filter */}
+					<div>
+						<SectionHeader icon={Maximize2} title="متراژ زیربنا (متر مربع)" />
+						<div className="flex items-center gap-2">
+							<Input
+								type="number"
+								placeholder="حداقل متر"
+								value={minArea ?? ""}
+								onChange={(e) =>
+									setMinArea(
+										e.target.value ? Number(e.target.value) : undefined,
+									)
+								}
+								className="h-9 text-xs"
+								dir="ltr"
+							/>
+							<span className="text-xs text-muted-foreground">تا</span>
+							<Input
+								type="number"
+								placeholder="حداکثر متر"
+								value={maxArea ?? ""}
+								onChange={(e) =>
+									setMaxArea(
+										e.target.value ? Number(e.target.value) : undefined,
+									)
+								}
+								className="h-9 text-xs"
+								dir="ltr"
+							/>
+						</div>
+					</div>
+
+					<Separator />
+
+					{/* Publisher Type */}
+					<div>
+						<SectionHeader icon={User} title="آگهی‌دهنده" />
+						<div className="grid grid-cols-3 gap-1.5">
+							{[
+								{ id: "all", label: "همه" },
+								{ id: "personal", label: "شخصی" },
+								{ id: "agency", label: "آژانس املاک" },
+							].map((p) => (
+								<button
+									key={p.id}
+									type="button"
+									onClick={() =>
+										setPublisherType(p.id as "all" | "personal" | "agency")
+									}
+									className={cn(
+										"rounded-lg border py-1.5 text-xs font-medium transition-all",
+										publisherType === p.id
+											? "border-primary bg-primary text-primary-foreground"
+											: "border-input bg-background hover:bg-accent",
+									)}
+								>
+									{p.label}
+								</button>
+							))}
+						</div>
+					</div>
+
+					<Separator />
+
+					{/* Amenities & Toggles */}
 					<div className="space-y-3">
-						<SectionLabel>امکانات</SectionLabel>
-						<div className="flex items-center justify-between">
-							<label className="text-sm" htmlFor="filter-hasParking">
-								پارکینگ
-							</label>
-							<Switch
-								id="filter-hasParking"
-								checked={hasParking}
-								onCheckedChange={setHasParking}
-							/>
-						</div>
-						<div className="flex items-center justify-between">
-							<label className="text-sm" htmlFor="filter-hasElevator">
-								آسانسور
-							</label>
-							<Switch
-								id="filter-hasElevator"
-								checked={hasElevator}
-								onCheckedChange={setHasElevator}
-							/>
-						</div>
-						<div className="flex items-center justify-between">
-							<label className="text-sm" htmlFor="filter-hasStorage">
-								انباری
-							</label>
-							<Switch
-								id="filter-hasStorage"
-								checked={hasStorage}
-								onCheckedChange={setHasStorage}
-							/>
+						<SectionHeader icon={SlidersHorizontal} title="امکانات کلیدی ملک" />
+						<div className="space-y-2.5">
+							<div className="flex items-center justify-between rounded-lg border p-2.5">
+								<label
+									className="text-xs font-medium cursor-pointer"
+									htmlFor="filter-parking"
+								>
+									پارکینگ اختصاصی
+								</label>
+								<Switch
+									id="filter-parking"
+									checked={hasParking}
+									onCheckedChange={setHasParking}
+								/>
+							</div>
+
+							<div className="flex items-center justify-between rounded-lg border p-2.5">
+								<label
+									className="text-xs font-medium cursor-pointer"
+									htmlFor="filter-elevator"
+								>
+									آسانسور
+								</label>
+								<Switch
+									id="filter-elevator"
+									checked={hasElevator}
+									onCheckedChange={setHasElevator}
+								/>
+							</div>
+
+							<div className="flex items-center justify-between rounded-lg border p-2.5">
+								<label
+									className="text-xs font-medium cursor-pointer"
+									htmlFor="filter-storage"
+								>
+									انباری
+								</label>
+								<Switch
+									id="filter-storage"
+									checked={hasStorage}
+									onCheckedChange={setHasStorage}
+								/>
+							</div>
+
+							<div className="flex items-center justify-between rounded-lg border p-2.5">
+								<label
+									className="text-xs font-medium cursor-pointer"
+									htmlFor="filter-balcony"
+								>
+									بالکن / تراس
+								</label>
+								<Switch
+									id="filter-balcony"
+									checked={hasBalcony}
+									onCheckedChange={setHasBalcony}
+								/>
+							</div>
+
+							{dealType === "rent" && (
+								<div className="flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-2.5">
+									<label
+										className="text-xs font-medium text-emerald-700 dark:text-emerald-400 cursor-pointer"
+										htmlFor="filter-convertible"
+									>
+										امکان تبدیل رهن و اجاره (قابل تبدیل)
+									</label>
+									<Switch
+										id="filter-convertible"
+										checked={isConvertible}
+										onCheckedChange={setIsConvertible}
+									/>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
 			</ScrollArea>
 
-			{/* Action buttons — sticky footer */}
-			<div className="flex gap-2 border-t p-3">
+			{/* Footer buttons */}
+			<div className="sticky bottom-0 flex gap-2 border-t bg-background/95 p-3 backdrop-blur-xs">
 				<Button
 					variant="outline"
 					size="sm"
-					className="gap-1.5"
+					className="gap-1.5 text-xs"
 					onClick={handleReset}
 				>
 					<RotateCcw className="size-3.5" />
@@ -354,14 +600,14 @@ export function FiltersPanel() {
 				</Button>
 				<Button
 					size="sm"
-					className="flex-1 gap-1.5"
+					className="flex-1 gap-1.5 text-xs font-bold"
 					onClick={handleApply}
 					disabled={isLoading}
 				>
 					<Search className="size-3.5" />
 					{isLoading
 						? "در حال جستجو..."
-						: `جستجو (${total.toLocaleString("fa-IR")})`}
+						: `مشاهده (${total.toLocaleString("fa-IR")}) آگهی`}
 				</Button>
 			</div>
 		</div>
