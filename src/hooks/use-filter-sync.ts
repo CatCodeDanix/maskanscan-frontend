@@ -38,6 +38,7 @@ export function useFilterSync() {
 	const minPricePerSqMeter = useListingStore((s) => s.minPricePerSqMeter);
 	const maxPricePerSqMeter = useListingStore((s) => s.maxPricePerSqMeter);
 
+	// 1. Initial mount: parse URL query params & load location tree + listings + map pins from DB
 	useEffect(() => {
 		if (isInitialized.current) return;
 		isInitialized.current = true;
@@ -119,8 +120,52 @@ export function useFilterSync() {
 		void fetchListings(true);
 	}, [fetchLocationTree, fetchListings, fetchMapPins, patchFilters]);
 
+	// 2. Reactive Filter Change Listener: whenever filters change, fetch DB data
+	const isFirstFilterEffect = useRef(true);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reactive filter state listener
 	useEffect(() => {
-		// Auto refresh map pins & listings every 20 minutes (aligned with scraper backend cron)
+		if (isFirstFilterEffect.current) {
+			isFirstFilterEffect.current = false;
+			return;
+		}
+
+		const timer = setTimeout(() => {
+			void fetchMapPins();
+			void fetchListings(true);
+		}, 300);
+
+		return () => clearTimeout(timer);
+	}, [
+		dealType,
+		city,
+		district,
+		bedrooms,
+		minBedrooms,
+		maxBedrooms,
+		hasParking,
+		hasElevator,
+		hasStorage,
+		hasBalcony,
+		isConvertible,
+		publisherType,
+		minArea,
+		maxArea,
+		minDeposit,
+		maxDeposit,
+		minRent,
+		maxRent,
+		minEquivalentDeposit,
+		maxEquivalentDeposit,
+		minPrice,
+		maxPrice,
+		minPricePerSqMeter,
+		maxPricePerSqMeter,
+		fetchMapPins,
+		fetchListings,
+	]);
+
+	// 3. Auto refresh map pins & listings every 20 minutes (aligned with scraper backend cron)
+	useEffect(() => {
 		const TWENTY_MINUTES_MS = 20 * 60 * 1000;
 		const timer = setInterval(() => {
 			void fetchMapPins();
@@ -130,6 +175,7 @@ export function useFilterSync() {
 		return () => clearInterval(timer);
 	}, [fetchMapPins, fetchListings]);
 
+	// 4. URL query params sync
 	useEffect(() => {
 		if (skipFirstURLPush.current) {
 			skipFirstURLPush.current = false;
