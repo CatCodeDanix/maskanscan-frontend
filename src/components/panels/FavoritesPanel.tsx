@@ -16,7 +16,7 @@ export function FavoritesPanel() {
 	const rowVirtualizer = useVirtualizer({
 		count: favoriteListings.length,
 		getScrollElement: () => parentRef.current,
-		estimateSize: () => 290, // Card height estimate
+		estimateSize: () => 310, // Card height estimate with 2-row pricing
 		overscan: 6,
 	});
 

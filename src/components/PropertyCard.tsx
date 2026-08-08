@@ -4,7 +4,7 @@ import { BedDouble, Heart, MapPin, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import {
 	formatBedrooms,
-	formatListingPriceShort,
+	formatToman,
 	getSourceColor,
 	getSourceLabel,
 } from "@/lib/format";
@@ -32,7 +32,6 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 		selectedListing?.source === listing.source;
 
 	const thumbnail = listing.images[0];
-	const price = formatListingPriceShort(listing);
 	const area = listing.attributes.areaSqMeters;
 	const bedrooms = listing.attributes.bedrooms;
 	const totalSources = 1 + (listing.alternateSources?.length ?? 0);
@@ -41,7 +40,7 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 		<div
 			className={cn(
 				"group relative w-full text-right transition-all",
-				"rounded-xl border bg-card text-card-foreground",
+				"rounded-xl border bg-card text-card-foreground shadow-2xs",
 				"hover:shadow-md hover:border-primary/40",
 				isSelected && "border-primary shadow-md ring-1 ring-primary/30",
 				className,
@@ -72,14 +71,14 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 					<div className="absolute top-2 right-2 flex items-center gap-1">
 						<span
 							className={cn(
-								"rounded-md px-1.5 py-0.5 text-[10px] font-semibold",
+								"rounded-md px-1.5 py-0.5 text-[10px] font-semibold shadow-xs",
 								getSourceColor(listing.source),
 							)}
 						>
 							{getSourceLabel(listing.source)}
 						</span>
 						{totalSources > 1 && (
-							<span className="rounded-md bg-black/50 px-1.5 py-0.5 text-[10px] text-white">
+							<span className="rounded-md bg-black/60 px-1.5 py-0.5 text-[10px] text-white font-medium">
 								+{totalSources - 1}
 							</span>
 						)}
@@ -88,7 +87,7 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 					{/* Fallback badge */}
 					{listing.location?.isFallback && (
 						<div className="absolute bottom-2 right-2">
-							<span className="rounded-md bg-amber-500/80 px-1.5 py-0.5 text-[10px] font-medium text-white">
+							<span className="rounded-md bg-amber-500/90 px-1.5 py-0.5 text-[10px] font-medium text-white shadow-xs">
 								محدوده محله
 							</span>
 						</div>
@@ -98,12 +97,12 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 				{/* Body */}
 				<div className="space-y-2 p-3">
 					{/* Title */}
-					<h3 className="line-clamp-2 text-sm font-medium leading-snug pl-6">
+					<h3 className="line-clamp-2 text-xs font-semibold leading-snug pl-6 text-foreground">
 						{listing.title}
 					</h3>
 
 					{/* Location */}
-					<div className="flex items-center gap-1 text-xs text-muted-foreground">
+					<div className="flex items-center gap-1 text-[11px] text-muted-foreground">
 						<MapPin className="size-3 shrink-0 text-primary" />
 						<span className="truncate">
 							{listing.districtPersian
@@ -114,24 +113,72 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 
 					{/* Stats */}
 					{(area !== undefined || bedrooms !== undefined) && (
-						<div className="flex items-center gap-3 text-xs text-muted-foreground">
+						<div className="flex items-center gap-3 text-[11px] text-muted-foreground">
 							{area !== undefined && (
-								<span className="flex items-center gap-0.5">
-									<Maximize2 className="size-3" />
+								<span className="flex items-center gap-0.5 font-medium">
+									<Maximize2 className="size-3 text-primary/70" />
 									{area} م²
 								</span>
 							)}
 							{bedrooms !== undefined && (
-								<span className="flex items-center gap-0.5">
-									<BedDouble className="size-3" />
+								<span className="flex items-center gap-0.5 font-medium">
+									<BedDouble className="size-3 text-primary/70" />
 									{formatBedrooms(bedrooms)}
 								</span>
 							)}
 						</div>
 					)}
 
-					{/* Price */}
-					<div className="text-sm font-semibold text-primary">{price}</div>
+					{/* Structured 2-Row Pricing */}
+					<div className="mt-1 rounded-lg bg-muted/50 p-2 border border-border/40 space-y-1">
+						{listing.dealType === "rent" ? (
+							<>
+								<div className="flex items-center justify-between text-xs">
+									<span className="text-[11px] text-muted-foreground">
+										رهن:
+									</span>
+									<span className="font-bold text-foreground">
+										{listing.isAgreedDeposit
+											? "توافقی"
+											: listing.depositTomans
+												? formatToman(listing.depositTomans)
+												: "—"}
+									</span>
+								</div>
+								<div className="flex items-center justify-between text-xs">
+									<span className="text-[11px] text-muted-foreground">
+										اجاره ماهانه:
+									</span>
+									<span className="font-bold text-primary">
+										{listing.isAgreedRent
+											? "توافقی"
+											: listing.rentTomans
+												? formatToman(listing.rentTomans)
+												: "—"}
+									</span>
+								</div>
+							</>
+						) : (
+							<>
+								<div className="flex items-center justify-between text-xs">
+									<span className="text-[11px] text-muted-foreground">
+										قیمت کل:
+									</span>
+									<span className="font-bold text-primary text-xs">
+										{listing.isAgreedPrice
+											? "توافقی"
+											: formatToman(listing.totalPriceTomans)}
+									</span>
+								</div>
+								{listing.pricePerSqMeterTomans && (
+									<div className="flex items-center justify-between text-[10px] text-muted-foreground">
+										<span>قیمت هر متر:</span>
+										<span>{formatToman(listing.pricePerSqMeterTomans)}</span>
+									</div>
+								)}
+							</>
+						)}
+					</div>
 				</div>
 			</button>
 
@@ -143,7 +190,7 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 					toggleFavorite(listing);
 				}}
 				aria-label="افزودن به علاقه‌مندی‌ها"
-				className="absolute bottom-3 left-3 rounded-full bg-background/80 p-1.5 text-muted-foreground shadow-xs transition-colors hover:bg-background hover:text-red-500"
+				className="absolute bottom-3 left-3 rounded-full bg-background/90 p-1.5 text-muted-foreground shadow-xs transition-colors hover:bg-background hover:text-red-500 border border-border/50"
 			>
 				<Heart
 					className={cn(

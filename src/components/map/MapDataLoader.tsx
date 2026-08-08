@@ -32,7 +32,7 @@ export function MapDataLoader() {
 						<span>در حال چیدمان داده‌های مکانی ملک‌ها روی نقشه...</span>
 					</div>
 					<p className="text-[11px] text-muted-foreground">
-						فراخوانی و بهینه‌سازی ۱۵۰,۰۰۰+ آگهی سراسر کشور
+						فراخوانی و بهینه‌سازی ۱۵۰,۰۰۰+ آگهی سراسر تهران
 					</p>
 				</div>
 

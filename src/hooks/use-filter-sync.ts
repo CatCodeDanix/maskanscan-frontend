@@ -120,6 +120,17 @@ export function useFilterSync() {
 	}, [fetchLocationTree, fetchListings, fetchMapPins, patchFilters]);
 
 	useEffect(() => {
+		// Auto refresh map pins & listings every 20 minutes (aligned with scraper backend cron)
+		const TWENTY_MINUTES_MS = 20 * 60 * 1000;
+		const timer = setInterval(() => {
+			void fetchMapPins();
+			void fetchListings(true);
+		}, TWENTY_MINUTES_MS);
+
+		return () => clearInterval(timer);
+	}, [fetchMapPins, fetchListings]);
+
+	useEffect(() => {
 		if (skipFirstURLPush.current) {
 			skipFirstURLPush.current = false;
 			return;
