@@ -138,7 +138,7 @@ export function useFilterSync() {
 
 		const qs_params = new URLSearchParams();
 
-		if (dealType) qs_params.set("dealType", dealType);
+		if (dealType && dealType !== "rent") qs_params.set("dealType", dealType);
 		if (city) qs_params.set("city", city);
 		if (district) qs_params.set("district", district);
 		if (bedrooms !== undefined) qs_params.set("bedrooms", String(bedrooms));
