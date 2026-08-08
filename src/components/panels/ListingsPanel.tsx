@@ -2,7 +2,7 @@
 
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { AlertCircle, Home, Loader2, RefreshCcw } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { useRef } from "react";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,41 +34,30 @@ export function ListingsPanel() {
 	const resetFilters = useListingStore((s) => s.resetFilters);
 
 	const parentRef = useRef<HTMLDivElement>(null);
-	const loadMoreRef = useRef<HTMLDivElement>(null);
 
 	const count = listings.length;
 
 	const rowVirtualizer = useVirtualizer({
 		count,
 		getScrollElement: () => parentRef.current,
-		estimateSize: () => 270, // Accurate size for PropertyCard
+		estimateSize: () => 290, // Card height estimate
 		overscan: 5,
 	});
 
-	// Stable load more callback
-	const handleLoadMore = useCallback(() => {
-		if (hasMore && !isLoading && !isFetchingNextPage) {
+	// Safe scroll handler: ONLY triggers when the user actively scrolls near bottom!
+	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+		const target = e.currentTarget;
+		const distanceToBottom =
+			target.scrollHeight - target.scrollTop - target.clientHeight;
+		if (
+			distanceToBottom < 400 &&
+			hasMore &&
+			!isLoading &&
+			!isFetchingNextPage
+		) {
 			void fetchNextPage();
 		}
-	}, [hasMore, isLoading, isFetchingNextPage, fetchNextPage]);
-
-	// Intersection Observer sentinel for safe infinite scroll
-	useEffect(() => {
-		const sentinel = loadMoreRef.current;
-		if (!sentinel) return;
-
-		const observer = new IntersectionObserver(
-			(entries) => {
-				if (entries[0]?.isIntersecting) {
-					handleLoadMore();
-				}
-			},
-			{ root: parentRef.current, threshold: 0.1, rootMargin: "200px" },
-		);
-
-		observer.observe(sentinel);
-		return () => observer.disconnect();
-	}, [handleLoadMore]);
+	};
 
 	if (isLoading && !hasFetched) {
 		return (
@@ -145,7 +134,11 @@ export function ListingsPanel() {
 			)}
 
 			{/* TanStack Virtual Container */}
-			<div ref={parentRef} className="flex-1 overflow-y-auto p-3">
+			<div
+				ref={parentRef}
+				onScroll={handleScroll}
+				className="flex-1 overflow-y-auto p-3"
+			>
 				<div
 					style={{
 						height: `${rowVirtualizer.getTotalSize()}px`,
@@ -160,12 +153,13 @@ export function ListingsPanel() {
 						return (
 							<div
 								key={`${listing.source}-${listing.externalId}-${virtualRow.index}`}
+								ref={rowVirtualizer.measureElement}
+								data-index={virtualRow.index}
 								style={{
 									position: "absolute",
 									top: 0,
 									left: 0,
 									width: "100%",
-									height: `${virtualRow.size}px`,
 									transform: `translateY(${virtualRow.start}px)`,
 									paddingBottom: "12px",
 								}}
@@ -175,9 +169,6 @@ export function ListingsPanel() {
 						);
 					})}
 				</div>
-
-				{/* Sentinel for IntersectionObserver */}
-				<div ref={loadMoreRef} className="h-6 w-full" />
 
 				{/* Loading indicator at bottom of scroll */}
 				{isFetchingNextPage && (

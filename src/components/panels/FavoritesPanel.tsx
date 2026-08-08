@@ -16,7 +16,7 @@ export function FavoritesPanel() {
 	const rowVirtualizer = useVirtualizer({
 		count: favoriteListings.length,
 		getScrollElement: () => parentRef.current,
-		estimateSize: () => 270, // Height of card + gap
+		estimateSize: () => 290, // Card height estimate
 		overscan: 5,
 	});
 
@@ -70,12 +70,13 @@ export function FavoritesPanel() {
 						return (
 							<div
 								key={`${listing.source}-${listing.externalId}-${virtualRow.index}`}
+								ref={rowVirtualizer.measureElement}
+								data-index={virtualRow.index}
 								style={{
 									position: "absolute",
 									top: 0,
 									left: 0,
 									width: "100%",
-									height: `${virtualRow.size}px`,
 									transform: `translateY(${virtualRow.start}px)`,
 									paddingBottom: "12px",
 								}}
