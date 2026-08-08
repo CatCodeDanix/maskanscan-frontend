@@ -24,7 +24,7 @@ const DEFAULT_FILTERS = {
 	publisherType: "all" as "all" | "personal" | "agency",
 	minArea: undefined as number | undefined,
 	maxArea: undefined as number | undefined,
-	// Rent
+	// Rent — Exact & Equivalent
 	minDeposit: undefined as number | undefined,
 	maxDeposit: undefined as number | undefined,
 	minRent: undefined as number | undefined,
@@ -96,6 +96,24 @@ interface ListingState extends FilterState {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+function deduplicateListings(
+	existing: UnifiedListing[],
+	newItems: UnifiedListing[],
+): UnifiedListing[] {
+	const seen = new Set<string>(
+		existing.map((l) => `${l.source}:${l.externalId}`),
+	);
+	const result = [...existing];
+	for (const item of newItems) {
+		const key = `${item.source}:${item.externalId}`;
+		if (!seen.has(key)) {
+			seen.add(key);
+			result.push(item);
+		}
+	}
+	return result;
+}
 
 function getFiltersObject(state: ListingState, page = 1): ListingFilters {
 	return {
@@ -203,7 +221,6 @@ export const useListingStore = create<ListingState>((set, get) => ({
 				items: UnifiedListing[];
 			};
 
-			// Try Direct Server Action first, fallback to API route if client side
 			try {
 				const resAction = await queryListingsAction(filterParams);
 				responseData = {
@@ -228,7 +245,9 @@ export const useListingStore = create<ListingState>((set, get) => ({
 
 			const items = responseData.items ?? [];
 			const total = responseData.total ?? items.length;
-			const nextListings = reset ? items : [...state.listings, ...items];
+			const nextListings = reset
+				? deduplicateListings([], items)
+				: deduplicateListings(state.listings, items);
 			const hasMore = nextListings.length < total && items.length > 0;
 
 			set({
@@ -286,8 +305,10 @@ export const useListingStore = create<ListingState>((set, get) => ({
 
 			const items = responseData.items ?? [];
 			const total = responseData.total ?? state.total;
-			const nextListings = [...state.listings, ...items];
-			const hasMore = nextListings.length < total && items.length > 0;
+			const nextListings = deduplicateListings(state.listings, items);
+			// Stop if no new unique listings were returned or reached total
+			const newItemsAdded = nextListings.length - state.listings.length;
+			const hasMore = newItemsAdded > 0 && nextListings.length < total;
 
 			set({
 				listings: nextListings,

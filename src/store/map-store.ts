@@ -1,22 +1,24 @@
+import type { StyleSpecification } from "maplibre-gl";
 import { create } from "zustand";
 import { MAP_STYLES } from "@/lib/map-styles";
 
-const DARK_STYLE_URL = MAP_STYLES.find((s) => s.id === "dark")?.url;
-const DEFAULT_STYLE_URL = MAP_STYLES[0].url;
+const DARK_STYLE =
+	MAP_STYLES.find((s) => s.id === "dark")?.url ?? MAP_STYLES[1].url;
+const DEFAULT_STYLE = MAP_STYLES[0].url;
 
 type MapStore = {
-	mapStyle: string;
-	setMapStyle: (url: string) => void;
+	mapStyle: string | StyleSpecification;
+	setMapStyle: (url: string | StyleSpecification) => void;
 	activeOverlays: string[];
 	toggleOverlay: (overlayId: string) => void;
-	previousStyle: string | null;
+	previousStyle: string | StyleSpecification | null;
 	setMapTheme: (theme: "light" | "dark") => void;
 };
 
 export const useMapStore = create<MapStore>((set, get) => ({
-	mapStyle: DEFAULT_STYLE_URL,
+	mapStyle: DEFAULT_STYLE,
 
-	setMapStyle: (url) => set({ mapStyle: url }),
+	setMapStyle: (style) => set({ mapStyle: style }),
 
 	activeOverlays: [],
 
@@ -33,18 +35,16 @@ export const useMapStore = create<MapStore>((set, get) => ({
 		const { mapStyle, previousStyle } = get();
 
 		if (theme === "dark") {
-			// Only switch to dark if not already dark
-			if (mapStyle !== DARK_STYLE_URL) {
+			if (mapStyle !== DARK_STYLE) {
 				set({
-					mapStyle: DARK_STYLE_URL,
+					mapStyle: DARK_STYLE,
 					previousStyle: mapStyle,
 				});
 			}
 		} else {
-			// light → revert to previous or default
-			if (mapStyle === DARK_STYLE_URL) {
+			if (mapStyle === DARK_STYLE) {
 				set({
-					mapStyle: previousStyle ?? DEFAULT_STYLE_URL,
+					mapStyle: previousStyle ?? DEFAULT_STYLE,
 					previousStyle: null,
 				});
 			}

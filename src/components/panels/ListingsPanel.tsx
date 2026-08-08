@@ -2,7 +2,7 @@
 
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { AlertCircle, Home, Loader2, RefreshCcw } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,39 +34,41 @@ export function ListingsPanel() {
 	const resetFilters = useListingStore((s) => s.resetFilters);
 
 	const parentRef = useRef<HTMLDivElement>(null);
+	const loadMoreRef = useRef<HTMLDivElement>(null);
 
 	const count = listings.length;
 
 	const rowVirtualizer = useVirtualizer({
 		count,
 		getScrollElement: () => parentRef.current,
-		estimateSize: () => 240, // Height of card + gap
+		estimateSize: () => 270, // Accurate size for PropertyCard
 		overscan: 5,
 	});
 
-	const virtualItems = rowVirtualizer.getVirtualItems();
-
-	// Infinite scroll effect when scrolling near bottom
-	useEffect(() => {
-		const lastItem = virtualItems[virtualItems.length - 1];
-		if (!lastItem) return;
-
-		if (
-			lastItem.index >= count - 4 &&
-			hasMore &&
-			!isLoading &&
-			!isFetchingNextPage
-		) {
+	// Stable load more callback
+	const handleLoadMore = useCallback(() => {
+		if (hasMore && !isLoading && !isFetchingNextPage) {
 			void fetchNextPage();
 		}
-	}, [
-		virtualItems,
-		count,
-		hasMore,
-		isLoading,
-		isFetchingNextPage,
-		fetchNextPage,
-	]);
+	}, [hasMore, isLoading, isFetchingNextPage, fetchNextPage]);
+
+	// Intersection Observer sentinel for safe infinite scroll
+	useEffect(() => {
+		const sentinel = loadMoreRef.current;
+		if (!sentinel) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0]?.isIntersecting) {
+					handleLoadMore();
+				}
+			},
+			{ root: parentRef.current, threshold: 0.1, rootMargin: "200px" },
+		);
+
+		observer.observe(sentinel);
+		return () => observer.disconnect();
+	}, [handleLoadMore]);
 
 	if (isLoading && !hasFetched) {
 		return (
@@ -151,13 +153,13 @@ export function ListingsPanel() {
 						position: "relative",
 					}}
 				>
-					{virtualItems.map((virtualRow) => {
+					{rowVirtualizer.getVirtualItems().map((virtualRow) => {
 						const listing = listings[virtualRow.index];
 						if (!listing) return null;
 
 						return (
 							<div
-								key={`${listing.source}-${listing.externalId}`}
+								key={`${listing.source}-${listing.externalId}-${virtualRow.index}`}
 								style={{
 									position: "absolute",
 									top: 0,
@@ -173,6 +175,9 @@ export function ListingsPanel() {
 						);
 					})}
 				</div>
+
+				{/* Sentinel for IntersectionObserver */}
+				<div ref={loadMoreRef} className="h-6 w-full" />
 
 				{/* Loading indicator at bottom of scroll */}
 				{isFetchingNextPage && (

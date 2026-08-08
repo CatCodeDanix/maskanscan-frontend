@@ -2,6 +2,7 @@
 
 import {
 	Building2,
+	ChevronDown,
 	Home,
 	Info,
 	MapPin,
@@ -11,8 +12,7 @@ import {
 	SlidersHorizontal,
 	User,
 } from "lucide-react";
-import { useCallback } from "react";
-import { Badge } from "@/components/ui/badge";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -120,6 +120,8 @@ const BEDROOM_PRESETS = [
 ] as const;
 
 export function FiltersPanel() {
+	const [showEquivalent, setShowEquivalent] = useState(false);
+
 	// Granular Zustand selectors
 	const dealType = useListingStore((s) => s.dealType);
 	const city = useListingStore((s) => s.city);
@@ -135,12 +137,18 @@ export function FiltersPanel() {
 	const publisherType = useListingStore((s) => s.publisherType);
 	const minArea = useListingStore((s) => s.minArea);
 	const maxArea = useListingStore((s) => s.maxArea);
+
+	// Exact Rent & Deposit
 	const minDeposit = useListingStore((s) => s.minDeposit);
 	const maxDeposit = useListingStore((s) => s.maxDeposit);
 	const minRent = useListingStore((s) => s.minRent);
 	const maxRent = useListingStore((s) => s.maxRent);
+
+	// Optional Converted Full Deposit
 	const minEquivalentDeposit = useListingStore((s) => s.minEquivalentDeposit);
 	const maxEquivalentDeposit = useListingStore((s) => s.maxEquivalentDeposit);
+
+	// Buy
 	const minPrice = useListingStore((s) => s.minPrice);
 	const maxPrice = useListingStore((s) => s.maxPrice);
 	const minPricePerSqMeter = useListingStore((s) => s.minPricePerSqMeter);
@@ -288,12 +296,119 @@ export function FiltersPanel() {
 
 					<Separator />
 
-					{/* Granular Bedrooms Range Filter */}
+					{/* Primary Pricing Filters: Exact Deposit & Rent */}
+					{dealType === "rent" && (
+						<div className="space-y-4">
+							{/* Exact Deposit */}
+							<div>
+								<SectionHeader
+									title="مبلغ رهن / ودیعه مستقیم (تومان)"
+									subtitle="تعیین دقیق حداقل و حداکثر رهن"
+								/>
+								<RangeRow
+									minValue={minDeposit}
+									maxValue={maxDeposit}
+									onMinChange={setMinDeposit}
+									onMaxChange={setMaxDeposit}
+									placeholderMin="حداقل رهن (تومان)"
+									placeholderMax="حداکثر رهن (تومان)"
+								/>
+							</div>
+
+							{/* Exact Monthly Rent */}
+							<div>
+								<SectionHeader
+									title="اجاره ماهانه مستقیم (تومان)"
+									subtitle="تعیین دقیق حداقل و حداکثر اجاره ماهانه"
+								/>
+								<RangeRow
+									minValue={minRent}
+									maxValue={maxRent}
+									onMinChange={setMinRent}
+									onMaxChange={setMaxRent}
+									placeholderMin="حداقل اجاره"
+									placeholderMax="حداکثر اجاره"
+								/>
+							</div>
+
+							{/* Optional Equivalent Deposit Accordion */}
+							<div className="rounded-xl border border-border bg-card p-3 space-y-2">
+								<button
+									type="button"
+									onClick={() => setShowEquivalent(!showEquivalent)}
+									className="flex w-full items-center justify-between text-xs font-semibold"
+								>
+									<div className="flex items-center gap-1.5 text-primary">
+										<Info className="size-3.5" />
+										<span>فیلتر اختیاری: رهن کامل معادل (معادل‌سازی)</span>
+									</div>
+									<ChevronDown
+										className={cn(
+											"size-4 transition-transform",
+											showEquivalent && "rotate-180",
+										)}
+									/>
+								</button>
+
+								{(showEquivalent ||
+									minEquivalentDeposit !== undefined ||
+									maxEquivalentDeposit !== undefined) && (
+									<div className="pt-2 space-y-2">
+										<p className="text-[11px] text-muted-foreground">
+											تبدیل خودکار اجاره ماهانه به رهن کامل جهت جستجو بر اساس
+											بودجه کلی:
+										</p>
+										<RangeRow
+											minValue={minEquivalentDeposit}
+											maxValue={maxEquivalentDeposit}
+											onMinChange={setMinEquivalentDeposit}
+											onMaxChange={setMaxEquivalentDeposit}
+											placeholderMin="حداقل رهن معادل (تومان)"
+											placeholderMax="حداکثر رهن معادل (تومان)"
+										/>
+									</div>
+								)}
+							</div>
+						</div>
+					)}
+
+					{/* Buy Pricing Filters */}
+					{dealType === "buy" && (
+						<div className="space-y-4">
+							<div>
+								<SectionHeader title="قیمت کل (تومان)" />
+								<RangeRow
+									minValue={minPrice}
+									maxValue={maxPrice}
+									onMinChange={setMinPrice}
+									onMaxChange={setMaxPrice}
+									placeholderMin="حداقل قیمت کل"
+									placeholderMax="حداکثر قیمت کل"
+								/>
+							</div>
+
+							<div>
+								<SectionHeader title="قیمت هر متر مربع (تومان)" />
+								<RangeRow
+									minValue={minPricePerSqMeter}
+									maxValue={maxPricePerSqMeter}
+									onMinChange={setMinPricePerSqMeter}
+									onMaxChange={setMaxPricePerSqMeter}
+									placeholderMin="حداقل هر متر"
+									placeholderMax="حداکثر هر متر"
+								/>
+							</div>
+						</div>
+					)}
+
+					<Separator />
+
+					{/* Bedrooms Range Filter */}
 					<div className="space-y-3">
 						<SectionHeader
 							icon={Building2}
-							title="تعداد اتاق خواب (بازه دقیق)"
-							subtitle="فیلتر کنید یا بازه حداقل و حداکثر تعیین کنید"
+							title="تعداد اتاق خواب"
+							subtitle="انتخاب تعداد یا تعیین بازه دلخواه"
 						/>
 						<div className="flex flex-wrap gap-1.5">
 							{BEDROOM_PRESETS.map((preset) => {
@@ -327,7 +442,7 @@ export function FiltersPanel() {
 
 						<div className="pt-2">
 							<p className="mb-1 text-[11px] text-muted-foreground font-medium">
-								یا تعیین بازه اختصاصی خواب:
+								تعیین بازه حداقل و حداکثر اتاق:
 							</p>
 							<div className="flex items-center gap-2">
 								<Input
@@ -358,88 +473,6 @@ export function FiltersPanel() {
 							</div>
 						</div>
 					</div>
-
-					<Separator />
-
-					{/* Absolute Converted Full Deposit (رهن کامل معادل) & Rent Filters */}
-					{dealType === "rent" && (
-						<div className="space-y-4">
-							{/* Absolute Equivalent Deposit */}
-							<div className="rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2">
-								<div className="flex items-center justify-between">
-									<SectionHeader
-										icon={Info}
-										title="رهن کامل معادل (قیمت کل ارزش ملک)"
-										subtitle="تبدیل هوشمند اجاره به رهن جهت سنجش بودجه کلی"
-									/>
-									<Badge variant="amber" className="text-[10px] shrink-0">
-										پیشرفته
-									</Badge>
-								</div>
-								<RangeRow
-									minValue={minEquivalentDeposit}
-									maxValue={maxEquivalentDeposit}
-									onMinChange={setMinEquivalentDeposit}
-									onMaxChange={setMaxEquivalentDeposit}
-									placeholderMin="حداقل رهن معادل (تومان)"
-									placeholderMax="حداکثر رهن معادل (تومان)"
-								/>
-							</div>
-
-							<div>
-								<SectionHeader title="مبلغ رهن اولیه (تومان)" />
-								<RangeRow
-									minValue={minDeposit}
-									maxValue={maxDeposit}
-									onMinChange={setMinDeposit}
-									onMaxChange={setMaxDeposit}
-									placeholderMin="حداقل رهن"
-									placeholderMax="حداکثر رهن"
-								/>
-							</div>
-
-							<div>
-								<SectionHeader title="اجاره ماهانه (تومان)" />
-								<RangeRow
-									minValue={minRent}
-									maxValue={maxRent}
-									onMinChange={setMinRent}
-									onMaxChange={setMaxRent}
-									placeholderMin="حداقل اجاره"
-									placeholderMax="حداکثر اجاره"
-								/>
-							</div>
-						</div>
-					)}
-
-					{/* Buy Pricing Filters */}
-					{dealType === "buy" && (
-						<div className="space-y-4">
-							<div>
-								<SectionHeader title="قیمت کل (تومان)" />
-								<RangeRow
-									minValue={minPrice}
-									maxValue={maxPrice}
-									onMinChange={setMinPrice}
-									onMaxChange={setMaxPrice}
-									placeholderMin="حداقل قیمت کل"
-									placeholderMax="حداکثر قیمت کل"
-								/>
-							</div>
-
-							<div>
-								<SectionHeader title="قیمت هر متر مربع (تومان)" />
-								<RangeRow
-									minValue={minPricePerSqMeter}
-									maxValue={maxPricePerSqMeter}
-									onMinChange={setMinPricePerSqMeter}
-									onMaxChange={setMaxPricePerSqMeter}
-									placeholderMin="حداقل هر متر"
-									placeholderMax="حداکثر هر متر"
-								/>
-							</div>
-						</div>
-					)}
 
 					<Separator />
 
