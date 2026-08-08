@@ -506,7 +506,7 @@ export function PropertyDetailSheet() {
 			<SheetContent
 				side="left"
 				showCloseButton={false}
-				className="flex w-[400px] flex-col p-0 sm:max-w-[400px] border-r shadow-2xl"
+				className="flex w-[440px] flex-col p-0 sm:max-w-[440px] border-r shadow-2xl"
 			>
 				<SheetHeader className="flex shrink-0 flex-row items-center justify-between border-b p-3.5">
 					<SheetTitle className="text-xs font-bold">
