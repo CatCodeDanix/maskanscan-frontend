@@ -1,8 +1,24 @@
 import type { UnifiedListing } from "@/types/listing";
 
+// ── Persian Digit Converter ───────────────────────────────────────────────────
+
+/** Convert any string or number containing ASCII digits (0-9) to Persian digits (۰-۹) */
+export function toPersianDigits(
+	input: number | string | undefined | null,
+): string {
+	if (input === undefined || input === null) return "";
+	const str = String(input);
+	const englishDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+	const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+	return str.replace(
+		/[0-9]/g,
+		(w) => persianDigits[englishDigits.indexOf(w)] ?? w,
+	);
+}
+
 // ── Toman formatter ─────────────────────────────────────────────────────────────
 
-/** Format a Toman amount with Persian-locale separators, e.g. 1500000 → '1,500,000 تومان' */
+/** Format a Toman amount with Persian-locale separators and Persian digits */
 export function formatToman(amount: number | undefined | null): string {
 	if (amount === undefined || amount === null || amount === 0) return "—";
 
@@ -11,20 +27,20 @@ export function formatToman(amount: number | undefined | null): string {
 	if (absAmount >= 1_000_000_000) {
 		const billions = absAmount / 1_000_000_000;
 		const rounded = Number.isInteger(billions)
-			? billions.toLocaleString("fa-IR")
-			: billions.toFixed(1).toLocaleString();
+			? toPersianDigits(billions.toLocaleString())
+			: toPersianDigits(billions.toFixed(1));
 		return `${rounded} میلیارد تومان`;
 	}
 
 	if (absAmount >= 1_000_000) {
 		const millions = absAmount / 1_000_000;
 		const rounded = Number.isInteger(millions)
-			? millions.toLocaleString("fa-IR")
-			: millions.toFixed(1).toLocaleString();
+			? toPersianDigits(millions.toLocaleString())
+			: toPersianDigits(millions.toFixed(1));
 		return `${rounded} میلیون تومان`;
 	}
 
-	return `${absAmount.toLocaleString("fa-IR")} تومان`;
+	return `${toPersianDigits(absAmount.toLocaleString())} تومان`;
 }
 
 /** Format a listing's primary price string */
@@ -115,10 +131,12 @@ export function formatRelativeDate(isoDate: string | undefined): string {
 
 	if (diffDays === 0) return "امروز";
 	if (diffDays === 1) return "دیروز";
-	if (diffDays < 7) return `${diffDays} روز پیش`;
-	if (diffDays < 30) return `${Math.floor(diffDays / 7)} هفته پیش`;
-	if (diffDays < 365) return `${Math.floor(diffDays / 30)} ماه پیش`;
-	return `${Math.floor(diffDays / 365)} سال پیش`;
+	if (diffDays < 7) return `${toPersianDigits(diffDays)} روز پیش`;
+	if (diffDays < 30)
+		return `${toPersianDigits(Math.floor(diffDays / 7))} هفته پیش`;
+	if (diffDays < 365)
+		return `${toPersianDigits(Math.floor(diffDays / 30))} ماه پیش`;
+	return `${toPersianDigits(Math.floor(diffDays / 365))} سال پیش`;
 }
 
 // ── Number helpers ───────────────────────────────────────────────────────────────
@@ -126,7 +144,5 @@ export function formatRelativeDate(isoDate: string | undefined): string {
 export function formatBedrooms(n: number | undefined): string {
 	if (n === undefined || n === null) return "";
 	if (n === 0) return "استودیو";
-	const persianDigits = ["0", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-	const d = persianDigits[n] ?? String(n);
-	return `${d} خوابه`;
+	return `${toPersianDigits(n)} خوابه`;
 }

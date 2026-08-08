@@ -7,6 +7,7 @@ import {
 	formatToman,
 	getSourceColor,
 	getSourceLabel,
+	toPersianDigits,
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useFavoritesStore } from "@/store/favorites-store";
@@ -87,7 +88,7 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 					</span>
 					{totalSources > 1 && (
 						<span className="rounded-md bg-black/60 px-1.5 py-0.5 text-[10px] text-white font-medium">
-							+{totalSources - 1}
+							+{toPersianDigits(totalSources - 1)}
 						</span>
 					)}
 				</div>
@@ -143,7 +144,7 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 						{area !== undefined && (
 							<span className="flex items-center gap-0.5 font-medium">
 								<Maximize2 className="size-3 text-primary/70" />
-								{area} م²
+								{toPersianDigits(area)} م²
 							</span>
 						)}
 						{bedrooms !== undefined && (

@@ -46,6 +46,7 @@ import {
 	formatToman,
 	getSourceColor,
 	getSourceLabel,
+	toPersianDigits,
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useFavoritesStore } from "@/store/favorites-store";
@@ -323,7 +324,7 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 							icon={Maximize2}
 							value={
 								attrs.areaSqMeters !== undefined
-									? `${attrs.areaSqMeters} متر مربع`
+									? `${toPersianDigits(attrs.areaSqMeters)} متر مربع`
 									: undefined
 							}
 						/>
@@ -336,29 +337,33 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 							label="طبقه"
 							icon={Layers}
 							value={
-								attrs.floor !== undefined ? String(attrs.floor) : undefined
+								attrs.floor !== undefined
+									? toPersianDigits(attrs.floor)
+									: undefined
 							}
 						/>
 						<AttributeRow
 							label="تعداد کل طبقات"
 							icon={Building2}
-							value={attrs.totalFloorsInBuilding}
+							value={toPersianDigits(attrs.totalFloorsInBuilding)}
 						/>
 						<AttributeRow
 							label="تعداد واحد در طبقه"
-							value={attrs.unitsPerFloor}
+							value={toPersianDigits(attrs.unitsPerFloor)}
 						/>
 						<AttributeRow
 							label="سال ساخت"
 							icon={Calendar}
-							value={attrs.yearBuilt ? `${attrs.yearBuilt}` : undefined}
+							value={
+								attrs.yearBuilt ? toPersianDigits(attrs.yearBuilt) : undefined
+							}
 						/>
 						<AttributeRow
 							label="تعداد ظرفیت پارکینگ"
 							icon={Car}
 							value={
 								attrs.parkingSpots !== undefined
-									? `${attrs.parkingSpots} خودرو`
+									? `${toPersianDigits(attrs.parkingSpots)} خودرو`
 									: undefined
 							}
 						/>
@@ -385,7 +390,10 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 							value={attrs.unitDirection}
 						/>
 						<AttributeRow label="سرویس بهداشتی" value={attrs.wcType} />
-						<AttributeRow label="تعداد سرویس بهداشتی" value={attrs.wcCount} />
+						<AttributeRow
+							label="تعداد سرویس بهداشتی"
+							value={toPersianDigits(attrs.wcCount)}
+						/>
 					</div>
 				</div>
 
