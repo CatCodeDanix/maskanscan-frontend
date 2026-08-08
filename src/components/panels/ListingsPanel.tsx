@@ -41,16 +41,16 @@ export function ListingsPanel() {
 		count,
 		getScrollElement: () => parentRef.current,
 		estimateSize: () => 290, // Card height estimate
-		overscan: 5,
+		overscan: 6,
 	});
 
-	// Safe scroll handler: ONLY triggers when the user actively scrolls near bottom!
+	// Trigger next page when scrolling within 1200px of bottom
 	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
 		const target = e.currentTarget;
 		const distanceToBottom =
 			target.scrollHeight - target.scrollTop - target.clientHeight;
 		if (
-			distanceToBottom < 400 &&
+			distanceToBottom < 1200 &&
 			hasMore &&
 			!isLoading &&
 			!isFetchingNextPage
@@ -117,16 +117,16 @@ export function ListingsPanel() {
 
 	return (
 		<div className="flex h-full flex-col bg-background" dir="rtl">
-			{/* Header status bar */}
+			{/* Sticky Header Status Bar */}
 			{hasFetched && (
-				<div className="flex items-center justify-between border-b px-4 py-2 text-xs">
+				<div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b bg-background/95 p-3 text-xs backdrop-blur-xs shadow-2xs">
 					<span className="font-medium text-muted-foreground">
 						نمایش {listings.length.toLocaleString("fa-IR")} از{" "}
 						{total.toLocaleString("fa-IR")} آگهی
 					</span>
 					{(isLoading || isFetchingNextPage) && (
-						<div className="flex items-center gap-1.5 text-primary text-[11px]">
-							<Loader2 className="size-3 animate-spin" />
+						<div className="flex items-center gap-1.5 font-medium text-primary text-[11px]">
+							<Loader2 className="size-3.5 animate-spin" />
 							در حال بارگذاری...
 						</div>
 					)}

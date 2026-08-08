@@ -17,7 +17,7 @@ export function FavoritesPanel() {
 		count: favoriteListings.length,
 		getScrollElement: () => parentRef.current,
 		estimateSize: () => 290, // Card height estimate
-		overscan: 5,
+		overscan: 6,
 	});
 
 	if (favoriteListings.length === 0) {
@@ -38,8 +38,8 @@ export function FavoritesPanel() {
 
 	return (
 		<div className="flex h-full flex-col bg-background" dir="rtl">
-			{/* Header */}
-			<div className="flex items-center justify-between border-b px-4 py-2 text-xs">
+			{/* Sticky Header */}
+			<div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b bg-background/95 p-3 text-xs backdrop-blur-xs shadow-2xs">
 				<span className="font-medium text-muted-foreground">
 					{favoriteListings.length.toLocaleString("fa-IR")} آگهی در علاقه‌مندی‌ها
 				</span>

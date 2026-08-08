@@ -71,7 +71,7 @@ function AppContent() {
 								alt="MaskanScan Logo - A blended house and map marker"
 							/>
 							<span className="text-primary text-base font-semibold md:text-lg">
-								مسکناسکن
+								مسکان‌اسکن
 							</span>
 						</div>
 

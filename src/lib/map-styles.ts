@@ -15,13 +15,13 @@ export type MapStyleDef = {
 export const CARTO_LIGHT_RASTER: StyleSpecification = {
 	version: 8,
 	sources: {
-		"carto-raster": {
+		"carto-light-raster": {
 			type: "raster",
 			tiles: [
-				"https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
-				"https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
-				"https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
-				"https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
+				"https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+				"https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+				"https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+				"https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
 			],
 			tileSize: 256,
 			attribution: "&copy; CARTO &copy; OpenStreetMap contributors",
@@ -29,9 +29,35 @@ export const CARTO_LIGHT_RASTER: StyleSpecification = {
 	},
 	layers: [
 		{
-			id: "carto-raster-layer",
+			id: "carto-light-layer",
 			type: "raster",
-			source: "carto-raster",
+			source: "carto-light-raster",
+			minzoom: 0,
+			maxzoom: 22,
+		},
+	],
+};
+
+export const CARTO_VOYAGER_RASTER: StyleSpecification = {
+	version: 8,
+	sources: {
+		"carto-voyager-raster": {
+			type: "raster",
+			tiles: [
+				"https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+				"https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+				"https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+				"https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+			],
+			tileSize: 256,
+			attribution: "&copy; CARTO &copy; OpenStreetMap contributors",
+		},
+	},
+	layers: [
+		{
+			id: "carto-voyager-layer",
+			type: "raster",
+			source: "carto-voyager-raster",
 			minzoom: 0,
 			maxzoom: 22,
 		},
@@ -44,10 +70,10 @@ export const CARTO_DARK_RASTER: StyleSpecification = {
 		"carto-dark-raster": {
 			type: "raster",
 			tiles: [
-				"https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-				"https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-				"https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-				"https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
+				"https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+				"https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+				"https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+				"https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
 			],
 			tileSize: 256,
 			attribution: "&copy; CARTO &copy; OpenStreetMap contributors",
@@ -64,6 +90,27 @@ export const CARTO_DARK_RASTER: StyleSpecification = {
 	],
 };
 
+export const OSM_RASTER: StyleSpecification = {
+	version: 8,
+	sources: {
+		"osm-raster": {
+			type: "raster",
+			tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+			tileSize: 256,
+			attribution: "&copy; OpenStreetMap contributors",
+		},
+	},
+	layers: [
+		{
+			id: "osm-raster-layer",
+			type: "raster",
+			source: "osm-raster",
+			minzoom: 0,
+			maxzoom: 19,
+		},
+	],
+};
+
 export const MAP_STYLES: MapStyleDef[] = [
 	{
 		id: "default",
@@ -73,11 +120,25 @@ export const MAP_STYLES: MapStyleDef[] = [
 		preview: "/stylespreview/mapir-xyz-no-building.png",
 	},
 	{
+		id: "voyager",
+		name: "نقشه رنگی (Voyager)",
+		url: CARTO_VOYAGER_RASTER,
+		type: "raster",
+		preview: "/stylespreview/mapir-xyz-no-building.png",
+	},
+	{
 		id: "dark",
 		name: "نقشه تاریک (Carto)",
 		url: CARTO_DARK_RASTER,
 		type: "raster",
 		preview: "/stylespreview/mapir-style-dark.png",
+	},
+	{
+		id: "osm",
+		name: "نقشه OpenStreetMap",
+		url: OSM_RASTER,
+		type: "raster",
+		preview: "/stylespreview/mapir-xyz-no-building.png",
 	},
 	{
 		id: "openfreemap",

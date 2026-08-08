@@ -46,7 +46,7 @@ export type NavItem = LinkNavItem | ActionNavItem | PanelNavItem;
 export const defaultNavItems: NavItem[] = [
 	{
 		id: "listings",
-		title: "آگهیها",
+		title: "آگهی‌ها",
 		icon: List,
 		type: "panel",
 		component: ListingsPanel,
@@ -60,21 +60,21 @@ export const defaultNavItems: NavItem[] = [
 	},
 	{
 		id: "saved-searches",
-		title: "جستجوهای ذخیرهشده",
+		title: "جستجوهای ذخیره‌شده",
 		icon: Bookmark,
 		type: "panel",
 		component: SavedSearchesPanel,
 	},
 	{
 		id: "favorites",
-		title: "علاقهمندیها",
+		title: "علاقه‌مندی‌ها",
 		icon: Heart,
 		type: "panel",
 		component: FavoritesPanel,
 	},
 	{
 		id: "notifications",
-		title: "اعلانها",
+		title: "اعلان‌ها",
 		icon: Bell,
 		type: "panel",
 		component: NotificationsPanel,

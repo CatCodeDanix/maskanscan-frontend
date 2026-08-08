@@ -58,9 +58,20 @@ export function formatListingPrice(listing: UnifiedListing): string {
 export function formatListingPriceShort(listing: UnifiedListing): string {
 	if (listing.dealType === "rent") {
 		if (listing.isAgreedRent && listing.isAgreedDeposit) return "توافقی";
-		if (listing.rentTomans) return `${formatToman(listing.rentTomans)}/ماه`;
-		if (listing.depositTomans)
-			return `رهن ${formatToman(listing.depositTomans)}`;
+		const dep = listing.isAgreedDeposit
+			? "رهن توافقی"
+			: listing.depositTomans
+				? `رهن ${formatToman(listing.depositTomans)}`
+				: "";
+		const rent = listing.isAgreedRent
+			? "اجاره توافقی"
+			: listing.rentTomans
+				? `اجاره ${formatToman(listing.rentTomans)}`
+				: "";
+
+		if (dep && rent) return `${dep} • ${rent}`;
+		if (dep) return dep;
+		if (rent) return rent;
 		return "توافقی";
 	}
 	if (listing.isAgreedPrice) return "توافقی";
