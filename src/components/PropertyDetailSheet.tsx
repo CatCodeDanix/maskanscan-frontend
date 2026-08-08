@@ -5,12 +5,22 @@ import {
 	Building2,
 	Calendar,
 	Car,
+	Check,
+	Compass,
+	Copy,
 	ExternalLink,
+	Flame,
 	Heart,
+	Info,
 	Layers,
 	Maximize2,
+	Phone,
+	ShieldAlert,
+	Snowflake,
+	Sparkles,
 	User,
 	Warehouse,
+	Wind,
 	X,
 } from "lucide-react";
 import Image from "next/image";
@@ -54,17 +64,17 @@ function AttributeRow({
 }) {
 	if (value === undefined || value === null || value === "") return null;
 	return (
-		<div className="flex items-center justify-between gap-2 py-2 text-sm">
+		<div className="flex items-center justify-between gap-2 py-2 text-xs border-b border-border/50 last:border-0">
 			<span className="flex items-center gap-1.5 text-muted-foreground">
-				{Icon && <Icon className="size-3.5 shrink-0" />}
+				{Icon && <Icon className="size-3.5 shrink-0 text-primary/70" />}
 				{label}
 			</span>
-			<span className="font-medium">{value}</span>
+			<span className="font-medium text-foreground">{value}</span>
 		</div>
 	);
 }
 
-function BoolRow({
+function BoolBadge({
 	label,
 	value,
 }: {
@@ -73,48 +83,58 @@ function BoolRow({
 }) {
 	if (!value) return null;
 	return (
-		<div className="flex items-center justify-between py-2 text-sm">
-			<span className="text-muted-foreground">{label}</span>
-			<span className="text-emerald-600 dark:text-emerald-400 font-medium">
-				✓ دارد
-			</span>
+		<div className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+			<Check className="size-3 shrink-0" />
+			<span>{label}</span>
 		</div>
 	);
 }
 
 function DetailContent({ listing }: { listing: UnifiedListing }) {
 	const [activeImage, setActiveImage] = useState(0);
+	const [copiedPhone, setCopiedPhone] = useState(false);
 	const isFav = useFavoritesStore((s) =>
 		s.isFavorite(listing.source, listing.externalId),
 	);
 	const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
 
+	const handleCopyPhone = (phone: string) => {
+		void navigator.clipboard.writeText(phone);
+		setCopiedPhone(true);
+		setTimeout(() => setCopiedPhone(false), 2000);
+	};
+
+	const attrs = listing.attributes || {};
+
 	return (
-		<div className="flex flex-col">
-			{/* Images */}
-			{listing.images.length > 0 && (
-				<div className="relative h-52 w-full shrink-0 bg-muted">
+		<div
+			className="flex h-full flex-col overflow-hidden bg-background"
+			dir="rtl"
+		>
+			{/* Images Carousel */}
+			{listing.images && listing.images.length > 0 && (
+				<div className="relative h-56 w-full shrink-0 bg-muted">
 					<Image
 						src={listing.images[activeImage] ?? listing.images[0]}
 						alt={listing.title}
 						fill
 						sizes="400px"
-						className="object-cover"
+						className="object-cover transition-opacity duration-300"
 						priority
 					/>
-					{/* Thumbnail strip */}
+					{/* Thumbnail indicators */}
 					{listing.images.length > 1 && (
-						<div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
-							{listing.images.slice(0, 8).map((src, i) => (
+						<div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 px-4 overflow-x-auto py-1">
+							{listing.images.slice(0, 10).map((src, i) => (
 								<button
 									key={src}
 									type="button"
 									onClick={() => setActiveImage(i)}
 									className={cn(
-										"size-2 rounded-full transition-all",
+										"size-2.5 rounded-full transition-all shrink-0",
 										i === activeImage
-											? "scale-125 bg-white"
-											: "bg-white/50 hover:bg-white/75",
+											? "scale-125 bg-white ring-2 ring-primary"
+											: "bg-white/60 hover:bg-white",
 									)}
 								/>
 							))}
@@ -124,14 +144,14 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 			)}
 
 			<ScrollArea className="flex-1">
-				<div className="space-y-4 p-4">
-					{/* Title & Location */}
-					<div className="flex items-start justify-between gap-2">
-						<div className="flex-1">
-							<h2 className="text-base font-semibold leading-snug">
+				<div className="space-y-5 p-4">
+					{/* Title & Location Header */}
+					<div className="flex items-start justify-between gap-3">
+						<div className="flex-1 space-y-1">
+							<h2 className="text-base font-bold leading-snug text-foreground">
 								{listing.title}
 							</h2>
-							<p className="mt-1 text-sm text-muted-foreground">
+							<p className="text-xs font-medium text-muted-foreground">
 								{listing.districtPersian
 									? `${listing.cityPersian} • ${listing.districtPersian}`
 									: listing.cityPersian}
@@ -142,10 +162,11 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 							size="icon"
 							className="size-9 shrink-0 rounded-full"
 							onClick={() => toggleFavorite(listing)}
+							aria-label="افزودن به علاقه‌مندی‌ها"
 						>
 							<Heart
 								className={cn(
-									"size-4 transition-all",
+									"size-4.5 transition-all",
 									isFav
 										? "fill-red-500 text-red-500 scale-110"
 										: "text-muted-foreground",
@@ -154,144 +175,243 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 						</Button>
 					</div>
 
-					{/* Fallback badge */}
+					{/* Fallback Location Alert */}
 					{listing.location?.isFallback && (
-						<div className="inline-flex items-center gap-1.5 rounded-lg bg-amber-100 px-3 py-1.5 text-xs text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-							⚠️ موقعیت تقریبی (محدوده محله)
+						<div className="flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-2.5 text-xs text-amber-700 dark:text-amber-400">
+							<ShieldAlert className="size-4 shrink-0 text-amber-500" />
+							<span>موقعیت مکانی ثبت‌شده تقریبی و در محدوده کلی محله است.</span>
 						</div>
 					)}
 
-					{/* Price */}
-					<div className="rounded-xl bg-primary/5 p-3">
-						<p className="mb-1 text-xs text-muted-foreground">
-							{listing.dealType === "rent" ? "اجاره" : "خرید"}
-						</p>
+					{/* Pricing Card */}
+					<div className="rounded-xl border border-border bg-card p-3.5 space-y-2 shadow-2xs">
+						<div className="flex items-center justify-between text-xs font-semibold text-muted-foreground border-b pb-2">
+							<span>نوع معامله</span>
+							<span className="text-primary font-bold">
+								{listing.dealType === "rent" ? "رهن و اجاره" : "خرید و فروش"}
+							</span>
+						</div>
+
 						{listing.dealType === "rent" ? (
-							<div className="space-y-1">
-								{(listing.depositTomans !== undefined ||
-									listing.isAgreedDeposit) && (
-									<div className="flex justify-between text-sm">
-										<span className="text-muted-foreground">رهن</span>
-										<span className="font-semibold">
-											{listing.isAgreedDeposit
-												? "توافقی"
-												: formatToman(listing.depositTomans)}
-										</span>
-									</div>
-								)}
-								{(listing.rentTomans !== undefined || listing.isAgreedRent) && (
-									<div className="flex justify-between text-sm">
-										<span className="text-muted-foreground">اجاره ماهانه</span>
-										<span className="font-semibold text-primary">
-											{listing.isAgreedRent
-												? "توافقی"
-												: formatToman(listing.rentTomans)}
-										</span>
-									</div>
-								)}
+							<div className="space-y-1.5 pt-1">
+								<div className="flex justify-between text-xs">
+									<span className="text-muted-foreground">
+										مبلغ رهن (ودیعه)
+									</span>
+									<span className="font-bold text-foreground">
+										{listing.isAgreedDeposit
+											? "توافقی"
+											: formatToman(listing.depositTomans)}
+									</span>
+								</div>
+								<div className="flex justify-between text-xs">
+									<span className="text-muted-foreground">اجاره ماهانه</span>
+									<span className="font-bold text-primary">
+										{listing.isAgreedRent
+											? "توافقی"
+											: formatToman(listing.rentTomans)}
+									</span>
+								</div>
 								{listing.equivalentFullDepositTomans && (
-									<div className="flex justify-between border-t pt-1 text-xs">
+									<div className="flex justify-between border-t border-dashed pt-1.5 text-[11px]">
 										<span className="text-muted-foreground">
 											رهن کامل معادل
 										</span>
-										<span>
+										<span className="font-medium text-foreground">
 											{formatToman(listing.equivalentFullDepositTomans)}
 										</span>
 									</div>
 								)}
 							</div>
 						) : (
-							<div className="space-y-1">
-								<div className="flex justify-between text-sm">
+							<div className="space-y-1.5 pt-1">
+								<div className="flex justify-between text-xs">
 									<span className="text-muted-foreground">قیمت کل</span>
-									<span className="font-semibold text-primary">
+									<span className="font-bold text-primary text-sm">
 										{listing.isAgreedPrice
 											? "توافقی"
 											: formatToman(listing.totalPriceTomans)}
 									</span>
 								</div>
 								{listing.pricePerSqMeterTomans && (
-									<div className="flex justify-between text-xs">
+									<div className="flex justify-between border-t border-dashed pt-1.5 text-xs">
 										<span className="text-muted-foreground">هر متر مربع</span>
-										<span>{formatToman(listing.pricePerSqMeterTomans)}</span>
+										<span className="font-medium">
+											{formatToman(listing.pricePerSqMeterTomans)}
+										</span>
 									</div>
 								)}
 							</div>
 						)}
 					</div>
 
-					{/* Attributes */}
-					<div className="divide-y rounded-xl border px-3">
-						<AttributeRow
-							label="متراژ"
-							icon={Maximize2}
-							value={
-								listing.attributes.areaSqMeters !== undefined
-									? `${listing.attributes.areaSqMeters} م²`
-									: undefined
-							}
-						/>
-						<AttributeRow
-							label="تعداد خواب"
-							icon={BedDouble}
-							value={formatBedrooms(listing.attributes.bedrooms) || undefined}
-						/>
-						<AttributeRow
-							label="طبقه"
-							icon={Layers}
-							value={
-								listing.attributes.floor !== undefined
-									? String(listing.attributes.floor)
-									: undefined
-							}
-						/>
-						<AttributeRow
-							label="تعداد طبقات"
-							icon={Building2}
-							value={listing.attributes.totalFloorsInBuilding}
-						/>
-						<AttributeRow
-							label="سال ساخت"
-							icon={Calendar}
-							value={listing.attributes.yearBuilt}
-						/>
-						<AttributeRow
-							label="پارکینگ"
-							icon={Car}
-							value={
-								listing.attributes.parkingSpots !== undefined
-									? `${listing.attributes.parkingSpots} جای`
-									: undefined
-							}
-						/>
-						<AttributeRow
-							label="انباری"
-							icon={Warehouse}
-							value={listing.attributes.hasStorage ? "دارد" : undefined}
-						/>
-						<BoolRow label="آسانسور" value={listing.attributes.hasElevator} />
-						<BoolRow label="بالکن" value={listing.attributes.hasBalcony} />
-						<BoolRow label="استخر" value={listing.attributes.hasPool} />
-						<BoolRow label="ساونا" value={listing.attributes.hasSauna} />
-						<BoolRow label="جکوزی" value={listing.attributes.hasJacuzzi} />
-						<BoolRow label="سالن ورزش" value={listing.attributes.hasGym} />
+					{/* Contact / Phone section */}
+					{listing.publisherPhone && (
+						<div className="flex items-center justify-between rounded-xl border border-primary/30 bg-primary/5 p-3">
+							<div className="flex items-center gap-2 text-xs">
+								<Phone className="size-4 text-primary" />
+								<div>
+									<p className="text-[11px] text-muted-foreground">
+										شماره تماس
+									</p>
+									<p className="font-bold text-primary ltr text-left" dir="ltr">
+										{listing.publisherPhone}
+									</p>
+								</div>
+							</div>
+							<Button
+								size="sm"
+								variant="outline"
+								className="h-8 gap-1.5 text-xs font-semibold"
+								onClick={() => {
+									if (listing.publisherPhone) {
+										handleCopyPhone(listing.publisherPhone);
+									}
+								}}
+							>
+								{copiedPhone ? (
+									<>
+										<Check className="size-3.5 text-emerald-500" />
+										کپی شد
+									</>
+								) : (
+									<>
+										<Copy className="size-3.5" />
+										کپی شماره
+									</>
+								)}
+							</Button>
+						</div>
+					)}
+
+					{/* Description Text */}
+					{listing.description && (
+						<div className="space-y-1.5 rounded-xl border bg-card p-3.5">
+							<div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+								<Info className="size-3.5 text-primary" />
+								<span>توضیحات آگهی</span>
+							</div>
+							<p className="text-xs leading-relaxed text-muted-foreground whitespace-pre-line">
+								{listing.description}
+							</p>
+						</div>
+					)}
+
+					{/* Key Features Badges */}
+					<div className="space-y-2">
+						<div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+							<Sparkles className="size-3.5 text-amber-500" />
+							<span>امکانات و ویژگی‌ها</span>
+						</div>
+						<div className="flex flex-wrap gap-1.5">
+							<BoolBadge label="پارکینگ" value={Boolean(attrs.hasParking)} />
+							<BoolBadge label="آسانسور" value={attrs.hasElevator} />
+							<BoolBadge label="انباری" value={attrs.hasStorage} />
+							<BoolBadge label="بالکن / تراس" value={attrs.hasBalcony} />
+							<BoolBadge label="قابل تبدیل" value={attrs.isConvertible} />
+							<BoolBadge label="مبله" value={attrs.isFurnished} />
+							<BoolBadge label="لابی" value={attrs.hasLobby} />
+							<BoolBadge label="استخر" value={attrs.hasPool} />
+							<BoolBadge label="سونا" value={attrs.hasSauna} />
+							<BoolBadge label="جکوزی" value={attrs.hasJacuzzi} />
+							<BoolBadge label="سالن ورزشی" value={attrs.hasGym} />
+							<BoolBadge label="روف گاردن" value={attrs.hasRoofGarden} />
+						</div>
 					</div>
 
-					{/* Publisher */}
+					{/* Physical & Technical Specs */}
+					<div className="space-y-2">
+						<div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+							<Building2 className="size-3.5 text-primary" />
+							<span>مشخصات فنی ملک</span>
+						</div>
+						<div className="rounded-xl border bg-card px-3 py-1">
+							<AttributeRow
+								label="متراژ زیربنا"
+								icon={Maximize2}
+								value={
+									attrs.areaSqMeters !== undefined
+										? `${attrs.areaSqMeters} متر مربع`
+										: undefined
+								}
+							/>
+							<AttributeRow
+								label="تعداد اتاق خواب"
+								icon={BedDouble}
+								value={formatBedrooms(attrs.bedrooms) || undefined}
+							/>
+							<AttributeRow
+								label="طبقه"
+								icon={Layers}
+								value={
+									attrs.floor !== undefined ? String(attrs.floor) : undefined
+								}
+							/>
+							<AttributeRow
+								label="تعداد کل طبقات"
+								icon={Building2}
+								value={attrs.totalFloorsInBuilding}
+							/>
+							<AttributeRow
+								label="تعداد واحد در طبقه"
+								value={attrs.unitsPerFloor}
+							/>
+							<AttributeRow
+								label="سال ساخت"
+								icon={Calendar}
+								value={attrs.yearBuilt ? `${attrs.yearBuilt}` : undefined}
+							/>
+							<AttributeRow
+								label="تعداد ظرفیت پارکینگ"
+								icon={Car}
+								value={
+									attrs.parkingSpots !== undefined
+										? `${attrs.parkingSpots} خودرو`
+										: undefined
+								}
+							/>
+							<AttributeRow
+								label="سیستم سرمایش"
+								icon={Snowflake}
+								value={attrs.coolingSystem}
+							/>
+							<AttributeRow
+								label="سیستم گرمایش"
+								icon={Flame}
+								value={attrs.heatingSystem}
+							/>
+							<AttributeRow
+								label="تأمین آب گرم"
+								icon={Wind}
+								value={attrs.waterHeater}
+							/>
+							<AttributeRow label="پوشش کف" value={attrs.flooringType} />
+							<AttributeRow label="نمای ساختمان" value={attrs.buildingFacade} />
+							<AttributeRow
+								label="موقعیت جغرافیایی / جهت"
+								icon={Compass}
+								value={attrs.unitDirection}
+							/>
+							<AttributeRow label="سرویس بهداشتی" value={attrs.wcType} />
+							<AttributeRow label="تعداد سرویس بهداشتی" value={attrs.wcCount} />
+						</div>
+					</div>
+
+					{/* Publisher Info */}
 					{listing.publisherType && (
-						<div className="flex items-center gap-2 text-sm">
-							<User className="size-4 text-muted-foreground" />
-							<span className="text-muted-foreground">نوع آگهیدهنده:</span>
-							<span className="font-medium">
-								{listing.publisherType === "agency" ? "آیژانس" : "شخصی"}
+						<div className="flex items-center gap-2 rounded-xl border bg-card p-3 text-xs">
+							<User className="size-4 text-muted-foreground shrink-0" />
+							<span className="text-muted-foreground">نوع آگهی‌دهنده:</span>
+							<span className="font-bold text-foreground">
+								{listing.publisherType === "agency" ? "آژانس املاک" : "شخصی"}
 							</span>
 						</div>
 					)}
 
-					{/* Source links */}
-					<div className="space-y-2">
-						<p className="text-xs font-medium text-muted-foreground">
-							مشاهده در
+					{/* Source Links */}
+					<div className="space-y-2 rounded-xl border bg-card p-3">
+						<p className="text-xs font-bold text-foreground">
+							لینک‌های منبع آگهی
 						</p>
 						<div className="flex flex-wrap gap-2">
 							<a
@@ -299,12 +419,12 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 								target="_blank"
 								rel="noreferrer"
 								className={cn(
-									"inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-80",
+									"inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-opacity hover:opacity-90 shadow-2xs",
 									getSourceColor(listing.source),
 								)}
 							>
 								{getSourceLabel(listing.source)}
-								<ExternalLink className="size-3" />
+								<ExternalLink className="size-3.5" />
 							</a>
 							{listing.alternateSources?.map((alt) => (
 								<a
@@ -313,22 +433,22 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 									target="_blank"
 									rel="noreferrer"
 									className={cn(
-										"inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium opacity-80 transition-opacity hover:opacity-100",
+										"inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium opacity-85 transition-opacity hover:opacity-100",
 										getSourceColor(alt.source),
 									)}
 								>
 									{getSourceLabel(alt.source)}
-									<ExternalLink className="size-3" />
+									<ExternalLink className="size-3.5" />
 								</a>
 							))}
 						</div>
 					</div>
 
-					{/* Dates */}
+					{/* Timestamps */}
 					{listing.publishedAt && (
-						<p className="text-xs text-muted-foreground">
-							ثبت آگهی: {formatRelativeDate(listing.publishedAt)}
-						</p>
+						<div className="text-[11px] text-muted-foreground/80 text-center pb-2">
+							تاریخ انتشار: {formatRelativeDate(listing.publishedAt)}
+						</div>
 					)}
 				</div>
 			</ScrollArea>
@@ -356,16 +476,12 @@ export function PropertyDetailSheet() {
 			>
 				<DrawerContent
 					showOverlay={false}
-					className="mb-14"
-					style={
-						{
-							maxHeight: "calc(100dvh - 10rem)",
-							"--initial-transform": "calc(100% + 3.5rem)",
-						} as React.CSSProperties
-					}
+					className="mb-14 h-[85vh] max-h-[85vh]"
 				>
-					<DrawerHeader className="flex flex-row items-center justify-between border-b p-4">
-						<DrawerTitle className="text-sm">جزئیات آگهی</DrawerTitle>
+					<DrawerHeader className="flex shrink-0 flex-row items-center justify-between border-b p-3.5">
+						<DrawerTitle className="text-xs font-bold">
+							جزئیات آگهی ملک
+						</DrawerTitle>
 						<DrawerClose asChild>
 							<Button
 								variant="ghost"
@@ -393,10 +509,12 @@ export function PropertyDetailSheet() {
 			<SheetContent
 				side="left"
 				showCloseButton={false}
-				className="flex w-[380px] flex-col p-0 sm:max-w-[380px]"
+				className="flex w-[400px] flex-col p-0 sm:max-w-[400px] border-r shadow-2xl"
 			>
-				<SheetHeader className="flex flex-row items-center justify-between border-b p-4">
-					<SheetTitle className="text-sm">جزئیات آگهی</SheetTitle>
+				<SheetHeader className="flex shrink-0 flex-row items-center justify-between border-b p-3.5">
+					<SheetTitle className="text-xs font-bold">
+						جزئیات کامل آگهی
+					</SheetTitle>
 					<Button
 						variant="ghost"
 						size="icon"
