@@ -382,8 +382,7 @@ export const useListingStore = create<ListingState>((set, get) => ({
 			const items = responseData.items ?? [];
 			const total = responseData.total ?? state.total;
 			const nextListings = deduplicateListings(state.listings, items);
-			const newItemsAdded = nextListings.length - state.listings.length;
-			const hasMore = newItemsAdded > 0 && nextListings.length < total;
+			const hasMore = items.length > 0 && nextListings.length < total;
 
 			set({
 				listings: nextListings,

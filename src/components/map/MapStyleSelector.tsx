@@ -42,7 +42,7 @@ export default function MapStyleSelector() {
 				<button
 					className="
             bg-background absolute bottom-6 left-6
-            z-10 overflow-hidden rounded-xl border border-solid border-black shadow-lg transition hover:shadow-xl
+            z-10 overflow-hidden rounded-xl border border-solid border-border shadow-lg transition hover:shadow-xl hover:scale-105
           "
 					style={{ bottom: `calc(1.5rem + env(safe-area-inset-bottom, 0px))` }}
 				>
@@ -68,7 +68,7 @@ export default function MapStyleSelector() {
 						{/* Solid label bar at bottom */}
 						<div
 							className="
-                absolute inset-x-0 bottom-0 flex items-center gap-1 bg-black/60
+                absolute inset-x-0 bottom-0 flex items-center gap-1 bg-black/75
                 px-1.5 py-1 text-white
               "
 						>
@@ -81,25 +81,23 @@ export default function MapStyleSelector() {
 				</button>
 			</PopoverTrigger>
 			<PopoverContent
-				align="end"
+				align="start"
 				side="top"
-				className="flex max-h-125 w-65 flex-col p-3"
+				sideOffset={12}
+				className="flex max-h-[75vh] w-72 flex-col overflow-hidden p-3 shadow-2xl border-border bg-background/95 backdrop-blur-md"
+				dir="rtl"
 			>
 				{/* Sticky header with horizontal lines */}
-				<div className="mb-3 flex shrink-0 items-center gap-2">
+				<div className="mb-2 flex shrink-0 items-center gap-2 border-b pb-2">
 					<div className="bg-border h-px flex-1" />
-					<h3
-						className="
-              text-foreground/80 text-xs font-semibold whitespace-nowrap
-            "
-					>
+					<h3 className="text-foreground/90 text-xs font-bold whitespace-nowrap">
 						لایه‌های پس‌زمینه
 					</h3>
 					<div className="bg-border h-px flex-1" />
 				</div>
 
-				<ScrollArea className="flex-1">
-					<div className="space-y-4">
+				<ScrollArea className="h-[calc(75vh-60px)] flex-1 pl-1 pr-1">
+					<div className="space-y-4 pb-2">
 						{vectorStyles.length > 0 && (
 							<section>
 								<h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
@@ -118,7 +116,7 @@ export default function MapStyleSelector() {
 							</section>
 						)}
 
-						{/* Public transport overlays – now using the same grid as style cards */}
+						{/* Public transport overlays */}
 						{OVERLAYS.length > 0 && (
 							<section>
 								<h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
@@ -175,24 +173,18 @@ function StyleCard({
 }) {
 	return (
 		<button
+			type="button"
 			onClick={() => onSelect(style)}
 			className={`
-        flex flex-col items-center gap-1 rounded-xl border-2 p-1.5 transition
+        flex flex-col items-center gap-1 rounded-xl border-2 p-1.5 transition text-right
         ${
 					isSelected
-						? "border-amber-500 shadow-sm"
-						: `
-              hover:border-ring
-              border
-            `
+						? "border-primary bg-primary/5 shadow-xs"
+						: "border-border hover:border-primary/50"
 				}
       `}
 		>
-			<div
-				className="
-          bg-muted relative aspect-[1.2/1] w-full overflow-hidden rounded-lg
-        "
-			>
+			<div className="bg-muted relative aspect-[1.2/1] w-full overflow-hidden rounded-lg">
 				{style.preview ? (
 					<Image
 						src={style.preview}
@@ -202,22 +194,12 @@ function StyleCard({
 						className="object-cover"
 					/>
 				) : (
-					<div
-						className="
-              flex size-full items-center justify-center bg-linear-to-br
-              from-blue-200 to-purple-200 text-[11px] text-gray-600
-              dark:from-blue-900 dark:to-purple-900 dark:text-white/70
-            "
-					>
+					<div className="flex size-full items-center justify-center bg-linear-to-br from-blue-200 to-purple-200 text-[11px] text-gray-600 dark:from-blue-900 dark:to-purple-900 dark:text-white/70">
 						{style.name}
 					</div>
 				)}
 			</div>
-			<span
-				className="
-          text-foreground text-center text-[11px] leading-tight font-medium
-        "
-			>
+			<span className="text-foreground text-center text-[11px] leading-tight font-medium">
 				{style.name}
 			</span>
 		</button>
@@ -235,24 +217,18 @@ function OverlayCard({
 }) {
 	return (
 		<button
+			type="button"
 			onClick={onToggle}
 			className={`
-        flex flex-col items-center gap-1 rounded-xl border-2 p-1.5 transition
+        flex flex-col items-center gap-1 rounded-xl border-2 p-1.5 transition text-right
         ${
 					isActive
-						? "border-rose-500 shadow-sm"
-						: `
-              hover:border-ring
-              border
-            `
+						? "border-rose-500 bg-rose-500/5 shadow-xs"
+						: "border-border hover:border-rose-500/50"
 				}
       `}
 		>
-			<div
-				className="
-          bg-muted relative aspect-[1.2/1] w-full overflow-hidden rounded-lg
-        "
-			>
+			<div className="bg-muted relative aspect-[1.2/1] w-full overflow-hidden rounded-lg">
 				{overlay.preview ? (
 					<Image
 						src={overlay.preview}
@@ -262,22 +238,12 @@ function OverlayCard({
 						className="object-cover"
 					/>
 				) : (
-					<div
-						className="
-              flex size-full items-center justify-center bg-linear-to-br
-              from-yellow-100 to-yellow-200 text-[11px] text-gray-600
-              dark:from-yellow-900 dark:to-yellow-800 dark:text-white/70
-            "
-					>
+					<div className="flex size-full items-center justify-center bg-linear-to-br from-yellow-100 to-yellow-200 text-[11px] text-gray-600 dark:from-yellow-900 dark:to-yellow-800 dark:text-white/70">
 						{overlay.name}
 					</div>
 				)}
 			</div>
-			<span
-				className="
-          text-foreground text-center text-[11px] leading-tight font-medium
-        "
-			>
+			<span className="text-foreground text-center text-[11px] leading-tight font-medium">
 				{overlay.name}
 			</span>
 		</button>

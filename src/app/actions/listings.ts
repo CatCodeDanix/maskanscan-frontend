@@ -1,6 +1,6 @@
 "use server";
 
-import { and, count, eq, gte, lte, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { scrapedListings } from "@/db/schema";
 import type {
@@ -160,6 +160,7 @@ export async function queryListingsAction(filters: ListingFilters = {}) {
 			.select()
 			.from(scrapedListings)
 			.where(whereClause)
+			.orderBy(desc(scrapedListings.publishedAt), desc(scrapedListings.id))
 			.limit(limit)
 			.offset(offset);
 

@@ -22,7 +22,7 @@ const SUPERCLUSTER_OPTIONS: Supercluster.Options<
 	{ pin: MapPinItem | UnifiedListing },
 	Record<string, never>
 > = {
-	radius: 60,
+	radius: 80,
 	maxZoom: 16,
 	minZoom: 0,
 };
