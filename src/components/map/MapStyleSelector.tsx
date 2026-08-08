@@ -9,7 +9,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { MAP_STYLES, type MapStyleDef, OVERLAYS } from "@/lib/map-styles";
 import { useMapStore } from "@/store/map-store";
 
@@ -81,13 +80,13 @@ export default function MapStyleSelector() {
 				</button>
 			</PopoverTrigger>
 			<PopoverContent
-				align="start"
+				align="end"
 				side="top"
 				sideOffset={12}
-				className="flex max-h-[75vh] w-72 flex-col overflow-hidden p-3 shadow-2xl border-border bg-background/95 backdrop-blur-md"
+				className="flex max-h-[80vh] w-72 flex-col overflow-hidden p-3 shadow-2xl border-border bg-background/95 backdrop-blur-md"
 				dir="rtl"
 			>
-				{/* Sticky header with horizontal lines */}
+				{/* Sticky header */}
 				<div className="mb-2 flex shrink-0 items-center gap-2 border-b pb-2">
 					<div className="bg-border h-px flex-1" />
 					<h3 className="text-foreground/90 text-xs font-bold whitespace-nowrap">
@@ -96,67 +95,66 @@ export default function MapStyleSelector() {
 					<div className="bg-border h-px flex-1" />
 				</div>
 
-				<ScrollArea className="h-[calc(75vh-60px)] flex-1 pl-1 pr-1">
-					<div className="space-y-4 pb-2">
-						{vectorStyles.length > 0 && (
-							<section>
-								<h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
-									استایل‌های برداری
-								</h4>
-								<div className="grid grid-cols-2 gap-2">
-									{vectorStyles.map((style) => (
-										<StyleCard
-											key={style.id}
-											style={style}
-											isSelected={mapStyle === style.url}
-											onSelect={handleSelect}
-										/>
-									))}
-								</div>
-							</section>
-						)}
+				{/* Responsive native scroll container */}
+				<div className="max-h-[360px] w-full overflow-y-auto p-1 space-y-4 text-right">
+					{vectorStyles.length > 0 && (
+						<section>
+							<h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
+								استایل‌های برداری
+							</h4>
+							<div className="grid grid-cols-2 gap-2">
+								{vectorStyles.map((style) => (
+									<StyleCard
+										key={style.id}
+										style={style}
+										isSelected={mapStyle === style.url}
+										onSelect={handleSelect}
+									/>
+								))}
+							</div>
+						</section>
+					)}
 
-						{/* Public transport overlays */}
-						{OVERLAYS.length > 0 && (
-							<section>
-								<h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
-									نقشه حمل و نقل عمومی
-								</h4>
-								<div className="grid grid-cols-2 gap-2">
-									{OVERLAYS.map((overlay) => {
-										const isActive = activeOverlays.includes(overlay.id);
-										return (
-											<OverlayCard
-												key={overlay.id}
-												overlay={overlay}
-												isActive={isActive}
-												onToggle={() => toggleOverlay(overlay.id)}
-											/>
-										);
-									})}
-								</div>
-							</section>
-						)}
-
-						{rasterStyles.length > 0 && (
-							<section>
-								<h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
-									استایل‌های تصویری
-								</h4>
-								<div className="grid grid-cols-2 gap-2">
-									{rasterStyles.map((style) => (
-										<StyleCard
-											key={style.id}
-											style={style}
-											isSelected={mapStyle === style.url}
-											onSelect={handleSelect}
+					{/* Public transport overlays */}
+					{OVERLAYS.length > 0 && (
+						<section>
+							<h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
+								نقشه حمل و نقل عمومی
+							</h4>
+							<div className="grid grid-cols-2 gap-2">
+								{OVERLAYS.map((overlay) => {
+									const isActive = activeOverlays.includes(overlay.id);
+									return (
+										<OverlayCard
+											key={overlay.id}
+											overlay={overlay}
+											isActive={isActive}
+											onToggle={() => toggleOverlay(overlay.id)}
 										/>
-									))}
-								</div>
-							</section>
-						)}
-					</div>
-				</ScrollArea>
+									);
+								})}
+							</div>
+						</section>
+					)}
+
+					{rasterStyles.length > 0 && (
+						<section>
+							<h4 className="text-foreground/80 mb-2 px-1 text-xs font-semibold">
+								استایل‌های تصویری
+							</h4>
+							<div className="grid grid-cols-2 gap-2">
+								{rasterStyles.map((style) => (
+									<StyleCard
+										key={style.id}
+										style={style}
+										isSelected={mapStyle === style.url}
+										onSelect={handleSelect}
+									/>
+								))}
+							</div>
+						</section>
+					)}
+				</div>
 			</PopoverContent>
 		</Popover>
 	);

@@ -184,9 +184,11 @@ export function AppSidebar({ onItemClick, ...props }: AppSidebarProps) {
 					</div>
 				</SidebarHeader>
 
-				<SidebarContent>
-					<SidebarGroup className="px-0">
-						<SidebarGroupContent>{panelContent}</SidebarGroupContent>
+				<SidebarContent className="flex flex-1 flex-col overflow-hidden p-0">
+					<SidebarGroup className="flex flex-1 flex-col overflow-hidden p-0">
+						<SidebarGroupContent className="flex flex-1 flex-col overflow-hidden p-0">
+							{panelContent}
+						</SidebarGroupContent>
 					</SidebarGroup>
 				</SidebarContent>
 			</Sidebar>
