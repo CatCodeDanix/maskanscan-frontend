@@ -3,7 +3,7 @@
 import type { PickingInfo } from "@deck.gl/core";
 import { IconLayer, TextLayer } from "@deck.gl/layers";
 import type { Feature, LineString, MultiLineString, Point } from "geojson";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { useMap } from "react-map-gl/maplibre";
 import Supercluster from "supercluster";
@@ -309,11 +309,36 @@ const DeckMap = () => {
 						return;
 					}
 					const pin = (object as PointFeature).properties.pin;
-					void selectListingById(pin.source, pin.externalId);
+					void selectListingById(pin.source, pin.externalId, pin);
 				},
 			}),
 		[clusters, mapInstance, selectListingById, superclusterInstance],
 	);
+
+	// Fly map to selected listing location when clicked from list or map
+	const selectedListing = useListingStore((s) => s.selectedListing);
+	useEffect(() => {
+		if (!selectedListing || !mapInstance) return;
+		const lat =
+			selectedListing.location?.latitude ??
+			("latitude" in selectedListing
+				? (selectedListing as unknown as MapPinItem).latitude
+				: null);
+		const lng =
+			selectedListing.location?.longitude ??
+			("longitude" in selectedListing
+				? (selectedListing as unknown as MapPinItem).longitude
+				: null);
+
+		if (lat != null && lng != null) {
+			mapInstance.flyTo({
+				center: [lng, lat],
+				zoom: Math.max(15, mapInstance.getZoom()),
+				duration: 800,
+				essential: true,
+			});
+		}
+	}, [selectedListing, mapInstance]);
 
 	// Text layer rendering centered Persian count digits inside cluster nodes
 	const clusterTextLayer = useMemo(

@@ -98,7 +98,11 @@ interface ListingState extends FilterState {
 
 	// Data Actions
 	setSelectedListing: (l: UnifiedListing | null) => void;
-	selectListingById: (source: string, externalId: string) => Promise<void>;
+	selectListingById: (
+		source: string,
+		externalId: string,
+		pinFallback?: MapPinItem | UnifiedListing,
+	) => Promise<void>;
 	setLocationTree: (t: Province[]) => void;
 	fetchListings: (reset?: boolean) => Promise<void>;
 	fetchMapPins: () => Promise<void>;
@@ -219,9 +223,13 @@ export const useListingStore = create<ListingState>((set, get) => ({
 	// Data actions
 	setSelectedListing: (l) => set({ selectedListing: l }),
 
-	selectListingById: async (source, externalId) => {
+	selectListingById: async (
+		source: string,
+		externalId: string,
+		pinFallback?: MapPinItem | UnifiedListing,
+	) => {
 		const state = get();
-		// Check in current loaded listings
+		// 1. Check in current loaded listings
 		const foundInListings = state.listings.find(
 			(l) => l.source === source && l.externalId === externalId,
 		);
@@ -230,7 +238,7 @@ export const useListingStore = create<ListingState>((set, get) => ({
 			return;
 		}
 
-		// Check in favorites
+		// 2. Check in favorites
 		const favoriteListings = useFavoritesStore.getState().favoriteListings;
 		const foundInFavs = favoriteListings.find(
 			(l) => l.source === source && l.externalId === externalId,
@@ -240,14 +248,45 @@ export const useListingStore = create<ListingState>((set, get) => ({
 			return;
 		}
 
-		// Fetch full listing directly
+		// 3. Instant Optimistic Open (0ms latency!)
+		if (pinFallback) {
+			const optimisticListing: UnifiedListing =
+				"url" in pinFallback
+					? (pinFallback as UnifiedListing)
+					: {
+							id: pinFallback.id,
+							source: pinFallback.source,
+							externalId: pinFallback.externalId,
+							url: "",
+							title: pinFallback.title,
+							dealType: pinFallback.dealType,
+							city: pinFallback.cityPersian,
+							cityPersian: pinFallback.cityPersian,
+							districtPersian: pinFallback.districtPersian,
+							depositTomans: pinFallback.depositTomans,
+							rentTomans: pinFallback.rentTomans,
+							totalPriceTomans: pinFallback.totalPriceTomans,
+							location: {
+								latitude: pinFallback.latitude,
+								longitude: pinFallback.longitude,
+								isFuzzy: false,
+								isFallback: Boolean(pinFallback.isFallback),
+							},
+							attributes: {},
+							images: [],
+							scrapedAt: new Date().toISOString(),
+						};
+			set({ selectedListing: optimisticListing });
+		}
+
+		// 4. Fetch full listing in background to enrich description, images, phone, attributes
 		try {
 			const res = await getListingByIdAction(source, externalId);
 			if (res.success && res.listing) {
 				set({ selectedListing: res.listing });
 			}
 		} catch (err) {
-			console.error("selectListingById error:", err);
+			console.error("selectListingById background fetch error:", err);
 		}
 	},
 
