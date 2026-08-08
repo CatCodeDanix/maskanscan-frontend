@@ -44,13 +44,13 @@ export function ListingsPanel() {
 		overscan: 6,
 	});
 
-	// Trigger next page when scrolling within 1200px of bottom
+	// Trigger next page when scrolling within 3500px of bottom (~10 cards ahead)
 	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
 		const target = e.currentTarget;
 		const distanceToBottom =
 			target.scrollHeight - target.scrollTop - target.clientHeight;
 		if (
-			distanceToBottom < 1200 &&
+			distanceToBottom < 3500 &&
 			hasMore &&
 			!isLoading &&
 			!isFetchingNextPage
