@@ -27,6 +27,7 @@ const DEFAULT_FILTERS = {
 	hasStorage: false,
 	hasBalcony: false,
 	isConvertible: false,
+	excludeAgreed: false,
 	publisherType: "all" as "all" | "personal" | "agency",
 	minArea: undefined as number | undefined,
 	maxArea: undefined as number | undefined,
@@ -78,6 +79,7 @@ interface ListingState extends FilterState {
 	setHasStorage: (v: boolean) => void;
 	setHasBalcony: (v: boolean) => void;
 	setIsConvertible: (v: boolean) => void;
+	setExcludeAgreed: (v: boolean) => void;
 	setPublisherType: (p: "all" | "personal" | "agency") => void;
 	setMinArea: (v: number | undefined) => void;
 	setMaxArea: (v: number | undefined) => void;
@@ -138,6 +140,7 @@ function getFiltersObject(state: ListingState, page = 1): ListingFilters {
 		hasStorage: state.hasStorage || undefined,
 		hasBalcony: state.hasBalcony || undefined,
 		isConvertible: state.isConvertible || undefined,
+		excludeAgreed: state.excludeAgreed || undefined,
 		publisherType:
 			state.publisherType !== "all" ? state.publisherType : undefined,
 		minArea: state.minArea,
@@ -196,6 +199,7 @@ export const useListingStore = create<ListingState>((set, get) => ({
 	setHasStorage: (v) => set({ hasStorage: v }),
 	setHasBalcony: (v) => set({ hasBalcony: v }),
 	setIsConvertible: (v) => set({ isConvertible: v }),
+	setExcludeAgreed: (v) => set({ excludeAgreed: v }),
 	setPublisherType: (p) => set({ publisherType: p }),
 	setMinArea: (v) => set({ minArea: v }),
 	setMaxArea: (v) => set({ maxArea: v }),

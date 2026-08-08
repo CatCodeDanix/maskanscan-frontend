@@ -136,6 +136,22 @@ function buildWhereClause(filters: ListingFilters) {
 		);
 	}
 
+	// Option to exclude agreed/negotiable price listings ("توافقی")
+	if (filters.excludeAgreed) {
+		if (filters.dealType === "buy") {
+			conditions.push(
+				eq(scrapedListings.isAgreedPrice, false),
+				sql`${scrapedListings.totalPriceTomans} IS NOT NULL AND ${scrapedListings.totalPriceTomans} > 0`,
+			);
+		} else {
+			conditions.push(
+				eq(scrapedListings.isAgreedDeposit, false),
+				eq(scrapedListings.isAgreedRent, false),
+				sql`(${scrapedListings.depositTomans} IS NOT NULL AND ${scrapedListings.depositTomans} > 0 OR ${scrapedListings.rentTomans} IS NOT NULL AND ${scrapedListings.rentTomans} > 0)`,
+			);
+		}
+	}
+
 	return and(...conditions);
 }
 

@@ -133,6 +133,8 @@ export function FiltersPanel() {
 	const hasStorage = useListingStore((s) => s.hasStorage);
 	const hasBalcony = useListingStore((s) => s.hasBalcony);
 	const isConvertible = useListingStore((s) => s.isConvertible);
+	const excludeAgreed = useListingStore((s) => s.excludeAgreed);
+	const setExcludeAgreed = useListingStore((s) => s.setExcludeAgreed);
 	const publisherType = useListingStore((s) => s.publisherType);
 	const minArea = useListingStore((s) => s.minArea);
 	const maxArea = useListingStore((s) => s.maxArea);
@@ -398,6 +400,26 @@ export function FiltersPanel() {
 						</div>
 					</div>
 				)}
+
+				{/* Exclude Agreed / Negotiable Price Switch */}
+				<div className="flex items-center justify-between rounded-xl border bg-card p-3 shadow-2xs">
+					<div className="space-y-0.5 text-right">
+						<label
+							htmlFor="exclude-agreed-switch"
+							className="text-xs font-semibold text-foreground cursor-pointer"
+						>
+							حذف آگهی‌های قیمت توافقی
+						</label>
+						<p className="text-[11px] text-muted-foreground">
+							فقط آگهی‌های دارای قیمت و رهن دقیق نمایش داده شوند
+						</p>
+					</div>
+					<Switch
+						id="exclude-agreed-switch"
+						checked={excludeAgreed}
+						onCheckedChange={setExcludeAgreed}
+					/>
+				</div>
 
 				<Separator />
 

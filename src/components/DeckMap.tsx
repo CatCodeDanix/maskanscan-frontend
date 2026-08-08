@@ -135,9 +135,9 @@ function getTooltip(
 	if ("properties" in obj && obj.properties && "cluster" in obj.properties) {
 		const cluster = obj as ClusterFeature;
 		return {
-			html: `<div style="font-family:inherit;direction:rtl;text-align:right;padding:4px 6px">
-        <p style="font-size:12px;font-weight:700;margin:0;color:#ffffff">${toPersianDigits(cluster.properties.point_count)} آگهی ملک</p>
-        <p style="font-size:10px;margin:2px 0 0;opacity:0.8;color:#e0e7ff">جهت نمایش آگهی‌ها کلیک کنید</p>
+			html: `<div style="font-family:inherit;direction:rtl;text-align:right;padding:6px 10px">
+        <p style="font-size:12px;font-weight:700;margin:0;color:var(--foreground, #0f172a)">${toPersianDigits(cluster.properties.point_count)} آگهی ملک در این محدوده</p>
+        <p style="font-size:11px;margin:3px 0 0;color:var(--muted-foreground, #64748b)">برای زوم و مشاهده آگهی‌ها کلیک کنید</p>
       </div>`,
 			className: "deck-tooltip-reset",
 		};
@@ -182,19 +182,38 @@ const DeckMap = () => {
 	const viewState = useMapViewState();
 	const zoom = viewState?.zoom ?? 10;
 
-	// Build GeoJSON points for supercluster from mapPins or listings
+	// Build GeoJSON points for supercluster from mapPins or listings with spiderfy jitter for overlapping coordinates
 	const points = useMemo<PointFeature[]>(() => {
+		const coordCounts = new Map<string, number>();
+
 		if (mapPins.length > 0) {
 			return mapPins
 				.filter((p) => p.latitude != null && p.longitude != null)
-				.map((pin) => ({
-					type: "Feature",
-					geometry: {
-						type: "Point",
-						coordinates: [pin.longitude, pin.latitude],
-					},
-					properties: { pin },
-				}));
+				.map((pin) => {
+					const baseLat = pin.latitude;
+					const baseLng = pin.longitude;
+					const key = `${baseLat.toFixed(5)},${baseLng.toFixed(5)}`;
+					const count = coordCounts.get(key) ?? 0;
+					coordCounts.set(key, count + 1);
+
+					let lng = baseLng;
+					let lat = baseLat;
+					if (count > 0) {
+						const angle = (count * (2 * Math.PI)) / 6;
+						const radius = 0.00015 * Math.ceil(count / 6);
+						lng = baseLng + radius * Math.cos(angle);
+						lat = baseLat + radius * Math.sin(angle);
+					}
+
+					return {
+						type: "Feature",
+						geometry: {
+							type: "Point",
+							coordinates: [lng, lat],
+						},
+						properties: { pin },
+					};
+				});
 		}
 
 		return listings
@@ -202,8 +221,21 @@ const DeckMap = () => {
 				(l) => l.location?.latitude != null && l.location?.longitude != null,
 			)
 			.map((listing) => {
-				const lng = listing.location?.longitude ?? 0;
-				const lat = listing.location?.latitude ?? 0;
+				const baseLng = listing.location?.longitude ?? 0;
+				const baseLat = listing.location?.latitude ?? 0;
+				const key = `${baseLat.toFixed(5)},${baseLat.toFixed(5)}`;
+				const count = coordCounts.get(key) ?? 0;
+				coordCounts.set(key, count + 1);
+
+				let lng = baseLng;
+				let lat = baseLat;
+				if (count > 0) {
+					const angle = (count * (2 * Math.PI)) / 6;
+					const radius = 0.00015 * Math.ceil(count / 6);
+					lng = baseLng + radius * Math.cos(angle);
+					lat = baseLat + radius * Math.sin(angle);
+				}
+
 				return {
 					type: "Feature",
 					geometry: {

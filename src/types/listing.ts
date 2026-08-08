@@ -147,6 +147,7 @@ export interface ListingFilters {
 	hasStorage?: boolean;
 	hasBalcony?: boolean;
 	isConvertible?: boolean;
+	excludeAgreed?: boolean;
 	publisherType?: "all" | "personal" | "agency";
 	page?: number;
 	limit?: number;

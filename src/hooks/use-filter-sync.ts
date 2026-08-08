@@ -24,6 +24,7 @@ export function useFilterSync() {
 	const hasStorage = useListingStore((s) => s.hasStorage);
 	const hasBalcony = useListingStore((s) => s.hasBalcony);
 	const isConvertible = useListingStore((s) => s.isConvertible);
+	const excludeAgreed = useListingStore((s) => s.excludeAgreed);
 	const publisherType = useListingStore((s) => s.publisherType);
 	const minArea = useListingStore((s) => s.minArea);
 	const maxArea = useListingStore((s) => s.maxArea);
@@ -68,6 +69,9 @@ export function useFilterSync() {
 			...(params.get("hasBalcony") === "true" ? { hasBalcony: true } : {}),
 			...(params.get("isConvertible") === "true"
 				? { isConvertible: true }
+				: {}),
+			...(params.get("excludeAgreed") === "true"
+				? { excludeAgreed: true }
 				: {}),
 			...(params.get("publisherType")
 				? {
@@ -147,6 +151,7 @@ export function useFilterSync() {
 		hasStorage,
 		hasBalcony,
 		isConvertible,
+		excludeAgreed,
 		publisherType,
 		minArea,
 		maxArea,
@@ -197,6 +202,7 @@ export function useFilterSync() {
 		if (hasStorage) qs_params.set("hasStorage", "true");
 		if (hasBalcony) qs_params.set("hasBalcony", "true");
 		if (isConvertible) qs_params.set("isConvertible", "true");
+		if (excludeAgreed) qs_params.set("excludeAgreed", "true");
 		if (publisherType && publisherType !== "all")
 			qs_params.set("publisherType", publisherType);
 		if (minArea !== undefined) qs_params.set("minArea", String(minArea));
@@ -236,6 +242,7 @@ export function useFilterSync() {
 		hasStorage,
 		hasBalcony,
 		isConvertible,
+		excludeAgreed,
 		publisherType,
 		minArea,
 		maxArea,

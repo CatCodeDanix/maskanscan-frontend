@@ -35,6 +35,7 @@ export async function GET(request: NextRequest) {
 			hasStorage: parseBool(searchParams.get("hasStorage")),
 			hasBalcony: parseBool(searchParams.get("hasBalcony")),
 			isConvertible: parseBool(searchParams.get("isConvertible")),
+			excludeAgreed: parseBool(searchParams.get("excludeAgreed")),
 			publisherType:
 				(searchParams.get(
 					"publisherType",
