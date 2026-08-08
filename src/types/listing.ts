@@ -15,6 +15,22 @@ export interface ListingLocation {
 	isFallback: boolean;
 }
 
+export interface MapPinItem {
+	id?: number;
+	source: Source;
+	externalId: string;
+	title: string;
+	dealType: DealType;
+	cityPersian: string;
+	districtPersian?: string;
+	depositTomans?: number;
+	rentTomans?: number;
+	totalPriceTomans?: number;
+	latitude: number;
+	longitude: number;
+	isFallback?: boolean;
+}
+
 export interface ListingAttributes {
 	areaSqMeters?: number;
 	landAreaSqMeters?: number;

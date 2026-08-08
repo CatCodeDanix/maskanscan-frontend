@@ -11,6 +11,7 @@ export function useFilterSync() {
 	const patchFilters = useListingStore((s) => s.patchFilters);
 	const fetchLocationTree = useListingStore((s) => s.fetchLocationTree);
 	const fetchListings = useListingStore((s) => s.fetchListings);
+	const fetchMapPins = useListingStore((s) => s.fetchMapPins);
 
 	const dealType = useListingStore((s) => s.dealType);
 	const city = useListingStore((s) => s.city);
@@ -114,8 +115,9 @@ export function useFilterSync() {
 		});
 
 		void fetchLocationTree();
+		void fetchMapPins();
 		void fetchListings(true);
-	}, [fetchLocationTree, fetchListings, patchFilters]);
+	}, [fetchLocationTree, fetchListings, fetchMapPins, patchFilters]);
 
 	useEffect(() => {
 		if (skipFirstURLPush.current) {

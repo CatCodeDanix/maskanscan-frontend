@@ -1,8 +1,14 @@
 import { create } from "zustand";
-import { queryListingsAction } from "@/app/actions/listings";
+import {
+	getListingByIdAction,
+	queryListingsAction,
+	queryMapPinsAction,
+} from "@/app/actions/listings";
+import { useFavoritesStore } from "@/store/favorites-store";
 import type {
 	DealType,
 	ListingFilters,
+	MapPinItem,
 	Province,
 	UnifiedListing,
 } from "@/types/listing";
@@ -45,12 +51,14 @@ type FilterState = typeof DEFAULT_FILTERS;
 interface ListingState extends FilterState {
 	// Data
 	listings: UnifiedListing[];
+	mapPins: MapPinItem[];
 	selectedListing: UnifiedListing | null;
 	total: number;
 	page: number;
 	limit: number;
 	hasMore: boolean;
 	isLoading: boolean;
+	isLoadingMapPins: boolean;
 	isFetchingNextPage: boolean;
 	error: string | null;
 	hasFetched: boolean;
@@ -88,8 +96,10 @@ interface ListingState extends FilterState {
 
 	// Data Actions
 	setSelectedListing: (l: UnifiedListing | null) => void;
+	selectListingById: (source: string, externalId: string) => Promise<void>;
 	setLocationTree: (t: Province[]) => void;
 	fetchListings: (reset?: boolean) => Promise<void>;
+	fetchMapPins: () => Promise<void>;
 	fetchNextPage: () => Promise<void>;
 	fetchLocationTree: () => Promise<void>;
 	applyFilters: () => Promise<void>;
@@ -156,12 +166,14 @@ function getFiltersObject(state: ListingState, page = 1): ListingFilters {
 export const useListingStore = create<ListingState>((set, get) => ({
 	// Data
 	listings: [],
+	mapPins: [],
 	selectedListing: null,
 	total: 0,
 	page: 1,
 	limit: 50,
 	hasMore: true,
 	isLoading: false,
+	isLoadingMapPins: false,
 	isFetchingNextPage: false,
 	error: null,
 	hasFetched: false,
@@ -202,6 +214,39 @@ export const useListingStore = create<ListingState>((set, get) => ({
 
 	// Data actions
 	setSelectedListing: (l) => set({ selectedListing: l }),
+
+	selectListingById: async (source, externalId) => {
+		const state = get();
+		// Check in current loaded listings
+		const foundInListings = state.listings.find(
+			(l) => l.source === source && l.externalId === externalId,
+		);
+		if (foundInListings) {
+			set({ selectedListing: foundInListings });
+			return;
+		}
+
+		// Check in favorites
+		const favoriteListings = useFavoritesStore.getState().favoriteListings;
+		const foundInFavs = favoriteListings.find(
+			(l) => l.source === source && l.externalId === externalId,
+		);
+		if (foundInFavs) {
+			set({ selectedListing: foundInFavs });
+			return;
+		}
+
+		// Fetch full listing directly
+		try {
+			const res = await getListingByIdAction(source, externalId);
+			if (res.success && res.listing) {
+				set({ selectedListing: res.listing });
+			}
+		} catch (err) {
+			console.error("selectListingById error:", err);
+		}
+	},
+
 	setLocationTree: (t) => set({ locationTree: t }),
 
 	fetchListings: async (reset = true) => {
@@ -266,6 +311,37 @@ export const useListingStore = create<ListingState>((set, get) => ({
 		}
 	},
 
+	fetchMapPins: async () => {
+		const state = get();
+		set({ isLoadingMapPins: true });
+		try {
+			const filterParams = getFiltersObject(state, 1);
+			let pins: MapPinItem[] = [];
+
+			try {
+				const resAction = await queryMapPinsAction(filterParams);
+				if (resAction.success) {
+					pins = resAction.pins;
+				}
+			} catch {
+				const params = new URLSearchParams();
+				Object.entries(filterParams).forEach(([k, v]) => {
+					if (v !== undefined) params.set(k, String(v));
+				});
+				const res = await fetch(`/api/listings/map?${params.toString()}`);
+				if (res.ok) {
+					const json = await res.json();
+					pins = json.pins ?? [];
+				}
+			}
+
+			set({ mapPins: pins, isLoadingMapPins: false });
+		} catch (err) {
+			console.error("fetchMapPins error:", err);
+			set({ isLoadingMapPins: false });
+		}
+	},
+
 	fetchNextPage: async () => {
 		const state = get();
 		if (state.isLoading || state.isFetchingNextPage || !state.hasMore) return;
@@ -306,7 +382,6 @@ export const useListingStore = create<ListingState>((set, get) => ({
 			const items = responseData.items ?? [];
 			const total = responseData.total ?? state.total;
 			const nextListings = deduplicateListings(state.listings, items);
-			// Stop if no new unique listings were returned or reached total
 			const newItemsAdded = nextListings.length - state.listings.length;
 			const hasMore = newItemsAdded > 0 && nextListings.length < total;
 
@@ -338,6 +413,7 @@ export const useListingStore = create<ListingState>((set, get) => ({
 	},
 
 	applyFilters: async () => {
+		void get().fetchMapPins();
 		await get().fetchListings(true);
 	},
 }));

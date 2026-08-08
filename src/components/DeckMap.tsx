@@ -9,17 +9,17 @@ import { useMap } from "react-map-gl/maplibre";
 import Supercluster from "supercluster";
 import TransitTooltip from "@/components/map/TransitTooltip";
 import type { TransitProperties } from "@/data";
-import { formatListingPriceShort } from "@/lib/format";
+import { formatToman } from "@/lib/format";
 import { useTransitLayers } from "@/lib/overlay-layers";
 import { useListingStore } from "@/store/listing-store";
-import type { UnifiedListing } from "@/types/listing";
+import type { MapPinItem, UnifiedListing } from "@/types/listing";
 import DeckGLOverlay from "./DeckGLOverlay";
 import { useMapViewState } from "./MapViewStateContext";
 
 // ── Cluster helpers ───────────────────────────────────────────────────────────
 
 const SUPERCLUSTER_OPTIONS: Supercluster.Options<
-	{ listing: UnifiedListing },
+	{ pin: MapPinItem | UnifiedListing },
 	Record<string, never>
 > = {
 	radius: 60,
@@ -28,7 +28,9 @@ const SUPERCLUSTER_OPTIONS: Supercluster.Options<
 };
 
 type ClusterFeature = Supercluster.ClusterFeature<Record<string, never>>;
-type PointFeature = Supercluster.PointFeature<{ listing: UnifiedListing }>;
+type PointFeature = Supercluster.PointFeature<{
+	pin: MapPinItem | UnifiedListing;
+}>;
 type AnyFeature = ClusterFeature | PointFeature;
 
 function isCluster(f: AnyFeature): f is ClusterFeature {
@@ -95,7 +97,29 @@ const ICON_MAPPING = {
 	},
 };
 
+function formatPinPrice(pin: MapPinItem | UnifiedListing): string {
+	if (pin.dealType === "rent") {
+		if (pin.depositTomans && pin.rentTomans) {
+			return `${formatToman(pin.depositTomans)} رهن • ${formatToman(pin.rentTomans)} اجاره`;
+		}
+		if (pin.depositTomans) return `${formatToman(pin.depositTomans)} رهن`;
+		if (pin.rentTomans) return `${formatToman(pin.rentTomans)} اجاره`;
+		return "توافقی";
+	}
+	return pin.totalPriceTomans ? formatToman(pin.totalPriceTomans) : "توافقی";
+}
+
 // ── Tooltip ───────────────────────────────────────────────────────────────────
+
+function getIsFallback(pin: MapPinItem | UnifiedListing): boolean {
+	if ("location" in pin && pin.location) {
+		return Boolean(pin.location.isFallback);
+	}
+	if ("isFallback" in pin) {
+		return Boolean(pin.isFallback);
+	}
+	return false;
+}
 
 function getTooltip(
 	info: PickingInfo<
@@ -119,15 +143,15 @@ function getTooltip(
 		};
 	}
 
-	// Single listing point Tooltip
-	if ("properties" in obj && obj.properties && "listing" in obj.properties) {
-		const listing = (obj as PointFeature).properties.listing;
+	// Single listing pin Tooltip
+	if ("properties" in obj && obj.properties && "pin" in obj.properties) {
+		const pin = (obj as PointFeature).properties.pin;
 		return {
 			html: `<div style="font-family:inherit;direction:rtl;text-align:right;min-width:170px;padding:6px 8px">
-        <p style="font-size:12px;font-weight:700;margin:0 0 4px;line-height:1.3">${listing.title}</p>
-        <p style="font-size:11px;margin:0;opacity:0.8">${listing.cityPersian}${listing.districtPersian ? ` • ${listing.districtPersian}` : ""}</p>
-        <p style="font-size:12px;font-weight:700;margin:4px 0 0;color:${listing.dealType === "rent" ? "#f59e0b" : "#10b981"}">${formatListingPriceShort(listing)}</p>
-        ${listing.location?.isFallback ? '<p style="font-size:10px;margin:4px 0 0;color:#f59e0b">⚠️ موقعیت تقریبی محله</p>' : ""}
+        <p style="font-size:12px;font-weight:700;margin:0 0 4px;line-height:1.3">${pin.title}</p>
+        <p style="font-size:11px;margin:0;opacity:0.8">${pin.cityPersian}${pin.districtPersian ? ` • ${pin.districtPersian}` : ""}</p>
+        <p style="font-size:12px;font-weight:700;margin:4px 0 0;color:${pin.dealType === "rent" ? "#f59e0b" : "#10b981"}">${formatPinPrice(pin)}</p>
+        ${getIsFallback(pin) ? '<p style="font-size:10px;margin:4px 0 0;color:#f59e0b">⚠️ موقعیت تقریبی محله</p>' : ""}
       </div>`,
 			className: "deck-tooltip-reset",
 		};
@@ -153,31 +177,43 @@ const DeckMap = () => {
 	const { current: mapInstance } = useMap();
 	const transitLayers = useTransitLayers();
 	const listings = useListingStore((s) => s.listings);
-	const setSelectedListing = useListingStore((s) => s.setSelectedListing);
+	const mapPins = useListingStore((s) => s.mapPins);
+	const selectListingById = useListingStore((s) => s.selectListingById);
 	const viewState = useMapViewState();
 	const zoom = viewState?.zoom ?? 10;
 
-	// Build GeoJSON points for supercluster
-	const points = useMemo<PointFeature[]>(
-		() =>
-			listings
-				.filter(
-					(l) => l.location?.latitude != null && l.location?.longitude != null,
-				)
-				.map((listing) => {
-					const lng = listing.location?.longitude ?? 0;
-					const lat = listing.location?.latitude ?? 0;
-					return {
-						type: "Feature",
-						geometry: {
-							type: "Point",
-							coordinates: [lng, lat],
-						},
-						properties: { listing },
-					};
-				}),
-		[listings],
-	);
+	// Build GeoJSON points for supercluster from mapPins or listings
+	const points = useMemo<PointFeature[]>(() => {
+		if (mapPins.length > 0) {
+			return mapPins
+				.filter((p) => p.latitude != null && p.longitude != null)
+				.map((pin) => ({
+					type: "Feature",
+					geometry: {
+						type: "Point",
+						coordinates: [pin.longitude, pin.latitude],
+					},
+					properties: { pin },
+				}));
+		}
+
+		return listings
+			.filter(
+				(l) => l.location?.latitude != null && l.location?.longitude != null,
+			)
+			.map((listing) => {
+				const lng = listing.location?.longitude ?? 0;
+				const lat = listing.location?.latitude ?? 0;
+				return {
+					type: "Feature",
+					geometry: {
+						type: "Point",
+						coordinates: [lng, lat],
+					},
+					properties: { pin: listing },
+				};
+			});
+	}, [mapPins, listings]);
 
 	// Supercluster instance
 	const superclusterInstance = useMemo(() => {
@@ -211,9 +247,9 @@ const DeckMap = () => {
 				iconMapping: ICON_MAPPING,
 				getIcon: (d) => {
 					if (isCluster(d)) return "cluster";
-					const listing = (d as PointFeature).properties.listing;
-					if (listing.dealType === "buy") return "buy";
-					return listing.location?.isFallback ? "rent-fallback" : "rent";
+					const pin = (d as PointFeature).properties.pin;
+					if (pin.dealType === "buy") return "buy";
+					return getIsFallback(pin) ? "rent-fallback" : "rent";
 				},
 				getPosition: (d) => d.geometry.coordinates as [number, number],
 				getSize: (d) => {
@@ -240,11 +276,11 @@ const DeckMap = () => {
 						});
 						return;
 					}
-					const listing = (object as PointFeature).properties.listing;
-					setSelectedListing(listing);
+					const pin = (object as PointFeature).properties.pin;
+					void selectListingById(pin.source, pin.externalId);
 				},
 			}),
-		[clusters, mapInstance, setSelectedListing, superclusterInstance],
+		[clusters, mapInstance, selectListingById, superclusterInstance],
 	);
 
 	// Text layer rendering centered Persian count digits inside cluster nodes
