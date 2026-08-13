@@ -148,5 +148,12 @@ export const scrapedListings = pgTable(
 		index("scraped_listings_city_district_idx").on(table.city, table.district),
 		index("scraped_listings_deal_type_idx").on(table.dealType),
 		index("scraped_listings_is_active_idx").on(table.isActive),
+		index("scraped_listings_spatial_idx").on(table.longitude, table.latitude),
+		index("scraped_listings_active_deal_spatial_idx").on(
+			table.isActive,
+			table.dealType,
+			table.longitude,
+			table.latitude,
+		),
 	],
 );

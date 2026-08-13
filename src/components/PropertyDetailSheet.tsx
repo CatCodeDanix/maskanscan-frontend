@@ -6,11 +6,14 @@ import {
 	Calendar,
 	Car,
 	Check,
+	ChevronLeft,
+	ChevronRight,
 	Compass,
 	Copy,
 	ExternalLink,
 	Flame,
 	Heart,
+	ImageIcon,
 	Info,
 	Layers,
 	Loader2,
@@ -25,7 +28,7 @@ import {
 	X,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useMap } from "react-map-gl/maplibre";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,6 +45,12 @@ import {
 	SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
 	formatBedrooms,
@@ -93,9 +102,150 @@ function BoolBadge({
 	);
 }
 
+// ── Touch-Swipeable Gallery Component ─────────────────────────────────────────
+
+function SwipeableImageGallery({
+	images,
+	title,
+}: {
+	images: string[];
+	title: string;
+}) {
+	const [activeImage, setActiveImage] = useState(0);
+	const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+	const touchStartX = useRef<number | null>(null);
+	const touchEndX = useRef<number | null>(null);
+
+	const total = images.length;
+
+	const handlePrev = useCallback(() => {
+		setActiveImage((prev) => (prev > 0 ? prev - 1 : total - 1));
+	}, [total]);
+
+	const handleNext = useCallback(() => {
+		setActiveImage((prev) => (prev < total - 1 ? prev + 1 : 0));
+	}, [total]);
+
+	const onTouchStart = (e: React.TouchEvent) => {
+		touchStartX.current = e.targetTouches[0].clientX;
+	};
+
+	const onTouchMove = (e: React.TouchEvent) => {
+		touchEndX.current = e.targetTouches[0].clientX;
+	};
+
+	const onTouchEnd = () => {
+		if (!touchStartX.current || !touchEndX.current) return;
+		const distance = touchStartX.current - touchEndX.current;
+		const isLeftSwipe = distance > 45;
+		const isRightSwipe = distance < -45;
+
+		// In RTL layout: swipe left goes to next image, swipe right goes to previous image
+		if (isLeftSwipe) {
+			handleNext();
+		} else if (isRightSwipe) {
+			handlePrev();
+		}
+
+		touchStartX.current = null;
+		touchEndX.current = null;
+	};
+
+	const currentSrc = images[activeImage];
+	const isCurrentError = imageErrors[activeImage];
+
+	return (
+		<div className="space-y-2">
+			<div
+				className="group relative h-60 sm:h-64 w-full shrink-0 overflow-hidden rounded-2xl bg-muted select-none touch-pan-y"
+				onTouchStart={onTouchStart}
+				onTouchMove={onTouchMove}
+				onTouchEnd={onTouchEnd}
+			>
+				{/* Main Active Image */}
+				{!isCurrentError && currentSrc ? (
+					<Image
+						src={currentSrc}
+						alt={`${title} - تصویر ${toPersianDigits(activeImage + 1)}`}
+						fill
+						sizes="(max-width: 768px) 100vw, 440px"
+						className="object-cover transition-all duration-300"
+						priority={activeImage < 2}
+						onError={() => {
+							setImageErrors((prev) => ({ ...prev, [activeImage]: true }));
+						}}
+					/>
+				) : (
+					<div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground bg-muted">
+						<ImageIcon className="size-8 opacity-40" />
+						<span className="text-xs">تصویر در دسترس نیست</span>
+					</div>
+				)}
+
+				{/* Floating Counter Badge */}
+				{total > 1 && (
+					<div className="absolute top-3 right-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md shadow-md">
+						{toPersianDigits(activeImage + 1)} / {toPersianDigits(total)}
+					</div>
+				)}
+
+				{/* Next / Previous Navigation Controls */}
+				{total > 1 && (
+					<>
+						<button
+							type="button"
+							onClick={handleNext}
+							className="absolute left-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95"
+							aria-label="تصویر بعدی"
+						>
+							<ChevronLeft className="size-4" />
+						</button>
+						<button
+							type="button"
+							onClick={handlePrev}
+							className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95"
+							aria-label="تصویر قبلی"
+						>
+							<ChevronRight className="size-4" />
+						</button>
+					</>
+				)}
+			</div>
+
+			{/* Thumbnails Row */}
+			{total > 1 && (
+				<div className="flex items-center gap-1.5 overflow-x-auto px-1 py-1 no-scrollbar">
+					{images.map((src, i) => (
+						<button
+							key={src}
+							type="button"
+							onClick={() => setActiveImage(i)}
+							className={cn(
+								"relative h-12 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-all",
+								i === activeImage
+									? "border-primary ring-2 ring-primary/30 scale-105"
+									: "border-transparent opacity-60 hover:opacity-100",
+							)}
+						>
+							<Image
+								src={src}
+								alt={`بند انگشتی ${toPersianDigits(i + 1)}`}
+								fill
+								sizes="64px"
+								className="object-cover"
+							/>
+						</button>
+					))}
+				</div>
+			)}
+		</div>
+	);
+}
+
+// ── Detail Content Component ──────────────────────────────────────────────────
+
 function DetailContent({ listing }: { listing: UnifiedListing }) {
 	const { current: mapInstance } = useMap();
-	const [activeImage, setActiveImage] = useState(0);
 	const [copiedPhone, setCopiedPhone] = useState(false);
 	const isLoadingDetail = useListingStore((s) => s.isLoadingDetail);
 	const isFav = useFavoritesStore((s) =>
@@ -118,51 +268,27 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 		>
 			{/* Top Loading Progress Bar */}
 			{isLoadingDetail && (
-				<div className="flex items-center justify-between bg-primary/10 px-4 py-1.5 text-xs text-primary border-b border-primary/20">
+				<div className="flex items-center justify-between bg-primary/10 px-4 py-1.5 text-xs text-primary border-b border-primary/20 shrink-0">
 					<span className="flex items-center gap-1.5 text-[11px] font-semibold">
 						<Loader2 className="size-3.5 animate-spin" />
-						در حال دریافت جزئیات و تصاویر کامل آگهی...
+						در حال دریافت جزئیات کامل آگهی...
 					</span>
 				</div>
 			)}
 
-			{/* Images Carousel */}
-			{listing.images && listing.images.length > 0 ? (
-				<div className="relative h-56 w-full shrink-0 bg-muted">
-					<Image
-						src={listing.images[activeImage] ?? listing.images[0]}
-						alt={listing.title}
-						fill
-						sizes="400px"
-						className="object-cover transition-opacity duration-300"
-						priority
-					/>
-					{/* Thumbnail indicators */}
-					{listing.images.length > 1 && (
-						<div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 px-4 overflow-x-auto py-1">
-							{listing.images.slice(0, 10).map((src, i) => (
-								<button
-									key={src}
-									type="button"
-									onClick={() => setActiveImage(i)}
-									className={cn(
-										"size-2.5 rounded-full transition-all shrink-0",
-										i === activeImage
-											? "scale-125 bg-white ring-2 ring-primary"
-											: "bg-white/60 hover:bg-white",
-									)}
-								/>
-							))}
-						</div>
-					)}
-				</div>
-			) : isLoadingDetail ? (
-				<div className="h-44 w-full bg-muted flex items-center justify-center">
-					<Loader2 className="size-6 animate-spin text-primary/60" />
-				</div>
-			) : null}
-
 			<div className="flex-1 overflow-y-auto p-4 space-y-5">
+				{/* Images Gallery */}
+				{listing.images && listing.images.length > 0 ? (
+					<SwipeableImageGallery
+						images={listing.images}
+						title={listing.title}
+					/>
+				) : isLoadingDetail ? (
+					<div className="h-56 w-full rounded-2xl bg-muted flex items-center justify-center">
+						<Loader2 className="size-6 animate-spin text-primary/60" />
+					</div>
+				) : null}
+
 				{/* Title & Location Header */}
 				<div className="flex items-start justify-between gap-3">
 					<div className="flex-1 space-y-1">
@@ -176,51 +302,69 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 						</p>
 					</div>
 					<div className="flex items-center gap-1.5 shrink-0">
-						<Button
-							variant="outline"
-							size="icon"
-							className="size-9 rounded-full"
-							onClick={() => {
-								const lat =
-									listing.location?.latitude ??
-									("latitude" in listing
-										? (listing as unknown as { latitude: number }).latitude
-										: null);
-								const lng =
-									listing.location?.longitude ??
-									("longitude" in listing
-										? (listing as unknown as { longitude: number }).longitude
-										: null);
-								if (lat != null && lng != null && mapInstance) {
-									mapInstance.flyTo({
-										center: [lng, lat],
-										zoom: Math.max(16, mapInstance.getZoom()),
-										duration: 800,
-										essential: true,
-									});
-								}
-							}}
-							title="نمایش روی نقشه"
-							aria-label="نمایش روی نقشه"
-						>
-							<MapPin className="size-4 text-primary" />
-						</Button>
-						<Button
-							variant="outline"
-							size="icon"
-							className="size-9 rounded-full"
-							onClick={() => toggleFavorite(listing)}
-							aria-label="افزودن به علاقه‌مندی‌ها"
-						>
-							<Heart
-								className={cn(
-									"size-4.5 transition-all",
-									isFav
-										? "fill-red-500 text-red-500 scale-110"
-										: "text-muted-foreground",
-								)}
-							/>
-						</Button>
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										variant="outline"
+										size="icon"
+										className="size-9 rounded-full hover:bg-primary/10 hover:border-primary/40"
+										onClick={() => {
+											const lat =
+												listing.location?.latitude ??
+												("latitude" in listing
+													? (listing as unknown as { latitude: number })
+															.latitude
+													: null);
+											const lng =
+												listing.location?.longitude ??
+												("longitude" in listing
+													? (listing as unknown as { longitude: number })
+															.longitude
+													: null);
+											if (lat != null && lng != null && mapInstance) {
+												mapInstance.flyTo({
+													center: [lng, lat],
+													zoom: Math.max(16, mapInstance.getZoom()),
+													duration: 800,
+													essential: true,
+												});
+											}
+										}}
+										aria-label="نمایش روی نقشه"
+									>
+										<MapPin className="size-4 text-primary" />
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent side="bottom" className="text-[11px]">
+									نمایش روی نقشه
+								</TooltipContent>
+							</Tooltip>
+
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										variant="outline"
+										size="icon"
+										className="size-9 rounded-full hover:bg-rose-500/10 hover:border-rose-500/40"
+										onClick={() => toggleFavorite(listing)}
+										aria-label="نشان کردن آگهی"
+									>
+										<Heart
+											className={cn(
+												"size-4.5 transition-all",
+												isFav
+													? "fill-red-500 text-red-500 scale-110"
+													: "text-muted-foreground",
+											)}
+										/>
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent side="bottom" className="text-[11px]">
+									{isFav ? "حذف از نشان‌شده‌ها" : "نشان کردن آگهی"}
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
 					</div>
 				</div>
 
@@ -533,7 +677,7 @@ export function PropertyDetailSheet() {
 			>
 				<DrawerContent
 					showOverlay={false}
-					className="mb-14 h-[85dvh] max-h-[85dvh]"
+					className="mb-14 h-[85dvh] max-h-[85dvh] border-t shadow-2xl"
 				>
 					<DrawerHeader className="flex shrink-0 flex-row items-center justify-between border-b p-3.5">
 						<DrawerTitle className="text-xs font-bold">
@@ -543,7 +687,7 @@ export function PropertyDetailSheet() {
 							<Button
 								variant="ghost"
 								size="icon"
-								className="size-7"
+								className="size-7 rounded-lg"
 								onClick={onClose}
 							>
 								<X className="size-4" />
@@ -565,6 +709,7 @@ export function PropertyDetailSheet() {
 		>
 			<SheetContent
 				side="left"
+				showOverlay={false}
 				showCloseButton={false}
 				className="flex w-[440px] flex-col p-0 sm:max-w-[440px] border-r shadow-2xl"
 			>
@@ -575,7 +720,7 @@ export function PropertyDetailSheet() {
 					<Button
 						variant="ghost"
 						size="icon"
-						className="size-7"
+						className="size-7 rounded-lg"
 						onClick={onClose}
 					>
 						<X className="size-4" />

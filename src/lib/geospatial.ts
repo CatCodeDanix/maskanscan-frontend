@@ -68,15 +68,14 @@ export function isBBoxContained(inner: BBox, outer: BBox): boolean {
  */
 export function getGridSizeForZoom(zoom: number): number {
 	const z = Math.floor(zoom);
-	if (z <= 6) return 0.5;
-	if (z === 7) return 0.25;
-	if (z === 8) return 0.12;
-	if (z === 9) return 0.06;
-	if (z === 10) return 0.03;
-	if (z === 11) return 0.015;
-	if (z === 12) return 0.008;
-	if (z === 13) return 0.004;
-	return 0.002;
+	if (z <= 7) return 0.6;
+	if (z === 8) return 0.35;
+	if (z === 9) return 0.18;
+	if (z === 10) return 0.09;
+	if (z === 11) return 0.045;
+	if (z === 12) return 0.022;
+	if (z === 13) return 0.012;
+	return 0.006;
 }
 
 /**

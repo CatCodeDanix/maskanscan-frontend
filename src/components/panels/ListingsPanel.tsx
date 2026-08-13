@@ -3,12 +3,19 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { AlertCircle, Loader2, RefreshCcw } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/ui/button";
 import { LOTTIE_PRESETS, LottieLoader } from "@/components/ui/LottieLoader";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useViewportListings } from "@/hooks/use-viewport-listings";
+import { cn } from "@/lib/utils";
 import { useListingStore } from "@/store/listing-store";
 import { useMapStore } from "@/store/map-store";
 
@@ -29,6 +36,7 @@ export function ListingsPanel() {
 	const queryClient = useQueryClient();
 	const viewportBBox = useMapStore((s) => s.viewportBBox);
 	const resetFilters = useListingStore((s) => s.resetFilters);
+	const [isRefreshing, setIsRefreshing] = useState(false);
 
 	// Geospatial Viewport Infinite Query
 	const {
@@ -67,6 +75,15 @@ export function ListingsPanel() {
 		}
 	};
 
+	const handleManualRefresh = async () => {
+		setIsRefreshing(true);
+		try {
+			await Promise.all([queryClient.invalidateQueries(), refetch()]);
+		} finally {
+			setTimeout(() => setIsRefreshing(false), 600);
+		}
+	};
+
 	if (isLoading && listings.length === 0) {
 		return (
 			<div
@@ -98,7 +115,7 @@ export function ListingsPanel() {
 				<Button
 					size="sm"
 					variant="outline"
-					onClick={() => void refetch()}
+					onClick={() => void handleManualRefresh()}
 					className="gap-2"
 				>
 					<RefreshCcw className="size-3.5" />
@@ -127,7 +144,7 @@ export function ListingsPanel() {
 					variant="outline"
 					onClick={() => {
 						resetFilters();
-						void refetch();
+						void handleManualRefresh();
 					}}
 					className="mt-2"
 				>
@@ -139,31 +156,44 @@ export function ListingsPanel() {
 
 	return (
 		<div className="flex h-full flex-col bg-background" dir="rtl">
-			{/* Sticky Header Status Bar with Manual Refresh Button */}
-			<div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b bg-background/95 p-3 text-xs backdrop-blur-xs shadow-2xs">
-				<span className="font-medium text-muted-foreground">
+			{/* Sticky Header Status Bar with Manual Refresh Button & Tooltips */}
+			<div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b bg-background/95 px-3.5 py-2.5 text-xs backdrop-blur-xs shadow-2xs">
+				<span className="font-semibold text-muted-foreground text-[11px] sm:text-xs truncate">
 					نمایش {listings.length.toLocaleString("fa-IR")} از{" "}
-					{total.toLocaleString("fa-IR")} آگهی در این محدوده
+					{total.toLocaleString("fa-IR")} آگهی
 				</span>
-				<div className="flex items-center gap-2">
-					{(isLoading || isFetchingNextPage) && (
-						<div className="flex items-center gap-1.5 font-medium text-primary text-[11px]">
-							<Loader2 className="size-3.5 animate-spin" />
-							در حال به‌روزرسانی...
+
+				<div className="flex items-center gap-2 shrink-0">
+					{(isLoading || isFetchingNextPage || isRefreshing) && (
+						<div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary text-[10px] sm:text-[11px] whitespace-nowrap animate-in fade-in duration-200">
+							<Loader2 className="size-3 animate-spin shrink-0" />
+							<span>در حال به‌روزرسانی...</span>
 						</div>
 					)}
-					<Button
-						variant="ghost"
-						size="icon"
-						className="size-7 text-muted-foreground hover:text-foreground"
-						onClick={async () => {
-							await queryClient.invalidateQueries();
-						}}
-						title="به‌روزرسانی داده‌ها"
-						aria-label="به‌روزرسانی داده‌ها"
-					>
-						<RefreshCcw className="size-3.5" />
-					</Button>
+
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									className="size-7.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+									onClick={() => void handleManualRefresh()}
+									aria-label="به‌روزرسانی آگهی‌ها"
+								>
+									<RefreshCcw
+										className={cn(
+											"size-3.5 transition-transform",
+											isRefreshing && "animate-spin",
+										)}
+									/>
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent side="bottom" className="text-[11px]">
+								به‌روزرسانی آگهی‌ها
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
 				</div>
 			</div>
 

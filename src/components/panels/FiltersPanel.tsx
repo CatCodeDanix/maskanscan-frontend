@@ -5,7 +5,6 @@ import {
 	ChevronDown,
 	Home,
 	Info,
-	MapPin,
 	Maximize2,
 	RotateCcw,
 	Search,
@@ -122,7 +121,6 @@ export function FiltersPanel() {
 	const applyDraftFilters = useListingStore((s) => s.applyDraftFilters);
 	const resetDraftFilters = useListingStore((s) => s.resetDraftFilters);
 
-	const locationTree = useListingStore((s) => s.locationTree);
 	const isLoading = useListingStore((s) => s.isLoading);
 	const total = useListingStore((s) => s.total);
 
@@ -134,14 +132,6 @@ export function FiltersPanel() {
 		resetDraftFilters();
 		applyDraftFilters();
 	}, [resetDraftFilters, applyDraftFilters]);
-
-	// Location hierarchy resolution based on draft city
-	const selectedProvince = locationTree.find((p) =>
-		p.cities.some((c) => c.cityId === draft.city),
-	);
-	const cities = selectedProvince?.cities ?? [];
-	const selectedCity = cities.find((c) => c.cityId === draft.city);
-	const districts = selectedCity?.districts ?? [];
 
 	return (
 		<div className="flex h-full flex-col bg-background text-right" dir="rtl">
@@ -179,7 +169,8 @@ export function FiltersPanel() {
 
 				<Separator />
 
-				{/* Location taxonomy */}
+				{/* Location taxonomy (Currently scoped to Tehran Province) */}
+				{/* 
 				<div className="space-y-3">
 					<SectionHeader
 						icon={MapPin}

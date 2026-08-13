@@ -3,6 +3,7 @@
 import type { PickingInfo } from "@deck.gl/core";
 import { IconLayer, TextLayer } from "@deck.gl/layers";
 import type { Feature, LineString, MultiLineString, Point } from "geojson";
+import { Loader2 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { useMap } from "react-map-gl/maplibre";
@@ -207,11 +208,17 @@ const DeckMap = () => {
 	const zoom = viewState?.zoom ?? 10;
 
 	// Geospatial Pipeline TanStack Query Hook
-	const { zoomTier, backendClusters, rawPoints, clientSupercluster } =
-		useGeospatialMap({
-			viewportBBox,
-			zoom,
-		});
+	const {
+		zoomTier,
+		backendClusters,
+		rawPoints,
+		clientSupercluster,
+		isLoading,
+		isFetching,
+	} = useGeospatialMap({
+		viewportBBox,
+		zoom,
+	});
 
 	// Smoothly animate map camera when a listing is clicked from side list or elsewhere
 	useEffect(() => {
@@ -474,11 +481,20 @@ const DeckMap = () => {
 	);
 
 	return (
-		<DeckGLOverlay
-			layers={layers}
-			getTooltip={getTooltip}
-			getCursor={getCursor}
-		/>
+		<>
+			{/* Top Loading Progress Bar & Status Badge */}
+			{(isLoading || isFetching) && (
+				<div className="pointer-events-none absolute top-2 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 rounded-full border border-primary/20 bg-background/90 px-3.5 py-1.5 text-xs font-semibold text-primary shadow-lg backdrop-blur-md transition-all animate-in fade-in slide-in-from-top-2 duration-200">
+					<Loader2 className="size-3.5 animate-spin" />
+					<span className="text-[11px]">در حال دریافت املاک روی نقشه...</span>
+				</div>
+			)}
+			<DeckGLOverlay
+				layers={layers}
+				getTooltip={getTooltip}
+				getCursor={getCursor}
+			/>
+		</>
 	);
 };
 
