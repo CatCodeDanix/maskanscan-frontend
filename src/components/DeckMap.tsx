@@ -1,7 +1,7 @@
 "use client";
 
 import type { PickingInfo } from "@deck.gl/core";
-import { IconLayer, TextLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, TextLayer } from "@deck.gl/layers";
 import type { Feature, LineString, MultiLineString, Point } from "geojson";
 import { useEffect, useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -45,63 +45,6 @@ function isSuperclusterCluster(f: SuperclusterFeature): f is ClusterFeature {
 function toPersianDigits(n: number): string {
 	return n.toLocaleString("fa-IR");
 }
-
-// ── SVG Icon Atlas ─────────────────────────────────────────────────────────────
-
-const ICON_ATLAS =
-	"data:image/svg+xml;charset=utf-8," +
-	encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128">
-  <!-- rent pin: amber -->
-  <circle cx="32" cy="32" r="26" fill="#f59e0b" stroke="#ffffff" stroke-width="4"/>
-  <circle cx="32" cy="32" r="10" fill="#ffffff"/>
-  <!-- buy pin: emerald -->
-  <circle cx="96" cy="32" r="26" fill="#10b981" stroke="#ffffff" stroke-width="4"/>
-  <circle cx="96" cy="32" r="10" fill="#ffffff"/>
-  <!-- cluster: indigo with outer glow -->
-  <circle cx="32" cy="96" r="28" fill="#4f46e5" stroke="#ffffff" stroke-width="4"/>
-  <!-- selected highlight pin: rose pink -->
-  <circle cx="96" cy="96" r="28" fill="#f43f5e" stroke="#ffffff" stroke-width="5"/>
-  <circle cx="96" cy="96" r="11" fill="#ffffff"/>
-</svg>`);
-
-const ICON_MAPPING = {
-	rent: {
-		x: 0,
-		y: 0,
-		width: 64,
-		height: 64,
-		mask: false,
-		anchorY: 32,
-		anchorX: 32,
-	},
-	buy: {
-		x: 64,
-		y: 0,
-		width: 64,
-		height: 64,
-		mask: false,
-		anchorY: 32,
-		anchorX: 32,
-	},
-	cluster: {
-		x: 0,
-		y: 64,
-		width: 64,
-		height: 64,
-		mask: false,
-		anchorY: 32,
-		anchorX: 32,
-	},
-	selected: {
-		x: 64,
-		y: 64,
-		width: 64,
-		height: 64,
-		mask: false,
-		anchorY: 32,
-		anchorX: 32,
-	},
-};
 
 function formatPinPrice(pin: MapPinItem | UnifiedListing): string {
 	if (pin.dealType === "rent") {
@@ -246,7 +189,7 @@ const DeckMap = () => {
 
 	// Build unified rendering dataset based on active zoom tier
 	const renderItems = useMemo<UnifiedRenderItem[]>(() => {
-		// Tier 1: Clustered Tier (< 14)
+		// Tier 1: Clustered Tier (< 14) via Server Action
 		if (zoomTier === "clustered") {
 			const items: UnifiedRenderItem[] = [];
 
@@ -319,40 +262,35 @@ const DeckMap = () => {
 		};
 	}, [selectedListing, isSelectedPinPresent]);
 
-	// Text dataset for cluster count numbers
-	const textItems = useMemo(() => {
-		return renderItems.filter(
-			(item) =>
-				item.type === "backend-cluster" || item.type === "supercluster-cluster",
-		);
-	}, [renderItems]);
+	// Split items into clusters vs individual pins for razor-sharp layered rendering
+	const { clusterItems, pinItems } = useMemo(() => {
+		const clusters: UnifiedRenderItem[] = [];
+		const pins: UnifiedRenderItem[] = [];
 
-	// ── Deck.gl Icon Layer ────────────────────────────────────────────────────
-	const iconLayer = useMemo(
+		const allItems = fallbackHighlightItem
+			? [...renderItems, fallbackHighlightItem]
+			: renderItems;
+
+		for (const item of allItems) {
+			if (
+				item.type === "backend-cluster" ||
+				item.type === "supercluster-cluster"
+			) {
+				clusters.push(item);
+			} else {
+				pins.push(item);
+			}
+		}
+
+		return { clusterItems: clusters, pinItems: pins };
+	}, [renderItems, fallbackHighlightItem]);
+
+	// ── 1. Cluster Background Circles Layer (WebGL GPU-Antialiased) ───────────
+	const clusterCirclesLayer = useMemo(
 		() =>
-			new IconLayer<UnifiedRenderItem>({
-				id: "geospatial-pins",
-				data: fallbackHighlightItem
-					? [...renderItems, fallbackHighlightItem]
-					: renderItems,
-				iconAtlas: ICON_ATLAS,
-				iconMapping: ICON_MAPPING,
-				getIcon: (d) => {
-					if (
-						d.type === "backend-cluster" ||
-						d.type === "supercluster-cluster"
-					) {
-						return "cluster";
-					}
-					if (
-						selectedListing &&
-						d.pin.externalId === selectedListing.externalId
-					) {
-						return "selected";
-					}
-					if (d.pin.dealType === "buy") return "buy";
-					return "rent";
-				},
+			new ScatterplotLayer<UnifiedRenderItem>({
+				id: "geospatial-cluster-circles",
+				data: clusterItems,
 				getPosition: (d) => {
 					if (d.type === "backend-cluster") {
 						return [d.cluster.longitude, d.cluster.latitude];
@@ -360,31 +298,39 @@ const DeckMap = () => {
 					if (d.type === "supercluster-cluster") {
 						return d.feature.geometry.coordinates as [number, number];
 					}
-					return d.coordinates;
+					return [0, 0];
 				},
-				getSize: (d) => {
+				getRadius: (d) => {
+					const count =
+						d.type === "backend-cluster"
+							? d.cluster.count
+							: d.type === "supercluster-cluster"
+								? d.feature.properties.point_count
+								: 1;
+					return Math.min(32, Math.max(18, 18 + Math.log2(count) * 2.2));
+				},
+				radiusUnits: "pixels",
+				radiusScale: 1,
+				radiusMinPixels: 18,
+				radiusMaxPixels: 34,
+				getFillColor: (d) => {
 					if (d.type === "backend-cluster") {
-						return Math.min(88, 42 + Math.log2(d.cluster.count + 1) * 8);
+						if (d.cluster.dealType === "rent") return [245, 158, 11, 245]; // Amber
+						if (d.cluster.dealType === "buy") return [16, 185, 129, 245]; // Emerald
+						return [79, 70, 229, 245]; // Indigo
 					}
-					if (d.type === "supercluster-cluster") {
-						return Math.min(
-							88,
-							42 + Math.log2(d.feature.properties.point_count + 1) * 8,
-						);
-					}
-					if (
-						selectedListing &&
-						d.pin.externalId === selectedListing.externalId
-					) {
-						return 46;
-					}
-					return 38;
+					return [79, 70, 229, 245];
 				},
+				getLineColor: [255, 255, 255, 255],
+				lineWidthUnits: "pixels",
+				lineWidthMinPixels: 2.5,
+				stroked: true,
+				filled: true,
+				antialiasing: true,
 				pickable: true,
 				onClick: ({ object }) => {
 					if (!object) return;
 
-					// Click on Backend Cluster -> fly and zoom closer
 					if (object.type === "backend-cluster") {
 						const cluster = object.cluster;
 						mapInstance?.flyTo({
@@ -395,7 +341,6 @@ const DeckMap = () => {
 						return;
 					}
 
-					// Click on Frontend Supercluster -> expand cluster
 					if (object.type === "supercluster-cluster") {
 						const clusterId = object.feature.properties.cluster_id;
 						const [lng, lat] = object.feature.geometry.coordinates;
@@ -409,33 +354,18 @@ const DeckMap = () => {
 							zoom: expansionZoom,
 							duration: 500,
 						});
-						return;
-					}
-
-					// Click on single listing pin -> select immediately
-					if (object.type === "pin") {
-						const pin = object.pin;
-						void selectListingById(pin.source, pin.externalId, pin);
 					}
 				},
 			}),
-		[
-			renderItems,
-			fallbackHighlightItem,
-			selectedListing,
-			mapInstance,
-			zoom,
-			clientSupercluster,
-			selectListingById,
-		],
+		[clusterItems, mapInstance, zoom, clientSupercluster],
 	);
 
-	// ── Deck.gl Text Layer for cluster counts ─────────────────────────────────
-	const textLayer = useMemo(
+	// ── 2. Cluster Numbers Text Layer (Crisp SDF Rendering) ───────────────────
+	const clusterNumbersLayer = useMemo(
 		() =>
 			new TextLayer<UnifiedRenderItem>({
-				id: "geospatial-cluster-counts",
-				data: textItems,
+				id: "geospatial-cluster-numbers",
+				data: clusterItems,
 				getPosition: (d) => {
 					if (d.type === "backend-cluster") {
 						return [d.cluster.longitude, d.cluster.latitude];
@@ -461,23 +391,118 @@ const DeckMap = () => {
 							: d.type === "supercluster-cluster"
 								? d.feature.properties.point_count
 								: 1;
-					return Math.min(22, Math.max(13, 14 + Math.log2(count + 1) * 2));
+					return Math.min(16, Math.max(12, 12 + Math.log2(count) * 0.8));
 				},
 				getColor: [255, 255, 255, 255],
 				getTextAnchor: "middle",
 				getAlignmentBaseline: "center",
-				fontFamily: "Vazirmatn, IRANSans, system-ui, sans-serif",
-				fontWeight: "bold",
+				fontFamily: "IRANSansX, Vazirmatn, system-ui, sans-serif",
+				fontWeight: "800",
+				fontSettings: {
+					sdf: true,
+					fontSize: 40,
+					buffer: 4,
+				},
+				outlineWidth: 2,
+				outlineColor: [0, 0, 0, 140],
 				characterSet: "auto",
 				billboard: true,
 				pickable: false,
 			}),
-		[textItems],
+		[clusterItems],
+	);
+
+	// ── 3. Individual Property Pins (WebGL Antialiased Circles) ───────────────
+	const individualPinsLayer = useMemo(
+		() =>
+			new ScatterplotLayer<UnifiedRenderItem>({
+				id: "geospatial-individual-pins",
+				data: pinItems,
+				getPosition: (d) => (d.type === "pin" ? d.coordinates : [0, 0]),
+				getRadius: (d) => {
+					if (d.type === "pin") {
+						if (
+							selectedListing &&
+							d.pin.externalId === selectedListing.externalId
+						) {
+							return 12;
+						}
+						return 8;
+					}
+					return 8;
+				},
+				radiusUnits: "pixels",
+				radiusScale: 1,
+				radiusMinPixels: 7,
+				radiusMaxPixels: 13,
+				getFillColor: (d) => {
+					if (d.type === "pin") {
+						if (
+							selectedListing &&
+							d.pin.externalId === selectedListing.externalId
+						) {
+							return [244, 63, 94, 255]; // Rose-500 for selected
+						}
+						if (d.pin.dealType === "buy") {
+							return [16, 185, 129, 255]; // Emerald-500
+						}
+						return [245, 158, 11, 255]; // Amber-500
+					}
+					return [245, 158, 11, 255];
+				},
+				getLineColor: [255, 255, 255, 255],
+				lineWidthUnits: "pixels",
+				lineWidthMinPixels: 2,
+				stroked: true,
+				filled: true,
+				antialiasing: true,
+				pickable: true,
+				onClick: ({ object }) => {
+					if (object && object.type === "pin") {
+						const pin = object.pin;
+						void selectListingById(pin.source, pin.externalId, pin);
+					}
+				},
+			}),
+		[pinItems, selectedListing, selectListingById],
+	);
+
+	// ── 4. Pin Inner Center Dot Layer (White Vector Center) ───────────────────
+	const pinCenterDotsLayer = useMemo(
+		() =>
+			new ScatterplotLayer<UnifiedRenderItem>({
+				id: "geospatial-pin-center-dots",
+				data: pinItems,
+				getPosition: (d) => (d.type === "pin" ? d.coordinates : [0, 0]),
+				getRadius: 2.5,
+				radiusUnits: "pixels",
+				radiusScale: 1,
+				radiusMinPixels: 2.5,
+				radiusMaxPixels: 3.5,
+				getFillColor: [255, 255, 255, 255],
+				stroked: false,
+				filled: true,
+				antialiasing: true,
+				pickable: false,
+			}),
+		[pinItems],
 	);
 
 	const layers = useMemo(
-		() => [...transitLayers, iconLayer, textLayer],
-		[transitLayers, iconLayer, textLayer],
+		() => [
+			...transitLayers,
+			clusterCirclesLayer,
+			clusterNumbersLayer,
+			individualPinsLayer,
+			pinCenterDotsLayer,
+		],
+		[
+			transitLayers,
+			clusterCirclesLayer,
+			clusterNumbersLayer,
+			individualPinsLayer,
+			pinCenterDotsLayer,
+		],
 	);
 
 	return (
@@ -486,10 +511,10 @@ const DeckMap = () => {
 			{(isLoading || isFetching) && (
 				<>
 					<div className="pointer-events-none absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse z-30" />
-					<div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center rounded-full border border-primary/20 bg-background/90 p-1.5 shadow-xl backdrop-blur-md transition-all animate-in fade-in zoom-in-95 duration-200">
+					<div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center rounded-2xl border border-primary/20 bg-background/90 p-2 shadow-2xl backdrop-blur-md transition-all animate-in fade-in zoom-in-95 duration-200">
 						<LottieLoader
 							src="/animations/map-loading.lottie"
-							size={32}
+							size={54}
 							className="shrink-0"
 						/>
 					</div>

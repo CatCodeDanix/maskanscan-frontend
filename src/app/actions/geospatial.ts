@@ -203,14 +203,14 @@ export async function fetchMapDataAction(
 					MAX(rent_tomans)::bigint AS max_rent,
 					MIN(total_price_tomans)::bigint AS min_price,
 					MAX(total_price_tomans)::bigint AS max_price,
-					(CASE WHEN COUNT(*) = 1 THEN MAX(id::text) ELSE NULL END) AS single_id,
-					(CASE WHEN COUNT(*) = 1 THEN MAX(source) ELSE NULL END) AS single_source,
-					(CASE WHEN COUNT(*) = 1 THEN MAX(external_id) ELSE NULL END) AS single_external_id,
-					(CASE WHEN COUNT(*) = 1 THEN MAX(title) ELSE NULL END) AS single_title,
-					(CASE WHEN COUNT(*) = 1 THEN MAX(deal_type) ELSE NULL END) AS single_deal_type,
-					(CASE WHEN COUNT(*) = 1 THEN MAX(city_persian) ELSE NULL END) AS single_city_persian,
-					(CASE WHEN COUNT(*) = 1 THEN MAX(district_persian) ELSE NULL END) AS single_district_persian,
-					(CASE WHEN COUNT(*) = 1 THEN BOOL_OR(is_fallback) ELSE NULL END) AS single_is_fallback
+					(CASE WHEN COUNT(*) < 3 THEN MAX(id::text) ELSE NULL END) AS single_id,
+					(CASE WHEN COUNT(*) < 3 THEN MAX(source) ELSE NULL END) AS single_source,
+					(CASE WHEN COUNT(*) < 3 THEN MAX(external_id) ELSE NULL END) AS single_external_id,
+					(CASE WHEN COUNT(*) < 3 THEN MAX(title) ELSE NULL END) AS single_title,
+					(CASE WHEN COUNT(*) < 3 THEN MAX(deal_type) ELSE NULL END) AS single_deal_type,
+					(CASE WHEN COUNT(*) < 3 THEN MAX(city_persian) ELSE NULL END) AS single_city_persian,
+					(CASE WHEN COUNT(*) < 3 THEN MAX(district_persian) ELSE NULL END) AS single_district_persian,
+					(CASE WHEN COUNT(*) < 3 THEN BOOL_OR(is_fallback) ELSE NULL END) AS single_is_fallback
 				FROM ${scrapedListings}
 				WHERE ${whereClause}
 				GROUP BY 1, 2
@@ -245,7 +245,7 @@ export async function fetchMapDataAction(
 
 			for (const row of rows) {
 				const count = Number(row.point_count);
-				if (count > 1) {
+				if (count >= 3) {
 					clusters.push({
 						id: `cluster-${row.gx}-${row.gy}`,
 						count,

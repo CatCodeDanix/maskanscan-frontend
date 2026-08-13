@@ -28,6 +28,7 @@ const SUPERCLUSTER_OPTIONS: Supercluster.Options<
 	Record<string, never>
 > = {
 	radius: 80,
+	minPoints: 3,
 	maxZoom: 16,
 	minZoom: 14,
 };
