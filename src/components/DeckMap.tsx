@@ -46,6 +46,12 @@ function toPersianDigits(n: number): string {
 	return n.toLocaleString("fa-IR");
 }
 
+function formatClusterCount(count: number): string {
+	if (count < 1000) return count.toLocaleString("fa-IR");
+	const inThousands = (count / 1000).toFixed(1).replace(/\.0$/, "");
+	return `${Number(inThousands).toLocaleString("fa-IR")}k`;
+}
+
 function formatPinPrice(pin: MapPinItem | UnifiedListing): string {
 	if (pin.dealType === "rent") {
 		if (pin.depositTomans && pin.rentTomans) {
@@ -307,11 +313,11 @@ const DeckMap = () => {
 							: d.type === "supercluster-cluster"
 								? d.feature.properties.point_count
 								: 1;
-					return Math.min(32, Math.max(18, 18 + Math.log2(count) * 2.2));
+					return Math.min(32, Math.max(20, 20 + Math.log10(count) * 3.5));
 				},
 				radiusUnits: "pixels",
 				radiusScale: 1,
-				radiusMinPixels: 18,
+				radiusMinPixels: 20,
 				radiusMaxPixels: 34,
 				getFillColor: (d) => {
 					if (d.type === "backend-cluster") {
@@ -360,7 +366,7 @@ const DeckMap = () => {
 		[clusterItems, mapInstance, zoom, clientSupercluster],
 	);
 
-	// ── 2. Cluster Numbers Text Layer (Crisp SDF Rendering) ───────────────────
+	// ── 2. Cluster Numbers Text Layer (Crisp Typography) ─────────────────────
 	const clusterNumbersLayer = useMemo(
 		() =>
 			new TextLayer<UnifiedRenderItem>({
@@ -377,34 +383,24 @@ const DeckMap = () => {
 				},
 				getText: (d) => {
 					if (d.type === "backend-cluster") {
-						return toPersianDigits(d.cluster.count);
+						return formatClusterCount(d.cluster.count);
 					}
 					if (d.type === "supercluster-cluster") {
-						return toPersianDigits(d.feature.properties.point_count);
+						return formatClusterCount(d.feature.properties.point_count);
 					}
 					return "";
 				},
-				getSize: (d) => {
-					const count =
-						d.type === "backend-cluster"
-							? d.cluster.count
-							: d.type === "supercluster-cluster"
-								? d.feature.properties.point_count
-								: 1;
-					return Math.min(16, Math.max(12, 12 + Math.log2(count) * 0.8));
-				},
+				getSize: 13,
 				getColor: [255, 255, 255, 255],
 				getTextAnchor: "middle",
 				getAlignmentBaseline: "center",
-				fontFamily: "IRANSansX, Vazirmatn, system-ui, sans-serif",
-				fontWeight: "800",
+				fontFamily: "IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif",
+				fontWeight: "700",
 				fontSettings: {
-					sdf: true,
-					fontSize: 40,
-					buffer: 4,
+					sdf: false,
 				},
-				outlineWidth: 2,
-				outlineColor: [0, 0, 0, 140],
+				outlineWidth: 1.5,
+				outlineColor: [0, 0, 0, 100],
 				characterSet: "auto",
 				billboard: true,
 				pickable: false,
