@@ -8,7 +8,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { useMap } from "react-map-gl/maplibre";
 import type Supercluster from "supercluster";
 import TransitTooltip from "@/components/map/TransitTooltip";
-import { LOTTIE_PRESETS, LottieLoader } from "@/components/ui/LottieLoader";
+import { LottieLoader } from "@/components/ui/LottieLoader";
 import type { TransitProperties } from "@/data";
 import { useGeospatialMap } from "@/hooks/use-geospatial-map";
 import { formatToman } from "@/lib/format";
@@ -482,22 +482,16 @@ const DeckMap = () => {
 
 	return (
 		<>
-			{/* Top Scanning Line & DotLottie Floating HUD */}
+			{/* Top Scanning Line & Clean DotLottie Floating HUD */}
 			{(isLoading || isFetching) && (
 				<>
 					<div className="pointer-events-none absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse z-30" />
-					<div
-						className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 rounded-full border border-primary/30 bg-background/90 px-3 py-1 text-xs font-semibold text-primary shadow-xl backdrop-blur-md transition-all animate-in fade-in zoom-in-95 duration-200"
-						dir="rtl"
-					>
+					<div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center rounded-full border border-primary/20 bg-background/90 p-1.5 shadow-xl backdrop-blur-md transition-all animate-in fade-in zoom-in-95 duration-200">
 						<LottieLoader
-							src={LOTTIE_PRESETS.building}
-							size={20}
+							src="/animations/map-loading.lottie"
+							size={32}
 							className="shrink-0"
 						/>
-						<span className="text-[11px] font-medium tracking-tight">
-							در حال به‌روزرسانی املاک روی نقشه...
-						</span>
 					</div>
 				</>
 			)}

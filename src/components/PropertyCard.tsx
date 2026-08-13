@@ -53,7 +53,7 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 				}
 			}}
 			className={cn(
-				"group relative w-full text-right transition-all overflow-hidden cursor-pointer select-none",
+				"group/card relative w-full text-right transition-all overflow-hidden cursor-pointer select-none",
 				"rounded-xl border bg-card text-card-foreground shadow-2xs",
 				"hover:shadow-md hover:border-primary/40 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary",
 				isSelected && "border-primary shadow-md ring-1 ring-primary/30",
@@ -68,7 +68,7 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 						alt={listing.title}
 						fill
 						sizes="(max-width: 768px) 100vw, 350px"
-						className="object-cover transition-transform duration-300 group-hover:scale-105"
+						className="object-cover transition-transform duration-300 group-hover/card:scale-105"
 					/>
 				) : (
 					<div className="flex size-full items-center justify-center text-muted-foreground">

@@ -2,12 +2,12 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { AlertCircle, Loader2, RefreshCcw } from "lucide-react";
+import { AlertCircle, Home, Loader2, RefreshCcw } from "lucide-react";
 import { useRef, useState } from "react";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/ui/button";
-import { LOTTIE_PRESETS, LottieLoader } from "@/components/ui/LottieLoader";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/components/ui/sonner";
 import {
 	Tooltip,
 	TooltipContent,
@@ -21,12 +21,15 @@ import { useMapStore } from "@/store/map-store";
 
 function CardSkeleton() {
 	return (
-		<div className="overflow-hidden rounded-xl border bg-card p-0">
+		<div className="overflow-hidden rounded-xl border bg-card p-0 shadow-2xs">
 			<Skeleton className="h-36 w-full rounded-none" />
-			<div className="space-y-2 p-3">
+			<div className="space-y-2.5 p-3">
 				<Skeleton className="h-4 w-full" />
-				<Skeleton className="h-3 w-2/3" />
-				<Skeleton className="h-4 w-1/2" />
+				<div className="flex items-center gap-3">
+					<Skeleton className="h-3 w-16" />
+					<Skeleton className="h-3 w-16" />
+				</div>
+				<Skeleton className="h-12 w-full rounded-lg" />
 			</div>
 		</div>
 	);
@@ -79,31 +82,26 @@ export function ListingsPanel() {
 		setIsRefreshing(true);
 		try {
 			await Promise.all([queryClient.invalidateQueries(), refetch()]);
+			toast.success("آگهی‌ها با موفقیت به‌روزرسانی شدند");
+		} catch {
+			toast.error("خطا در به‌روزرسانی آگهی‌ها");
 		} finally {
-			setTimeout(() => setIsRefreshing(false), 600);
+			setTimeout(() => setIsRefreshing(false), 500);
 		}
 	};
 
+	// 1. Initial Loading State: Pure shimmering skeleton cards (no banners/text)
 	if (isLoading && listings.length === 0) {
 		return (
-			<div
-				className="flex h-full flex-col items-center justify-center p-6 text-center"
-				dir="rtl"
-			>
-				<LottieLoader
-					src={LOTTIE_PRESETS.loading}
-					size={100}
-					fallbackText="در حال جستجو و بارگذاری املاک در این محدوده..."
-				/>
-				<div className="mt-4 w-full space-y-3">
-					{[0, 1].map((i) => (
-						<CardSkeleton key={i} />
-					))}
-				</div>
+			<div className="space-y-3 p-3" dir="rtl">
+				{[0, 1, 2].map((i) => (
+					<CardSkeleton key={i} />
+				))}
 			</div>
 		);
 	}
 
+	// 2. Error State
 	if (error && listings.length === 0) {
 		return (
 			<div
@@ -125,17 +123,20 @@ export function ListingsPanel() {
 		);
 	}
 
+	// 3. Empty State
 	if (!isLoading && listings.length === 0) {
 		return (
 			<div
 				className="flex flex-col items-center justify-center gap-3 p-6 text-center h-full"
 				dir="rtl"
 			>
-				<LottieLoader src={LOTTIE_PRESETS.empty} size={120} fallbackText="" />
+				<div className="rounded-full bg-muted p-4">
+					<Home className="size-8 text-muted-foreground/60" />
+				</div>
 				<p className="text-sm font-bold text-foreground">
 					هیچ آگهیی در این محدوده یافت نشد
 				</p>
-				<p className="text-xs text-muted-foreground max-w-[260px]">
+				<p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
 					روی نقشه جابجا شوید، زوم را تغییر دهید یا فیلترهای جستجو را پاکسازی
 					کنید
 				</p>
@@ -146,7 +147,7 @@ export function ListingsPanel() {
 						resetFilters();
 						void handleManualRefresh();
 					}}
-					className="mt-2"
+					className="mt-1"
 				>
 					پاک کردن فیلترها
 				</Button>
@@ -156,45 +157,36 @@ export function ListingsPanel() {
 
 	return (
 		<div className="flex h-full flex-col bg-background" dir="rtl">
-			{/* Sticky Header Status Bar with Manual Refresh Button & Tooltips */}
+			{/* Sticky Header Status Bar with Non-Overflowing Layout */}
 			<div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b bg-background/95 px-3.5 py-2.5 text-xs backdrop-blur-xs shadow-2xs">
-				<span className="font-semibold text-muted-foreground text-[11px] sm:text-xs truncate">
+				<span className="font-semibold text-muted-foreground text-xs">
 					نمایش {listings.length.toLocaleString("fa-IR")} از{" "}
-					{total.toLocaleString("fa-IR")} آگهی
+					{total.toLocaleString("fa-IR")} آگهی در این محدوده
 				</span>
 
-				<div className="flex items-center gap-2 shrink-0">
-					{(isLoading || isFetchingNextPage || isRefreshing) && (
-						<div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary text-[10px] sm:text-[11px] whitespace-nowrap animate-in fade-in duration-200">
-							<Loader2 className="size-3 animate-spin shrink-0" />
-							<span>در حال به‌روزرسانی...</span>
-						</div>
-					)}
-
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button
-									variant="ghost"
-									size="icon"
-									className="size-7.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-									onClick={() => void handleManualRefresh()}
-									aria-label="به‌روزرسانی آگهی‌ها"
-								>
-									<RefreshCcw
-										className={cn(
-											"size-3.5 transition-transform",
-											isRefreshing && "animate-spin",
-										)}
-									/>
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent side="bottom" className="text-[11px]">
-								به‌روزرسانی آگهی‌ها
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				</div>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="size-7.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+								onClick={() => void handleManualRefresh()}
+								aria-label="به‌روزرسانی آگهی‌ها"
+							>
+								<RefreshCcw
+									className={cn(
+										"size-3.5 transition-transform",
+										isRefreshing && "animate-spin text-primary",
+									)}
+								/>
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent side="bottom" className="text-[11px]">
+							به‌روزرسانی آگهی‌ها
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			</div>
 
 			{/* TanStack Virtual Container */}
@@ -234,7 +226,7 @@ export function ListingsPanel() {
 					})}
 				</div>
 
-				{/* Loading indicator at bottom of scroll */}
+				{/* Loading indicator at bottom of infinite scroll */}
 				{isFetchingNextPage && (
 					<div className="py-4 text-center">
 						<Loader2 className="mx-auto size-5 animate-spin text-primary" />
