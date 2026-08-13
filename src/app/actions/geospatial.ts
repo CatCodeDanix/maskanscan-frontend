@@ -1,0 +1,511 @@
+"use server";
+
+import { and, count, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { db } from "@/db";
+import { scrapedListings } from "@/db/schema";
+import { expandBBox, getGridSizeForZoom, getZoomTier } from "@/lib/geospatial";
+import type {
+	BackendClusterItem,
+	BBox,
+	FetchMapDataParams,
+	FetchViewportListingsParams,
+	MapDataResponse,
+	ViewportListingsResponse,
+} from "@/types/geospatial";
+import type {
+	ListingFilters,
+	MapPinItem,
+	UnifiedListing,
+} from "@/types/listing";
+
+// ── Shared SQL Where Builder with Bounding Box ────────────────────────────────
+
+function buildGeospatialWhereClause(filters: ListingFilters, bbox?: BBox) {
+	const conditions = [eq(scrapedListings.isActive, true)];
+
+	// Viewport Bounding Box: [minLng, minLat, maxLng, maxLat]
+	if (bbox) {
+		const [minLng, minLat, maxLng, maxLat] = bbox;
+		conditions.push(
+			gte(scrapedListings.longitude, minLng),
+			lte(scrapedListings.longitude, maxLng),
+			gte(scrapedListings.latitude, minLat),
+			lte(scrapedListings.latitude, maxLat),
+		);
+	}
+
+	if (filters.dealType) {
+		conditions.push(eq(scrapedListings.dealType, filters.dealType));
+	} else {
+		conditions.push(eq(scrapedListings.dealType, "rent"));
+	}
+
+	if (filters.city) {
+		conditions.push(eq(scrapedListings.city, filters.city.toLowerCase()));
+	}
+
+	if (filters.district) {
+		conditions.push(
+			eq(scrapedListings.district, filters.district.toLowerCase()),
+		);
+	}
+
+	// Rent price filters
+	if (filters.minDeposit !== undefined) {
+		conditions.push(gte(scrapedListings.depositTomans, filters.minDeposit));
+	}
+	if (filters.maxDeposit !== undefined) {
+		conditions.push(lte(scrapedListings.depositTomans, filters.maxDeposit));
+	}
+	if (filters.minRent !== undefined) {
+		conditions.push(gte(scrapedListings.rentTomans, filters.minRent));
+	}
+	if (filters.maxRent !== undefined) {
+		conditions.push(lte(scrapedListings.rentTomans, filters.maxRent));
+	}
+
+	// Converted Equivalent Full Deposit Filter
+	if (filters.minEquivalentDeposit !== undefined) {
+		conditions.push(
+			gte(
+				scrapedListings.equivalentFullDepositTomans,
+				filters.minEquivalentDeposit,
+			),
+		);
+	}
+	if (filters.maxEquivalentDeposit !== undefined) {
+		conditions.push(
+			lte(
+				scrapedListings.equivalentFullDepositTomans,
+				filters.maxEquivalentDeposit,
+			),
+		);
+	}
+
+	// Buy price filters
+	if (filters.minPrice !== undefined) {
+		conditions.push(gte(scrapedListings.totalPriceTomans, filters.minPrice));
+	}
+	if (filters.maxPrice !== undefined) {
+		conditions.push(lte(scrapedListings.totalPriceTomans, filters.maxPrice));
+	}
+	if (filters.minPricePerSqMeter !== undefined) {
+		conditions.push(
+			gte(scrapedListings.pricePerSqMeterTomans, filters.minPricePerSqMeter),
+		);
+	}
+	if (filters.maxPricePerSqMeter !== undefined) {
+		conditions.push(
+			lte(scrapedListings.pricePerSqMeterTomans, filters.maxPricePerSqMeter),
+		);
+	}
+
+	// Publisher type
+	if (filters.publisherType && filters.publisherType !== "all") {
+		conditions.push(eq(scrapedListings.publisherType, filters.publisherType));
+	}
+
+	// JSONB Attributes filters
+	if (filters.minArea !== undefined) {
+		conditions.push(
+			sql`CAST(${scrapedListings.attributes}->>'areaSqMeters' AS NUMERIC) >= ${filters.minArea}`,
+		);
+	}
+	if (filters.maxArea !== undefined) {
+		conditions.push(
+			sql`CAST(${scrapedListings.attributes}->>'areaSqMeters' AS NUMERIC) <= ${filters.maxArea}`,
+		);
+	}
+
+	// Bedrooms
+	if (filters.bedrooms !== undefined) {
+		conditions.push(
+			sql`CAST(${scrapedListings.attributes}->>'bedrooms' AS NUMERIC) = ${filters.bedrooms}`,
+		);
+	} else {
+		if (filters.minBedrooms !== undefined) {
+			conditions.push(
+				sql`CAST(${scrapedListings.attributes}->>'bedrooms' AS NUMERIC) >= ${filters.minBedrooms}`,
+			);
+		}
+		if (filters.maxBedrooms !== undefined) {
+			conditions.push(
+				sql`CAST(${scrapedListings.attributes}->>'bedrooms' AS NUMERIC) <= ${filters.maxBedrooms}`,
+			);
+		}
+	}
+
+	// Amenity boolean toggles inside JSONB
+	if (filters.hasParking) {
+		conditions.push(sql`${scrapedListings.attributes}->>'hasParking' = 'true'`);
+	}
+	if (filters.hasElevator) {
+		conditions.push(
+			sql`${scrapedListings.attributes}->>'hasElevator' = 'true'`,
+		);
+	}
+	if (filters.hasStorage) {
+		conditions.push(sql`${scrapedListings.attributes}->>'hasStorage' = 'true'`);
+	}
+	if (filters.hasBalcony) {
+		conditions.push(sql`${scrapedListings.attributes}->>'hasBalcony' = 'true'`);
+	}
+	if (filters.isConvertible) {
+		conditions.push(
+			sql`${scrapedListings.attributes}->>'isConvertible' = 'true'`,
+		);
+	}
+
+	// Exclude negotiable/agreed price listings ("توافقی")
+	if (filters.excludeAgreed) {
+		if (filters.dealType === "buy") {
+			conditions.push(
+				eq(scrapedListings.isAgreedPrice, false),
+				sql`${scrapedListings.totalPriceTomans} IS NOT NULL AND ${scrapedListings.totalPriceTomans} > 0`,
+			);
+		} else {
+			conditions.push(
+				eq(scrapedListings.isAgreedDeposit, false),
+				eq(scrapedListings.isAgreedRent, false),
+				sql`(${scrapedListings.depositTomans} IS NOT NULL AND ${scrapedListings.depositTomans} > 0 OR ${scrapedListings.rentTomans} IS NOT NULL AND ${scrapedListings.rentTomans} > 0)`,
+			);
+		}
+	}
+
+	return and(...conditions);
+}
+
+// ── 1. Fetch Map Data (Server Action) ──────────────────────────────────────────
+
+export async function fetchMapDataAction(
+	params: FetchMapDataParams,
+): Promise<MapDataResponse> {
+	try {
+		const { bbox, zoom, filters } = params;
+		const zoomTier = getZoomTier(zoom);
+		const dealType = filters.dealType || "rent";
+
+		// ── Tier 1: Zoom < 14 (Backend Live Grid Aggregation) ─────────────────────
+		if (zoomTier === "clustered") {
+			const gridSize = getGridSizeForZoom(zoom);
+			const whereClause = buildGeospatialWhereClause(filters, bbox);
+
+			// Live Grid Aggregation via SQL
+			const aggregateQuery = sql`
+				WITH filtered AS (
+					SELECT 
+						id, source, external_id, title, deal_type, 
+						city_persian, district_persian, 
+						deposit_tomans, rent_tomans, total_price_tomans, 
+						latitude, longitude, is_fallback,
+						FLOOR(longitude / ${gridSize}) AS gx,
+						FLOOR(latitude / ${gridSize}) AS gy
+					FROM ${scrapedListings}
+					WHERE ${whereClause}
+				),
+				cell_counts AS (
+					SELECT 
+						gx, gy,
+						COUNT(*)::int AS point_count,
+						AVG(longitude)::float8 AS avg_lng,
+						AVG(latitude)::float8 AS avg_lat,
+						MIN(deposit_tomans)::bigint AS min_deposit,
+						MAX(deposit_tomans)::bigint AS max_deposit,
+						MIN(rent_tomans)::bigint AS min_rent,
+						MAX(rent_tomans)::bigint AS max_rent,
+						MIN(total_price_tomans)::bigint AS min_price,
+						MAX(total_price_tomans)::bigint AS max_price
+					FROM filtered
+					GROUP BY gx, gy
+				)
+				SELECT 
+					gx, gy, point_count, avg_lng, avg_lat,
+					min_deposit, max_deposit, min_rent, max_rent, min_price, max_price
+				FROM cell_counts
+				WHERE point_count > 1;
+			`;
+
+			const sparsePointsQuery = sql`
+				WITH filtered AS (
+					SELECT 
+						id, source, external_id, title, deal_type, 
+						city_persian, district_persian, 
+						deposit_tomans, rent_tomans, total_price_tomans, 
+						latitude, longitude, is_fallback,
+						FLOOR(longitude / ${gridSize}) AS gx,
+						FLOOR(latitude / ${gridSize}) AS gy
+					FROM ${scrapedListings}
+					WHERE ${whereClause}
+				),
+				cell_counts AS (
+					SELECT gx, gy, COUNT(*)::int AS point_count
+					FROM filtered
+					GROUP BY gx, gy
+					HAVING COUNT(*) = 1
+				)
+				SELECT 
+					f.id, f.source, f.external_id, f.title, f.deal_type, 
+					f.city_persian, f.district_persian, 
+					f.deposit_tomans, f.rent_tomans, f.total_price_tomans, 
+					f.latitude, f.longitude, f.is_fallback
+				FROM filtered f
+				INNER JOIN cell_counts c ON f.gx = c.gx AND f.gy = c.gy
+				LIMIT 1000;
+			`;
+
+			const [clustersResult, sparsePointsResult] = await Promise.all([
+				db.execute(aggregateQuery),
+				db.execute(sparsePointsQuery),
+			]);
+
+			const clusterRows = (clustersResult.rows || []) as Array<{
+				gx: number;
+				gy: number;
+				point_count: number;
+				avg_lng: number;
+				avg_lat: number;
+				min_deposit: number | null;
+				max_deposit: number | null;
+				min_rent: number | null;
+				max_rent: number | null;
+				min_price: number | null;
+				max_price: number | null;
+			}>;
+
+			const clusters: BackendClusterItem[] = clusterRows.map((row) => ({
+				id: `cluster-${row.gx}-${row.gy}`,
+				count: Number(row.point_count),
+				longitude: Number(row.avg_lng),
+				latitude: Number(row.avg_lat),
+				minDeposit:
+					row.min_deposit != null ? Number(row.min_deposit) : undefined,
+				maxDeposit:
+					row.max_deposit != null ? Number(row.max_deposit) : undefined,
+				minRent: row.min_rent != null ? Number(row.min_rent) : undefined,
+				maxRent: row.max_rent != null ? Number(row.max_rent) : undefined,
+				minPrice: row.min_price != null ? Number(row.min_price) : undefined,
+				maxPrice: row.max_price != null ? Number(row.max_price) : undefined,
+				dealType,
+			}));
+
+			const sparseRows = (sparsePointsResult.rows || []) as Array<{
+				id: string | number;
+				source: string;
+				external_id: string;
+				title: string;
+				deal_type: string;
+				city_persian: string;
+				district_persian: string | null;
+				deposit_tomans: number | null;
+				rent_tomans: number | null;
+				total_price_tomans: number | null;
+				latitude: number;
+				longitude: number;
+				is_fallback: boolean | null;
+			}>;
+
+			const rawPoints: MapPinItem[] = sparseRows.map((row) => ({
+				id: typeof row.id === "number" ? row.id : Number(row.id) || undefined,
+				source: row.source as MapPinItem["source"],
+				externalId: row.external_id,
+				title: row.title,
+				dealType: row.deal_type as MapPinItem["dealType"],
+				cityPersian: row.city_persian,
+				districtPersian: row.district_persian ?? undefined,
+				depositTomans:
+					row.deposit_tomans != null ? Number(row.deposit_tomans) : undefined,
+				rentTomans:
+					row.rent_tomans != null ? Number(row.rent_tomans) : undefined,
+				totalPriceTomans:
+					row.total_price_tomans != null
+						? Number(row.total_price_tomans)
+						: undefined,
+				latitude: Number(row.latitude),
+				longitude: Number(row.longitude),
+				isFallback: Boolean(row.is_fallback),
+			}));
+
+			const totalCount =
+				clusters.reduce((acc, c) => acc + c.count, 0) + rawPoints.length;
+
+			return {
+				success: true,
+				zoomTier: "clustered",
+				clusters,
+				rawPoints,
+				bbox,
+				totalCount,
+			};
+		}
+
+		// ── Tier 2: Zoom >= 14 (Raw Points for Padded BBox) ───────────────────────
+		const paddedBBox = expandBBox(bbox, 0.25);
+		const whereClause = buildGeospatialWhereClause(filters, paddedBBox);
+
+		const rawItems = await db
+			.select({
+				id: scrapedListings.id,
+				source: scrapedListings.source,
+				externalId: scrapedListings.externalId,
+				title: scrapedListings.title,
+				dealType: scrapedListings.dealType,
+				cityPersian: scrapedListings.cityPersian,
+				districtPersian: scrapedListings.districtPersian,
+				depositTomans: scrapedListings.depositTomans,
+				rentTomans: scrapedListings.rentTomans,
+				totalPriceTomans: scrapedListings.totalPriceTomans,
+				latitude: scrapedListings.latitude,
+				longitude: scrapedListings.longitude,
+				isFallback: scrapedListings.isFallback,
+			})
+			.from(scrapedListings)
+			.where(whereClause)
+			.limit(5000);
+
+		const rawPoints: MapPinItem[] = rawItems.map((item) => ({
+			id: typeof item.id === "number" ? item.id : Number(item.id) || undefined,
+			source: item.source as MapPinItem["source"],
+			externalId: item.externalId,
+			title: item.title,
+			dealType: item.dealType as MapPinItem["dealType"],
+			cityPersian: item.cityPersian,
+			districtPersian: item.districtPersian ?? undefined,
+			depositTomans: item.depositTomans ?? undefined,
+			rentTomans: item.rentTomans ?? undefined,
+			totalPriceTomans: item.totalPriceTomans ?? undefined,
+			latitude: item.latitude,
+			longitude: item.longitude,
+			isFallback: Boolean(item.isFallback),
+		}));
+
+		return {
+			success: true,
+			zoomTier: "raw",
+			clusters: [],
+			rawPoints,
+			bbox: paddedBBox,
+			totalCount: rawPoints.length,
+		};
+	} catch (error) {
+		const message =
+			error instanceof Error ? error.message : "Geospatial query error";
+		console.error("fetchMapDataAction error:", error);
+		return {
+			success: false,
+			zoomTier: "clustered",
+			clusters: [],
+			rawPoints: [],
+			bbox: params.bbox,
+			totalCount: 0,
+			error: message,
+		};
+	}
+}
+
+// ── 2. Fetch Viewport Listings for Infinite List (Server Action) ───────────────
+
+export async function fetchViewportListingsAction(
+	params: FetchViewportListingsParams,
+): Promise<ViewportListingsResponse> {
+	try {
+		const { bbox, filters } = params;
+		const page = Math.max(1, params.page || 1);
+		const limit = Math.min(100, Math.max(1, params.limit || 20));
+		const offset = (page - 1) * limit;
+
+		const whereClause = buildGeospatialWhereClause(filters, bbox);
+
+		const [totalResult] = await db
+			.select({ total: count() })
+			.from(scrapedListings)
+			.where(whereClause);
+
+		const total = Number(totalResult?.total ?? 0);
+
+		const rawItems = await db
+			.select()
+			.from(scrapedListings)
+			.where(whereClause)
+			.orderBy(desc(scrapedListings.publishedAt), desc(scrapedListings.id))
+			.limit(limit)
+			.offset(offset);
+
+		const items: UnifiedListing[] = rawItems.map((item) => {
+			const lat = item.latitude;
+			const lng = item.longitude;
+			const location =
+				lat != null && lng != null
+					? {
+							latitude: lat,
+							longitude: lng,
+							isFuzzy: Boolean(item.isFuzzy),
+							isFallback: Boolean(item.isFallback),
+						}
+					: null;
+
+			return {
+				id:
+					typeof item.id === "number" ? item.id : Number(item.id) || undefined,
+				source: item.source as UnifiedListing["source"],
+				externalId: item.externalId,
+				url: item.url,
+				title: item.title,
+				description: item.description ?? undefined,
+				dealType: item.dealType as UnifiedListing["dealType"],
+				city: item.city,
+				district: item.district ?? undefined,
+				cityPersian: item.cityPersian,
+				districtPersian: item.districtPersian ?? undefined,
+				depositTomans: item.depositTomans ?? undefined,
+				rentTomans: item.rentTomans ?? undefined,
+				equivalentFullDepositTomans:
+					item.equivalentFullDepositTomans ?? undefined,
+				totalPriceTomans: item.totalPriceTomans ?? undefined,
+				pricePerSqMeterTomans: item.pricePerSqMeterTomans ?? undefined,
+				isAgreedDeposit: Boolean(item.isAgreedDeposit),
+				isAgreedRent: Boolean(item.isAgreedRent),
+				isAgreedPrice: Boolean(item.isAgreedPrice),
+				location,
+				attributes: (item.attributes ?? {}) as UnifiedListing["attributes"],
+				images: (item.images ?? []) as string[],
+				publisherType:
+					(item.publisherType as UnifiedListing["publisherType"]) ?? undefined,
+				publisherPhone: item.publisherPhone ?? undefined,
+				alternateSources:
+					item.alternateSources as UnifiedListing["alternateSources"],
+				publishedAt: item.publishedAt
+					? item.publishedAt.toISOString()
+					: undefined,
+				scrapedAt: item.scrapedAt
+					? item.scrapedAt.toISOString()
+					: new Date().toISOString(),
+				lastSeenAt: item.lastSeenAt ? item.lastSeenAt.toISOString() : undefined,
+				ingestionStrategy:
+					item.ingestionStrategy as UnifiedListing["ingestionStrategy"],
+				isActive: Boolean(item.isActive),
+			};
+		});
+
+		return {
+			success: true,
+			items,
+			total,
+			page,
+			limit,
+			hasMore: offset + items.length < total,
+		};
+	} catch (error) {
+		const message =
+			error instanceof Error ? error.message : "Viewport listings query error";
+		console.error("fetchViewportListingsAction error:", error);
+		return {
+			success: false,
+			items: [],
+			total: 0,
+			page: 1,
+			limit: 20,
+			hasMore: false,
+			error: message,
+		};
+	}
+}

@@ -6,7 +6,9 @@ import { useRef } from "react";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useViewportListings } from "@/hooks/use-viewport-listings";
 import { useListingStore } from "@/store/listing-store";
+import { useMapStore } from "@/store/map-store";
 
 function CardSkeleton() {
 	return (
@@ -22,36 +24,39 @@ function CardSkeleton() {
 }
 
 export function ListingsPanel() {
-	const listings = useListingStore((s) => s.listings);
-	const isLoading = useListingStore((s) => s.isLoading);
-	const isFetchingNextPage = useListingStore((s) => s.isFetchingNextPage);
-	const hasMore = useListingStore((s) => s.hasMore);
-	const error = useListingStore((s) => s.error);
-	const total = useListingStore((s) => s.total);
-	const hasFetched = useListingStore((s) => s.hasFetched);
-	const fetchListings = useListingStore((s) => s.fetchListings);
-	const fetchNextPage = useListingStore((s) => s.fetchNextPage);
+	const viewportBBox = useMapStore((s) => s.viewportBBox);
 	const resetFilters = useListingStore((s) => s.resetFilters);
 
-	const parentRef = useRef<HTMLDivElement>(null);
+	// Geospatial Viewport Infinite Query
+	const {
+		listings,
+		total,
+		isLoading,
+		isFetchingNextPage,
+		hasNextPage,
+		fetchNextPage,
+		error,
+		refetch,
+	} = useViewportListings({ viewportBBox });
 
+	const parentRef = useRef<HTMLDivElement>(null);
 	const count = listings.length;
 
 	const rowVirtualizer = useVirtualizer({
 		count,
 		getScrollElement: () => parentRef.current,
-		estimateSize: () => 310, // Card height estimate with 2-row pricing
+		estimateSize: () => 310, // Card height estimate
 		overscan: 6,
 	});
 
-	// Trigger next page when scrolling within 3500px of bottom (~10 cards ahead)
+	// Trigger next page when scrolling near bottom
 	const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
 		const target = e.currentTarget;
 		const distanceToBottom =
 			target.scrollHeight - target.scrollTop - target.clientHeight;
 		if (
-			distanceToBottom < 3500 &&
-			hasMore &&
+			distanceToBottom < 3000 &&
+			hasNextPage &&
 			!isLoading &&
 			!isFetchingNextPage
 		) {
@@ -59,7 +64,7 @@ export function ListingsPanel() {
 		}
 	};
 
-	if (isLoading && !hasFetched) {
+	if (isLoading && listings.length === 0) {
 		return (
 			<div className="space-y-3 p-3" dir="rtl">
 				{[0, 1, 2, 3].map((i) => (
@@ -80,7 +85,7 @@ export function ListingsPanel() {
 				<Button
 					size="sm"
 					variant="outline"
-					onClick={() => void fetchListings(true)}
+					onClick={() => void refetch()}
 					className="gap-2"
 				>
 					<RefreshCcw className="size-3.5" />
@@ -90,23 +95,23 @@ export function ListingsPanel() {
 		);
 	}
 
-	if (hasFetched && listings.length === 0) {
+	if (!isLoading && listings.length === 0) {
 		return (
 			<div
 				className="flex flex-col items-center gap-3 p-6 text-center"
 				dir="rtl"
 			>
 				<Home className="size-8 text-muted-foreground/50" />
-				<p className="text-sm font-medium">هیچ آگهیی یافت نشد</p>
+				<p className="text-sm font-medium">هیچ آگهیی در این محدوده یافت نشد</p>
 				<p className="text-xs text-muted-foreground">
-					فیلترهای خود را تغییر دهید یا محدوده شهر/قیمت دیگری را انتخاب کنید
+					روی نقشه جابجا شوید، زوم را تغییر دهید یا فیلترها را پاکسازی کنید
 				</p>
 				<Button
 					size="sm"
 					variant="outline"
 					onClick={() => {
 						resetFilters();
-						void fetchListings(true);
+						void refetch();
 					}}
 				>
 					پاک کردن فیلترها
@@ -118,20 +123,18 @@ export function ListingsPanel() {
 	return (
 		<div className="flex h-full flex-col bg-background" dir="rtl">
 			{/* Sticky Header Status Bar */}
-			{hasFetched && (
-				<div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b bg-background/95 p-3 text-xs backdrop-blur-xs shadow-2xs">
-					<span className="font-medium text-muted-foreground">
-						نمایش {listings.length.toLocaleString("fa-IR")} از{" "}
-						{total.toLocaleString("fa-IR")} آگهی
-					</span>
-					{(isLoading || isFetchingNextPage) && (
-						<div className="flex items-center gap-1.5 font-medium text-primary text-[11px]">
-							<Loader2 className="size-3.5 animate-spin" />
-							در حال بارگذاری...
-						</div>
-					)}
-				</div>
-			)}
+			<div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b bg-background/95 p-3 text-xs backdrop-blur-xs shadow-2xs">
+				<span className="font-medium text-muted-foreground">
+					نمایش {listings.length.toLocaleString("fa-IR")} از{" "}
+					{total.toLocaleString("fa-IR")} آگهی در این محدوده
+				</span>
+				{(isLoading || isFetchingNextPage) && (
+					<div className="flex items-center gap-1.5 font-medium text-primary text-[11px]">
+						<Loader2 className="size-3.5 animate-spin" />
+						در حال به‌روزرسانی...
+					</div>
+				)}
+			</div>
 
 			{/* TanStack Virtual Container */}
 			<div

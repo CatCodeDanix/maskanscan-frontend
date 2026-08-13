@@ -6,34 +6,38 @@ import type { Feature, LineString, MultiLineString, Point } from "geojson";
 import { useEffect, useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { useMap } from "react-map-gl/maplibre";
-import Supercluster from "supercluster";
+import type Supercluster from "supercluster";
 import TransitTooltip from "@/components/map/TransitTooltip";
 import type { TransitProperties } from "@/data";
+import { useGeospatialMap } from "@/hooks/use-geospatial-map";
 import { formatToman } from "@/lib/format";
+import { formatClusterPriceSummary } from "@/lib/geospatial";
 import { useTransitLayers } from "@/lib/overlay-layers";
 import { useListingStore } from "@/store/listing-store";
+import { useMapStore } from "@/store/map-store";
+import type { BackendClusterItem } from "@/types/geospatial";
 import type { MapPinItem, UnifiedListing } from "@/types/listing";
 import DeckGLOverlay from "./DeckGLOverlay";
 import { useMapViewState } from "./MapViewStateContext";
 
-// ── Cluster helpers ───────────────────────────────────────────────────────────
-
-const SUPERCLUSTER_OPTIONS: Supercluster.Options<
-	{ pin: MapPinItem | UnifiedListing },
-	Record<string, never>
-> = {
-	radius: 80,
-	maxZoom: 16,
-	minZoom: 0,
-};
+// ── Supercluster feature types ────────────────────────────────────────────────
 
 type ClusterFeature = Supercluster.ClusterFeature<Record<string, never>>;
 type PointFeature = Supercluster.PointFeature<{
 	pin: MapPinItem | UnifiedListing;
 }>;
-type AnyFeature = ClusterFeature | PointFeature;
+type SuperclusterFeature = ClusterFeature | PointFeature;
 
-function isCluster(f: AnyFeature): f is ClusterFeature {
+type UnifiedRenderItem =
+	| { type: "backend-cluster"; cluster: BackendClusterItem }
+	| { type: "supercluster-cluster"; feature: ClusterFeature }
+	| {
+			type: "pin";
+			pin: MapPinItem | UnifiedListing;
+			coordinates: [number, number];
+	  };
+
+function isSuperclusterCluster(f: SuperclusterFeature): f is ClusterFeature {
 	return (f as ClusterFeature).properties.cluster === true;
 }
 
@@ -54,8 +58,9 @@ const ICON_ATLAS =
   <circle cx="96" cy="32" r="10" fill="#ffffff"/>
   <!-- cluster: indigo with outer glow -->
   <circle cx="32" cy="96" r="28" fill="#4f46e5" stroke="#ffffff" stroke-width="4"/>
-  <!-- fallback rent: muted amber -->
-  <circle cx="96" cy="96" r="26" fill="#f59e0b" stroke="#ffffff" stroke-width="3" fill-opacity="0.6"/>
+  <!-- selected highlight pin: rose pink -->
+  <circle cx="96" cy="96" r="28" fill="#f43f5e" stroke="#ffffff" stroke-width="5"/>
+  <circle cx="96" cy="96" r="11" fill="#ffffff"/>
 </svg>`);
 
 const ICON_MAPPING = {
@@ -86,7 +91,7 @@ const ICON_MAPPING = {
 		anchorY: 32,
 		anchorX: 32,
 	},
-	"rent-fallback": {
+	selected: {
 		x: 64,
 		y: 64,
 		width: 64,
@@ -109,8 +114,6 @@ function formatPinPrice(pin: MapPinItem | UnifiedListing): string {
 	return pin.totalPriceTomans ? formatToman(pin.totalPriceTomans) : "توافقی";
 }
 
-// ── Tooltip ───────────────────────────────────────────────────────────────────
-
 function getIsFallback(pin: MapPinItem | UnifiedListing): boolean {
 	if ("location" in pin && pin.location) {
 		return Boolean(pin.location.isFallback);
@@ -121,31 +124,46 @@ function getIsFallback(pin: MapPinItem | UnifiedListing): boolean {
 	return false;
 }
 
+// ── Tooltips ──────────────────────────────────────────────────────────────────
+
 function getTooltip(
 	info: PickingInfo<
-		| AnyFeature
+		| UnifiedRenderItem
 		| Feature<Point | LineString | MultiLineString, TransitProperties>
 	>,
 ) {
 	if (!info.object) return null;
 
-	const obj = info.object as AnyFeature;
+	const obj = info.object as UnifiedRenderItem;
 
-	// Cluster Tooltip
-	if ("properties" in obj && obj.properties && "cluster" in obj.properties) {
-		const cluster = obj as ClusterFeature;
+	// 1. Backend Cluster Tooltip
+	if ("type" in obj && obj.type === "backend-cluster") {
+		const cluster = obj.cluster;
 		return {
 			html: `<div style="font-family:inherit;direction:rtl;text-align:right;padding:6px 10px">
-        <p style="font-size:12px;font-weight:700;margin:0;color:var(--foreground, #0f172a)">${toPersianDigits(cluster.properties.point_count)} آگهی ملک در این محدوده</p>
+        <p style="font-size:12px;font-weight:700;margin:0;color:var(--foreground, #0f172a)">${toPersianDigits(cluster.count)} آگهی ملک در این محدوده</p>
+        <p style="font-size:11px;margin:2px 0 0;color:var(--primary, #6366f1);font-weight:600">${formatClusterPriceSummary(cluster)}</p>
+        <p style="font-size:10px;margin:3px 0 0;color:var(--muted-foreground, #64748b)">برای زوم و مشاهده آگهی‌ها کلیک کنید</p>
+      </div>`,
+			className: "deck-tooltip-reset",
+		};
+	}
+
+	// 2. Frontend Supercluster Tooltip
+	if ("type" in obj && obj.type === "supercluster-cluster") {
+		const cluster = obj.feature;
+		return {
+			html: `<div style="font-family:inherit;direction:rtl;text-align:right;padding:6px 10px">
+        <p style="font-size:12px;font-weight:700;margin:0;color:var(--foreground, #0f172a)">${toPersianDigits(cluster.properties.point_count)} آگهی ملک</p>
         <p style="font-size:11px;margin:3px 0 0;color:var(--muted-foreground, #64748b)">برای زوم و مشاهده آگهی‌ها کلیک کنید</p>
       </div>`,
 			className: "deck-tooltip-reset",
 		};
 	}
 
-	// Single listing pin Tooltip
-	if ("properties" in obj && obj.properties && "pin" in obj.properties) {
-		const pin = (obj as PointFeature).properties.pin;
+	// 3. Single Listing Pin Tooltip
+	if ("type" in obj && obj.type === "pin") {
+		const pin = obj.pin;
 		return {
 			html: `<div style="font-family:inherit;direction:rtl;text-align:right;min-width:170px;padding:6px 8px">
         <p style="font-size:12px;font-weight:700;margin:0 0 4px;line-height:1.3">${pin.title}</p>
@@ -157,166 +175,45 @@ function getTooltip(
 		};
 	}
 
-	// Transit tooltip
+	// 4. Transit tooltip
 	const transitFeature = info.object as Feature<
 		Point | LineString | MultiLineString,
 		TransitProperties
 	>;
-	const html = renderToStaticMarkup(
-		<TransitTooltip properties={transitFeature.properties} />,
-	);
-	return { html, className: "deck-tooltip-reset" };
+	if (transitFeature.properties) {
+		const html = renderToStaticMarkup(
+			<TransitTooltip properties={transitFeature.properties} />,
+		);
+		return { html, className: "deck-tooltip-reset" };
+	}
+
+	return null;
 }
 
 const getCursor = ({ isHovering }: { isHovering: boolean }) =>
 	isHovering ? "pointer" : "grab";
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── DeckMap Component ─────────────────────────────────────────────────────────
 
 const DeckMap = () => {
 	const { current: mapInstance } = useMap();
 	const transitLayers = useTransitLayers();
-	const listings = useListingStore((s) => s.listings);
-	const mapPins = useListingStore((s) => s.mapPins);
 	const selectListingById = useListingStore((s) => s.selectListingById);
+	const selectedListing = useListingStore((s) => s.selectedListing);
+
 	const viewState = useMapViewState();
+	const viewportBBox =
+		useMapStore((s) => s.viewportBBox) ?? viewState.bbox ?? null;
 	const zoom = viewState?.zoom ?? 10;
 
-	// Build GeoJSON points for supercluster from mapPins or listings with spiderfy jitter for overlapping coordinates
-	const points = useMemo<PointFeature[]>(() => {
-		const coordCounts = new Map<string, number>();
+	// Geospatial Pipeline TanStack Query Hook
+	const { zoomTier, backendClusters, rawPoints, clientSupercluster } =
+		useGeospatialMap({
+			viewportBBox,
+			zoom,
+		});
 
-		if (mapPins.length > 0) {
-			return mapPins
-				.filter((p) => p.latitude != null && p.longitude != null)
-				.map((pin) => {
-					const baseLat = pin.latitude;
-					const baseLng = pin.longitude;
-					const key = `${baseLat.toFixed(5)},${baseLng.toFixed(5)}`;
-					const count = coordCounts.get(key) ?? 0;
-					coordCounts.set(key, count + 1);
-
-					let lng = baseLng;
-					let lat = baseLat;
-					if (count > 0) {
-						const angle = (count * (2 * Math.PI)) / 6;
-						const radius = 0.00015 * Math.ceil(count / 6);
-						lng = baseLng + radius * Math.cos(angle);
-						lat = baseLat + radius * Math.sin(angle);
-					}
-
-					return {
-						type: "Feature",
-						geometry: {
-							type: "Point",
-							coordinates: [lng, lat],
-						},
-						properties: { pin },
-					};
-				});
-		}
-
-		return listings
-			.filter(
-				(l) => l.location?.latitude != null && l.location?.longitude != null,
-			)
-			.map((listing) => {
-				const baseLng = listing.location?.longitude ?? 0;
-				const baseLat = listing.location?.latitude ?? 0;
-				const key = `${baseLat.toFixed(5)},${baseLat.toFixed(5)}`;
-				const count = coordCounts.get(key) ?? 0;
-				coordCounts.set(key, count + 1);
-
-				let lng = baseLng;
-				let lat = baseLat;
-				if (count > 0) {
-					const angle = (count * (2 * Math.PI)) / 6;
-					const radius = 0.00015 * Math.ceil(count / 6);
-					lng = baseLng + radius * Math.cos(angle);
-					lat = baseLat + radius * Math.sin(angle);
-				}
-
-				return {
-					type: "Feature",
-					geometry: {
-						type: "Point",
-						coordinates: [lng, lat],
-					},
-					properties: { pin: listing },
-				};
-			});
-	}, [mapPins, listings]);
-
-	// Supercluster instance
-	const superclusterInstance = useMemo(() => {
-		const index = new Supercluster(SUPERCLUSTER_OPTIONS);
-		index.load(points);
-		return index;
-	}, [points]);
-
-	// Run supercluster on the current viewport zoom
-	const clusters = useMemo<AnyFeature[]>(() => {
-		if (points.length === 0) return [];
-		return superclusterInstance.getClusters(
-			[-180, -85, 180, 85],
-			Math.round(zoom),
-		) as AnyFeature[];
-	}, [points, superclusterInstance, zoom]);
-
-	// Filter cluster features only for TextLayer
-	const clusterPointsOnly = useMemo<ClusterFeature[]>(
-		() => clusters.filter(isCluster),
-		[clusters],
-	);
-
-	// Build IconLayer
-	const clusterLayer = useMemo(
-		() =>
-			new IconLayer<AnyFeature>({
-				id: "property-clusters",
-				data: clusters,
-				iconAtlas: ICON_ATLAS,
-				iconMapping: ICON_MAPPING,
-				getIcon: (d) => {
-					if (isCluster(d)) return "cluster";
-					const pin = (d as PointFeature).properties.pin;
-					if (pin.dealType === "buy") return "buy";
-					return getIsFallback(pin) ? "rent-fallback" : "rent";
-				},
-				getPosition: (d) => d.geometry.coordinates as [number, number],
-				getSize: (d) => {
-					if (isCluster(d)) {
-						const count = (d as ClusterFeature).properties.point_count;
-						return Math.min(84, 42 + Math.log2(count + 1) * 8);
-					}
-					return 38;
-				},
-				pickable: true,
-				onClick: ({ object }) => {
-					if (!object) return;
-					if (isCluster(object)) {
-						const clusterId = object.properties.cluster_id;
-						const [lng, lat] = object.geometry.coordinates;
-						const expansionZoom = Math.min(
-							20,
-							superclusterInstance.getClusterExpansionZoom(clusterId),
-						);
-						mapInstance?.flyTo({
-							center: [lng, lat],
-							zoom: expansionZoom,
-							duration: 500,
-						});
-						return;
-					}
-					const pin = (object as PointFeature).properties.pin;
-					void selectListingById(pin.source, pin.externalId, pin);
-				},
-			}),
-		[clusters, mapInstance, selectListingById, superclusterInstance],
-	);
-
-	// Fly map to selected listing location when clicked from list or map
-	const selectedListing = useListingStore((s) => s.selectedListing);
+	// Smoothly animate map camera when a listing is clicked from side list or elsewhere
 	useEffect(() => {
 		if (!selectedListing || !mapInstance) return;
 		const lat =
@@ -340,16 +237,223 @@ const DeckMap = () => {
 		}
 	}, [selectedListing, mapInstance]);
 
-	// Text layer rendering centered Persian count digits inside cluster nodes
-	const clusterTextLayer = useMemo(
+	// Build unified rendering dataset based on active zoom tier
+	const renderItems = useMemo<UnifiedRenderItem[]>(() => {
+		// Tier 1: Clustered Tier (< 14)
+		if (zoomTier === "clustered") {
+			const items: UnifiedRenderItem[] = [];
+
+			for (const cluster of backendClusters) {
+				items.push({ type: "backend-cluster", cluster });
+			}
+
+			for (const pin of rawPoints) {
+				items.push({
+					type: "pin",
+					pin,
+					coordinates: [pin.longitude, pin.latitude],
+				});
+			}
+
+			return items;
+		}
+
+		// Tier 2: Raw Tier (>= 14) via Client Supercluster
+		if (!clientSupercluster) return [];
+
+		const features = clientSupercluster.getClusters(
+			[-180, -85, 180, 85],
+			Math.round(zoom),
+		);
+
+		return features.map((f): UnifiedRenderItem => {
+			if (isSuperclusterCluster(f)) {
+				return { type: "supercluster-cluster", feature: f };
+			}
+			const pointFeature = f as PointFeature;
+			return {
+				type: "pin",
+				pin: pointFeature.properties.pin,
+				coordinates: pointFeature.geometry.coordinates as [number, number],
+			};
+		});
+	}, [zoomTier, backendClusters, rawPoints, clientSupercluster, zoom]);
+
+	// Check if selectedListing is present in the rendered raw pins
+	const isSelectedPinPresent = useMemo(() => {
+		if (!selectedListing) return false;
+		return renderItems.some(
+			(item) =>
+				item.type === "pin" &&
+				item.pin.externalId === selectedListing.externalId,
+		);
+	}, [selectedListing, renderItems]);
+
+	// Fallback Always-On Highlight marker if selectedListing is absorbed in a cluster or off-tier
+	const fallbackHighlightItem = useMemo<UnifiedRenderItem | null>(() => {
+		if (!selectedListing || isSelectedPinPresent) return null;
+		const lat =
+			selectedListing.location?.latitude ??
+			("latitude" in selectedListing
+				? (selectedListing as unknown as MapPinItem).latitude
+				: null);
+		const lng =
+			selectedListing.location?.longitude ??
+			("longitude" in selectedListing
+				? (selectedListing as unknown as MapPinItem).longitude
+				: null);
+
+		if (lat == null || lng == null) return null;
+
+		return {
+			type: "pin",
+			pin: selectedListing,
+			coordinates: [lng, lat],
+		};
+	}, [selectedListing, isSelectedPinPresent]);
+
+	// Text dataset for cluster count numbers
+	const textItems = useMemo(() => {
+		return renderItems.filter(
+			(item) =>
+				item.type === "backend-cluster" || item.type === "supercluster-cluster",
+		);
+	}, [renderItems]);
+
+	// ── Deck.gl Icon Layer ────────────────────────────────────────────────────
+	const iconLayer = useMemo(
 		() =>
-			new TextLayer<ClusterFeature>({
-				id: "property-cluster-counts",
-				data: clusterPointsOnly,
-				getPosition: (d) => d.geometry.coordinates as [number, number],
-				getText: (d) => toPersianDigits(d.properties.point_count),
+			new IconLayer<UnifiedRenderItem>({
+				id: "geospatial-pins",
+				data: fallbackHighlightItem
+					? [...renderItems, fallbackHighlightItem]
+					: renderItems,
+				iconAtlas: ICON_ATLAS,
+				iconMapping: ICON_MAPPING,
+				getIcon: (d) => {
+					if (
+						d.type === "backend-cluster" ||
+						d.type === "supercluster-cluster"
+					) {
+						return "cluster";
+					}
+					if (
+						selectedListing &&
+						d.pin.externalId === selectedListing.externalId
+					) {
+						return "selected";
+					}
+					if (d.pin.dealType === "buy") return "buy";
+					return "rent";
+				},
+				getPosition: (d) => {
+					if (d.type === "backend-cluster") {
+						return [d.cluster.longitude, d.cluster.latitude];
+					}
+					if (d.type === "supercluster-cluster") {
+						return d.feature.geometry.coordinates as [number, number];
+					}
+					return d.coordinates;
+				},
 				getSize: (d) => {
-					const count = d.properties.point_count;
+					if (d.type === "backend-cluster") {
+						return Math.min(88, 42 + Math.log2(d.cluster.count + 1) * 8);
+					}
+					if (d.type === "supercluster-cluster") {
+						return Math.min(
+							88,
+							42 + Math.log2(d.feature.properties.point_count + 1) * 8,
+						);
+					}
+					if (
+						selectedListing &&
+						d.pin.externalId === selectedListing.externalId
+					) {
+						return 46;
+					}
+					return 38;
+				},
+				pickable: true,
+				onClick: ({ object }) => {
+					if (!object) return;
+
+					// Click on Backend Cluster -> fly and zoom closer
+					if (object.type === "backend-cluster") {
+						const cluster = object.cluster;
+						mapInstance?.flyTo({
+							center: [cluster.longitude, cluster.latitude],
+							zoom: Math.min(18, zoom + 2.5),
+							duration: 500,
+						});
+						return;
+					}
+
+					// Click on Frontend Supercluster -> expand cluster
+					if (object.type === "supercluster-cluster") {
+						const clusterId = object.feature.properties.cluster_id;
+						const [lng, lat] = object.feature.geometry.coordinates;
+						const expansionZoom = Math.min(
+							20,
+							clientSupercluster?.getClusterExpansionZoom(clusterId) ??
+								zoom + 2,
+						);
+						mapInstance?.flyTo({
+							center: [lng, lat],
+							zoom: expansionZoom,
+							duration: 500,
+						});
+						return;
+					}
+
+					// Click on single listing pin -> select immediately
+					if (object.type === "pin") {
+						const pin = object.pin;
+						void selectListingById(pin.source, pin.externalId, pin);
+					}
+				},
+			}),
+		[
+			renderItems,
+			fallbackHighlightItem,
+			selectedListing,
+			mapInstance,
+			zoom,
+			clientSupercluster,
+			selectListingById,
+		],
+	);
+
+	// ── Deck.gl Text Layer for cluster counts ─────────────────────────────────
+	const textLayer = useMemo(
+		() =>
+			new TextLayer<UnifiedRenderItem>({
+				id: "geospatial-cluster-counts",
+				data: textItems,
+				getPosition: (d) => {
+					if (d.type === "backend-cluster") {
+						return [d.cluster.longitude, d.cluster.latitude];
+					}
+					if (d.type === "supercluster-cluster") {
+						return d.feature.geometry.coordinates as [number, number];
+					}
+					return [0, 0];
+				},
+				getText: (d) => {
+					if (d.type === "backend-cluster") {
+						return toPersianDigits(d.cluster.count);
+					}
+					if (d.type === "supercluster-cluster") {
+						return toPersianDigits(d.feature.properties.point_count);
+					}
+					return "";
+				},
+				getSize: (d) => {
+					const count =
+						d.type === "backend-cluster"
+							? d.cluster.count
+							: d.type === "supercluster-cluster"
+								? d.feature.properties.point_count
+								: 1;
 					return Math.min(22, Math.max(13, 14 + Math.log2(count + 1) * 2));
 				},
 				getColor: [255, 255, 255, 255],
@@ -361,12 +465,12 @@ const DeckMap = () => {
 				billboard: true,
 				pickable: false,
 			}),
-		[clusterPointsOnly],
+		[textItems],
 	);
 
 	const layers = useMemo(
-		() => [...transitLayers, clusterLayer, clusterTextLayer],
-		[transitLayers, clusterLayer, clusterTextLayer],
+		() => [...transitLayers, iconLayer, textLayer],
+		[transitLayers, iconLayer, textLayer],
 	);
 
 	return (

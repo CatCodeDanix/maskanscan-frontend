@@ -10,8 +10,6 @@ export function useFilterSync() {
 
 	const patchFilters = useListingStore((s) => s.patchFilters);
 	const fetchLocationTree = useListingStore((s) => s.fetchLocationTree);
-	const fetchListings = useListingStore((s) => s.fetchListings);
-	const fetchMapPins = useListingStore((s) => s.fetchMapPins);
 
 	const dealType = useListingStore((s) => s.dealType);
 	const city = useListingStore((s) => s.city);
@@ -39,7 +37,7 @@ export function useFilterSync() {
 	const minPricePerSqMeter = useListingStore((s) => s.minPricePerSqMeter);
 	const maxPricePerSqMeter = useListingStore((s) => s.maxPricePerSqMeter);
 
-	// 1. Initial mount: parse URL query params & load location tree + listings + map pins from DB
+	// 1. Initial mount: parse URL query params & load location tree
 	useEffect(() => {
 		if (isInitialized.current) return;
 		isInitialized.current = true;
@@ -120,67 +118,9 @@ export function useFilterSync() {
 		});
 
 		void fetchLocationTree();
-		void fetchMapPins();
-		void fetchListings(true);
-	}, [fetchLocationTree, fetchListings, fetchMapPins, patchFilters]);
+	}, [fetchLocationTree, patchFilters]);
 
-	// 2. Reactive Filter Change Listener: whenever filters change, fetch DB data
-	const isFirstFilterEffect = useRef(true);
-	// biome-ignore lint/correctness/useExhaustiveDependencies: reactive filter state listener
-	useEffect(() => {
-		if (isFirstFilterEffect.current) {
-			isFirstFilterEffect.current = false;
-			return;
-		}
-
-		const timer = setTimeout(() => {
-			void fetchMapPins();
-			void fetchListings(true);
-		}, 300);
-
-		return () => clearTimeout(timer);
-	}, [
-		dealType,
-		city,
-		district,
-		bedrooms,
-		minBedrooms,
-		maxBedrooms,
-		hasParking,
-		hasElevator,
-		hasStorage,
-		hasBalcony,
-		isConvertible,
-		excludeAgreed,
-		publisherType,
-		minArea,
-		maxArea,
-		minDeposit,
-		maxDeposit,
-		minRent,
-		maxRent,
-		minEquivalentDeposit,
-		maxEquivalentDeposit,
-		minPrice,
-		maxPrice,
-		minPricePerSqMeter,
-		maxPricePerSqMeter,
-		fetchMapPins,
-		fetchListings,
-	]);
-
-	// 3. Auto refresh map pins & listings every 20 minutes (aligned with scraper backend cron)
-	useEffect(() => {
-		const TWENTY_MINUTES_MS = 20 * 60 * 1000;
-		const timer = setInterval(() => {
-			void fetchMapPins();
-			void fetchListings(true);
-		}, TWENTY_MINUTES_MS);
-
-		return () => clearInterval(timer);
-	}, [fetchMapPins, fetchListings]);
-
-	// 4. URL query params sync
+	// 2. URL query params sync
 	useEffect(() => {
 		if (skipFirstURLPush.current) {
 			skipFirstURLPush.current = false;
