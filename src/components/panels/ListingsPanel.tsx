@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { AlertCircle, Home, Loader2, RefreshCcw } from "lucide-react";
 import { useRef } from "react";
@@ -24,6 +25,7 @@ function CardSkeleton() {
 }
 
 export function ListingsPanel() {
+	const queryClient = useQueryClient();
 	const viewportBBox = useMapStore((s) => s.viewportBBox);
 	const resetFilters = useListingStore((s) => s.resetFilters);
 
@@ -122,18 +124,32 @@ export function ListingsPanel() {
 
 	return (
 		<div className="flex h-full flex-col bg-background" dir="rtl">
-			{/* Sticky Header Status Bar */}
+			{/* Sticky Header Status Bar with Manual Refresh Button */}
 			<div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b bg-background/95 p-3 text-xs backdrop-blur-xs shadow-2xs">
 				<span className="font-medium text-muted-foreground">
 					نمایش {listings.length.toLocaleString("fa-IR")} از{" "}
 					{total.toLocaleString("fa-IR")} آگهی در این محدوده
 				</span>
-				{(isLoading || isFetchingNextPage) && (
-					<div className="flex items-center gap-1.5 font-medium text-primary text-[11px]">
-						<Loader2 className="size-3.5 animate-spin" />
-						در حال به‌روزرسانی...
-					</div>
-				)}
+				<div className="flex items-center gap-2">
+					{(isLoading || isFetchingNextPage) && (
+						<div className="flex items-center gap-1.5 font-medium text-primary text-[11px]">
+							<Loader2 className="size-3.5 animate-spin" />
+							در حال به‌روزرسانی...
+						</div>
+					)}
+					<Button
+						variant="ghost"
+						size="icon"
+						className="size-7 text-muted-foreground hover:text-foreground"
+						onClick={async () => {
+							await queryClient.invalidateQueries();
+						}}
+						title="به‌روزرسانی داده‌ها"
+						aria-label="به‌روزرسانی داده‌ها"
+					>
+						<RefreshCcw className="size-3.5" />
+					</Button>
+				</div>
 			</div>
 
 			{/* TanStack Virtual Container */}

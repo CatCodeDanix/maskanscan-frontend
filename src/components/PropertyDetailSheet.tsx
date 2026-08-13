@@ -13,18 +13,19 @@ import {
 	Heart,
 	Info,
 	Layers,
+	MapPin,
 	Maximize2,
 	Phone,
 	ShieldAlert,
 	Snowflake,
 	Sparkles,
 	User,
-	Warehouse,
 	Wind,
 	X,
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { useMap } from "react-map-gl/maplibre";
 import { Button } from "@/components/ui/button";
 import {
 	Drawer,
@@ -91,6 +92,7 @@ function BoolBadge({
 }
 
 function DetailContent({ listing }: { listing: UnifiedListing }) {
+	const { current: mapInstance } = useMap();
 	const [activeImage, setActiveImage] = useState(0);
 	const [copiedPhone, setCopiedPhone] = useState(false);
 	const isFav = useFavoritesStore((s) =>
@@ -156,22 +158,53 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 								: listing.cityPersian}
 						</p>
 					</div>
-					<Button
-						variant="outline"
-						size="icon"
-						className="size-9 shrink-0 rounded-full"
-						onClick={() => toggleFavorite(listing)}
-						aria-label="افزودن به علاقه‌مندی‌ها"
-					>
-						<Heart
-							className={cn(
-								"size-4.5 transition-all",
-								isFav
-									? "fill-red-500 text-red-500 scale-110"
-									: "text-muted-foreground",
-							)}
-						/>
-					</Button>
+					<div className="flex items-center gap-1.5 shrink-0">
+						<Button
+							variant="outline"
+							size="icon"
+							className="size-9 rounded-full"
+							onClick={() => {
+								const lat =
+									listing.location?.latitude ??
+									("latitude" in listing
+										? (listing as unknown as { latitude: number }).latitude
+										: null);
+								const lng =
+									listing.location?.longitude ??
+									("longitude" in listing
+										? (listing as unknown as { longitude: number }).longitude
+										: null);
+								if (lat != null && lng != null && mapInstance) {
+									mapInstance.flyTo({
+										center: [lng, lat],
+										zoom: Math.max(16, mapInstance.getZoom()),
+										duration: 800,
+										essential: true,
+									});
+								}
+							}}
+							title="نمایش روی نقشه"
+							aria-label="نمایش روی نقشه"
+						>
+							<MapPin className="size-4 text-primary" />
+						</Button>
+						<Button
+							variant="outline"
+							size="icon"
+							className="size-9 rounded-full"
+							onClick={() => toggleFavorite(listing)}
+							aria-label="افزودن به علاقه‌مندی‌ها"
+						>
+							<Heart
+								className={cn(
+									"size-4.5 transition-all",
+									isFav
+										? "fill-red-500 text-red-500 scale-110"
+										: "text-muted-foreground",
+								)}
+							/>
+						</Button>
+					</div>
 				</div>
 
 				{/* Fallback Location Alert */}

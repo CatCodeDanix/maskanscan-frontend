@@ -219,15 +219,16 @@ export function useGeospatialMap({
 			gcTime: 20 * 60 * 1000,
 		});
 
-	// ── Idle Polling (15-20 min timer) ───────────────────────────────────────
+	// ── Idle Polling (15-20 min timer, resets on every moveend) ───────────────
+	// biome-ignore lint/correctness/useExhaustiveDependencies: idle timer resets on map moveend (viewportBBox / zoom)
 	useEffect(() => {
 		const IDLE_TIMEOUT_MS = 18 * 60 * 1000; // 18 minutes
-		const timer = setInterval(() => {
+		const timer = setTimeout(() => {
 			void refetch();
 		}, IDLE_TIMEOUT_MS);
 
-		return () => clearInterval(timer);
-	}, [refetch]);
+		return () => clearTimeout(timer);
+	}, [viewportBBox, zoom, refetch]);
 
 	// ── Manual Refresh Handler (Unscoped cache invalidation) ─────────────────
 	const invalidateAll = useCallback(async () => {

@@ -4,6 +4,7 @@ import {
 	queryListingsAction,
 	queryMapPinsAction,
 } from "@/app/actions/listings";
+import { getLocationTreeAction } from "@/app/actions/locations";
 import { useFavoritesStore } from "@/store/favorites-store";
 import type {
 	DealType,
@@ -445,10 +446,10 @@ export const useListingStore = create<ListingState>((set, get) => ({
 
 	fetchLocationTree: async () => {
 		try {
-			const res = await fetch("/api/locations/tree");
-			if (!res.ok) return;
-			const json = (await res.json()) as { tree: Province[] };
-			if (json.tree) set({ locationTree: json.tree });
+			const res = await getLocationTreeAction();
+			if (res.success && res.tree) {
+				set({ locationTree: res.tree });
+			}
 		} catch {
 			// silent — location tree is non-critical
 		}
