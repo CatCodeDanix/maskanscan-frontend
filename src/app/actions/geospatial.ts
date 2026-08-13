@@ -185,80 +185,40 @@ export async function fetchMapDataAction(
 		const zoomTier = getZoomTier(zoom);
 		const dealType = filters.dealType || "rent";
 
-		// ── Tier 1: Zoom < 14 (Backend Live Grid Aggregation) ─────────────────────
+		// ── Tier 1: Zoom < 14 (Backend Live Grid Aggregation in 1 Query) ──────────
 		if (zoomTier === "clustered") {
 			const gridSize = getGridSizeForZoom(zoom);
 			const whereClause = buildGeospatialWhereClause(filters, bbox);
 
-			// Live Grid Aggregation via SQL
-			const aggregateQuery = sql`
-				WITH filtered AS (
-					SELECT 
-						id, source, external_id, title, deal_type, 
-						city_persian, district_persian, 
-						deposit_tomans, rent_tomans, total_price_tomans, 
-						latitude, longitude, is_fallback,
-						FLOOR(longitude / ${gridSize}) AS gx,
-						FLOOR(latitude / ${gridSize}) AS gy
-					FROM ${scrapedListings}
-					WHERE ${whereClause}
-				),
-				cell_counts AS (
-					SELECT 
-						gx, gy,
-						COUNT(*)::int AS point_count,
-						AVG(longitude)::float8 AS avg_lng,
-						AVG(latitude)::float8 AS avg_lat,
-						MIN(deposit_tomans)::bigint AS min_deposit,
-						MAX(deposit_tomans)::bigint AS max_deposit,
-						MIN(rent_tomans)::bigint AS min_rent,
-						MAX(rent_tomans)::bigint AS max_rent,
-						MIN(total_price_tomans)::bigint AS min_price,
-						MAX(total_price_tomans)::bigint AS max_price
-					FROM filtered
-					GROUP BY gx, gy
-				)
+			const unifiedGridQuery = sql`
 				SELECT 
-					gx, gy, point_count, avg_lng, avg_lat,
-					min_deposit, max_deposit, min_rent, max_rent, min_price, max_price
-				FROM cell_counts
-				WHERE point_count > 1;
+					FLOOR(longitude / ${gridSize})::int AS gx,
+					FLOOR(latitude / ${gridSize})::int AS gy,
+					COUNT(*)::int AS point_count,
+					AVG(longitude)::float8 AS avg_lng,
+					AVG(latitude)::float8 AS avg_lat,
+					MIN(deposit_tomans)::bigint AS min_deposit,
+					MAX(deposit_tomans)::bigint AS max_deposit,
+					MIN(rent_tomans)::bigint AS min_rent,
+					MAX(rent_tomans)::bigint AS max_rent,
+					MIN(total_price_tomans)::bigint AS min_price,
+					MAX(total_price_tomans)::bigint AS max_price,
+					(CASE WHEN COUNT(*) = 1 THEN MAX(id::text) ELSE NULL END) AS single_id,
+					(CASE WHEN COUNT(*) = 1 THEN MAX(source) ELSE NULL END) AS single_source,
+					(CASE WHEN COUNT(*) = 1 THEN MAX(external_id) ELSE NULL END) AS single_external_id,
+					(CASE WHEN COUNT(*) = 1 THEN MAX(title) ELSE NULL END) AS single_title,
+					(CASE WHEN COUNT(*) = 1 THEN MAX(deal_type) ELSE NULL END) AS single_deal_type,
+					(CASE WHEN COUNT(*) = 1 THEN MAX(city_persian) ELSE NULL END) AS single_city_persian,
+					(CASE WHEN COUNT(*) = 1 THEN MAX(district_persian) ELSE NULL END) AS single_district_persian,
+					(CASE WHEN COUNT(*) = 1 THEN BOOL_OR(is_fallback) ELSE NULL END) AS single_is_fallback
+				FROM ${scrapedListings}
+				WHERE ${whereClause}
+				GROUP BY 1, 2
+				LIMIT 2500;
 			`;
 
-			const sparsePointsQuery = sql`
-				WITH filtered AS (
-					SELECT 
-						id, source, external_id, title, deal_type, 
-						city_persian, district_persian, 
-						deposit_tomans, rent_tomans, total_price_tomans, 
-						latitude, longitude, is_fallback,
-						FLOOR(longitude / ${gridSize}) AS gx,
-						FLOOR(latitude / ${gridSize}) AS gy
-					FROM ${scrapedListings}
-					WHERE ${whereClause}
-				),
-				cell_counts AS (
-					SELECT gx, gy, COUNT(*)::int AS point_count
-					FROM filtered
-					GROUP BY gx, gy
-					HAVING COUNT(*) = 1
-				)
-				SELECT 
-					f.id, f.source, f.external_id, f.title, f.deal_type, 
-					f.city_persian, f.district_persian, 
-					f.deposit_tomans, f.rent_tomans, f.total_price_tomans, 
-					f.latitude, f.longitude, f.is_fallback
-				FROM filtered f
-				INNER JOIN cell_counts c ON f.gx = c.gx AND f.gy = c.gy
-				LIMIT 1000;
-			`;
-
-			const [clustersResult, sparsePointsResult] = await Promise.all([
-				db.execute(aggregateQuery),
-				db.execute(sparsePointsQuery),
-			]);
-
-			const clusterRows = (clustersResult.rows || []) as Array<{
+			const result = await db.execute(unifiedGridQuery);
+			const rows = (result.rows || []) as Array<{
 				gx: number;
 				gy: number;
 				point_count: number;
@@ -270,60 +230,58 @@ export async function fetchMapDataAction(
 				max_rent: number | null;
 				min_price: number | null;
 				max_price: number | null;
+				single_id: string | null;
+				single_source: string | null;
+				single_external_id: string | null;
+				single_title: string | null;
+				single_deal_type: string | null;
+				single_city_persian: string | null;
+				single_district_persian: string | null;
+				single_is_fallback: boolean | null;
 			}>;
 
-			const clusters: BackendClusterItem[] = clusterRows.map((row) => ({
-				id: `cluster-${row.gx}-${row.gy}`,
-				count: Number(row.point_count),
-				longitude: Number(row.avg_lng),
-				latitude: Number(row.avg_lat),
-				minDeposit:
-					row.min_deposit != null ? Number(row.min_deposit) : undefined,
-				maxDeposit:
-					row.max_deposit != null ? Number(row.max_deposit) : undefined,
-				minRent: row.min_rent != null ? Number(row.min_rent) : undefined,
-				maxRent: row.max_rent != null ? Number(row.max_rent) : undefined,
-				minPrice: row.min_price != null ? Number(row.min_price) : undefined,
-				maxPrice: row.max_price != null ? Number(row.max_price) : undefined,
-				dealType,
-			}));
+			const clusters: BackendClusterItem[] = [];
+			const rawPoints: MapPinItem[] = [];
 
-			const sparseRows = (sparsePointsResult.rows || []) as Array<{
-				id: string | number;
-				source: string;
-				external_id: string;
-				title: string;
-				deal_type: string;
-				city_persian: string;
-				district_persian: string | null;
-				deposit_tomans: number | null;
-				rent_tomans: number | null;
-				total_price_tomans: number | null;
-				latitude: number;
-				longitude: number;
-				is_fallback: boolean | null;
-			}>;
-
-			const rawPoints: MapPinItem[] = sparseRows.map((row) => ({
-				id: typeof row.id === "number" ? row.id : Number(row.id) || undefined,
-				source: row.source as MapPinItem["source"],
-				externalId: row.external_id,
-				title: row.title,
-				dealType: row.deal_type as MapPinItem["dealType"],
-				cityPersian: row.city_persian,
-				districtPersian: row.district_persian ?? undefined,
-				depositTomans:
-					row.deposit_tomans != null ? Number(row.deposit_tomans) : undefined,
-				rentTomans:
-					row.rent_tomans != null ? Number(row.rent_tomans) : undefined,
-				totalPriceTomans:
-					row.total_price_tomans != null
-						? Number(row.total_price_tomans)
-						: undefined,
-				latitude: Number(row.latitude),
-				longitude: Number(row.longitude),
-				isFallback: Boolean(row.is_fallback),
-			}));
+			for (const row of rows) {
+				const count = Number(row.point_count);
+				if (count > 1) {
+					clusters.push({
+						id: `cluster-${row.gx}-${row.gy}`,
+						count,
+						longitude: Number(row.avg_lng),
+						latitude: Number(row.avg_lat),
+						minDeposit:
+							row.min_deposit != null ? Number(row.min_deposit) : undefined,
+						maxDeposit:
+							row.max_deposit != null ? Number(row.max_deposit) : undefined,
+						minRent: row.min_rent != null ? Number(row.min_rent) : undefined,
+						maxRent: row.max_rent != null ? Number(row.max_rent) : undefined,
+						minPrice: row.min_price != null ? Number(row.min_price) : undefined,
+						maxPrice: row.max_price != null ? Number(row.max_price) : undefined,
+						dealType,
+					});
+				} else if (row.single_external_id && row.single_title) {
+					rawPoints.push({
+						id: row.single_id ? Number(row.single_id) || undefined : undefined,
+						source: (row.single_source || "divar") as MapPinItem["source"],
+						externalId: row.single_external_id,
+						title: row.single_title,
+						dealType: (row.single_deal_type ||
+							dealType) as MapPinItem["dealType"],
+						cityPersian: row.single_city_persian || "",
+						districtPersian: row.single_district_persian ?? undefined,
+						depositTomans:
+							row.min_deposit != null ? Number(row.min_deposit) : undefined,
+						rentTomans: row.min_rent != null ? Number(row.min_rent) : undefined,
+						totalPriceTomans:
+							row.min_price != null ? Number(row.min_price) : undefined,
+						latitude: Number(row.avg_lat),
+						longitude: Number(row.avg_lng),
+						isFallback: Boolean(row.single_is_fallback),
+					});
+				}
+			}
 
 			const totalCount =
 				clusters.reduce((acc, c) => acc + c.count, 0) + rawPoints.length;
