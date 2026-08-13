@@ -319,14 +319,7 @@ const DeckMap = () => {
 				radiusScale: 1,
 				radiusMinPixels: 20,
 				radiusMaxPixels: 34,
-				getFillColor: (d) => {
-					if (d.type === "backend-cluster") {
-						if (d.cluster.dealType === "rent") return [245, 158, 11, 245]; // Amber
-						if (d.cluster.dealType === "buy") return [16, 185, 129, 245]; // Emerald
-						return [79, 70, 229, 245]; // Indigo
-					}
-					return [79, 70, 229, 245];
-				},
+				getFillColor: [79, 70, 229, 245], // Royal Indigo for all clusters
 				getLineColor: [255, 255, 255, 255],
 				lineWidthUnits: "pixels",
 				lineWidthMinPixels: 2.5,
