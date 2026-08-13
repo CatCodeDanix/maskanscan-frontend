@@ -37,22 +37,23 @@ function AppContent() {
 	};
 
 	return (
-		<>
+		<div className="h-[100dvh] max-h-[100dvh] w-full overflow-hidden flex flex-col md:flex-row">
 			<AppSidebar onItemClick={handleItemClick} />
 
-			<SidebarInset className="flex flex-col overflow-hidden">
+			<SidebarInset className="flex flex-1 flex-col overflow-hidden h-full">
 				<header
 					className="
-    bg-background
-    sticky top-0 z-10
-    h-16 border-b px-4
-  "
+						bg-background
+						sticky top-0 z-10
+						h-14 md:h-16 border-b px-3 md:px-4
+						shrink-0
+					"
 				>
-					<div className="flex h-full items-center">
+					<div className="flex h-full items-center justify-between">
 						{/* Right action */}
-						<div className="flex w-12 items-center justify-start">
+						<div className="flex w-10 md:w-12 items-center justify-start">
 							{isMobile ? (
-								<div className="w-12">
+								<div className="w-10">
 									<NavUser user={placeholderUser} />
 								</div>
 							) : (
@@ -60,32 +61,27 @@ function AppContent() {
 							)}
 						</div>
 
-						{/* Center content */}
-						<div className="flex flex-1 items-center justify-center p-12">
+						{/* Center logo and brand */}
+						<div className="flex items-center justify-center gap-2">
 							<Image
 								src={"/logo.svg"}
-								className="block size-[50px] shrink-0"
-								width={50}
-								height={50}
+								className="block size-8 md:size-10 shrink-0"
+								width={40}
+								height={40}
 								priority
-								alt="MaskanScan Logo - A blended house and map marker"
+								alt="MaskanScan Logo"
 							/>
-							<span className="text-primary text-base font-semibold md:text-lg">
+							<span className="text-primary text-sm font-bold md:text-lg">
 								مسکن‌اسکن
 							</span>
 						</div>
 
-						{/* Left spacer for perfect balance */}
-						<div className="w-12" />
+						{/* Left spacer for perfect visual centering */}
+						<div className="w-10 md:w-12" />
 					</div>
 				</header>
 
-				<div
-					className="
-            flex-1 pb-14
-            md:pb-0
-          "
-				>
+				<div className="flex-1 overflow-hidden relative pb-14 md:pb-0 h-full">
 					<BaseMapWrapper />
 				</div>
 			</SidebarInset>
@@ -96,7 +92,7 @@ function AppContent() {
 					<ContentDrawer triggerRef={triggerRef} onOpenChange={setDrawerOpen} />
 				</>
 			)}
-		</>
+		</div>
 	);
 }
 

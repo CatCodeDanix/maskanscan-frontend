@@ -13,6 +13,7 @@ import {
 	Heart,
 	Info,
 	Layers,
+	Loader2,
 	MapPin,
 	Maximize2,
 	Phone,
@@ -40,6 +41,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
 	formatBedrooms,
@@ -95,6 +97,7 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 	const { current: mapInstance } = useMap();
 	const [activeImage, setActiveImage] = useState(0);
 	const [copiedPhone, setCopiedPhone] = useState(false);
+	const isLoadingDetail = useListingStore((s) => s.isLoadingDetail);
 	const isFav = useFavoritesStore((s) =>
 		s.isFavorite(listing.source, listing.externalId),
 	);
@@ -113,8 +116,18 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 			className="flex h-full flex-col overflow-hidden bg-background"
 			dir="rtl"
 		>
+			{/* Top Loading Progress Bar */}
+			{isLoadingDetail && (
+				<div className="flex items-center justify-between bg-primary/10 px-4 py-1.5 text-xs text-primary border-b border-primary/20">
+					<span className="flex items-center gap-1.5 text-[11px] font-semibold">
+						<Loader2 className="size-3.5 animate-spin" />
+						در حال دریافت جزئیات و تصاویر کامل آگهی...
+					</span>
+				</div>
+			)}
+
 			{/* Images Carousel */}
-			{listing.images && listing.images.length > 0 && (
+			{listing.images && listing.images.length > 0 ? (
 				<div className="relative h-56 w-full shrink-0 bg-muted">
 					<Image
 						src={listing.images[activeImage] ?? listing.images[0]}
@@ -143,7 +156,11 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 						</div>
 					)}
 				</div>
-			)}
+			) : isLoadingDetail ? (
+				<div className="h-44 w-full bg-muted flex items-center justify-center">
+					<Loader2 className="size-6 animate-spin text-primary/60" />
+				</div>
+			) : null}
 
 			<div className="flex-1 overflow-y-auto p-4 space-y-5">
 				{/* Title & Location Header */}
@@ -274,7 +291,7 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 				</div>
 
 				{/* Contact / Phone section */}
-				{listing.publisherPhone && (
+				{listing.publisherPhone ? (
 					<div className="flex items-center justify-between rounded-xl border border-primary/30 bg-primary/5 p-3">
 						<div className="flex items-center gap-2 text-xs">
 							<Phone className="size-4 text-primary" />
@@ -308,10 +325,12 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 							)}
 						</Button>
 					</div>
-				)}
+				) : isLoadingDetail ? (
+					<Skeleton className="h-12 w-full rounded-xl" />
+				) : null}
 
 				{/* Description Text */}
-				{listing.description && (
+				{listing.description ? (
 					<div className="space-y-1.5 rounded-xl border bg-card p-3.5">
 						<div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
 							<Info className="size-3.5 text-primary" />
@@ -321,7 +340,13 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 							{listing.description}
 						</p>
 					</div>
-				)}
+				) : isLoadingDetail ? (
+					<div className="space-y-2 rounded-xl border bg-card p-3.5">
+						<Skeleton className="h-4 w-1/4" />
+						<Skeleton className="h-3 w-full" />
+						<Skeleton className="h-3 w-4/5" />
+					</div>
+				) : null}
 
 				{/* Key Features Badges */}
 				<div className="space-y-2">
@@ -445,18 +470,20 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 				<div className="space-y-2 rounded-xl border bg-card p-3">
 					<p className="text-xs font-bold text-foreground">لینک‌های منبع آگهی</p>
 					<div className="flex flex-wrap gap-2">
-						<a
-							href={listing.url}
-							target="_blank"
-							rel="noreferrer"
-							className={cn(
-								"inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-opacity hover:opacity-90 shadow-2xs",
-								getSourceColor(listing.source),
-							)}
-						>
-							{getSourceLabel(listing.source)}
-							<ExternalLink className="size-3.5" />
-						</a>
+						{listing.url && (
+							<a
+								href={listing.url}
+								target="_blank"
+								rel="noreferrer"
+								className={cn(
+									"inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-opacity hover:opacity-90 shadow-2xs",
+									getSourceColor(listing.source),
+								)}
+							>
+								{getSourceLabel(listing.source)}
+								<ExternalLink className="size-3.5" />
+							</a>
+						)}
 						{listing.alternateSources?.map((alt) => (
 							<a
 								key={alt.externalId}
@@ -506,7 +533,7 @@ export function PropertyDetailSheet() {
 			>
 				<DrawerContent
 					showOverlay={false}
-					className="mb-14 h-[85vh] max-h-[85vh]"
+					className="mb-14 h-[85dvh] max-h-[85dvh]"
 				>
 					<DrawerHeader className="flex shrink-0 flex-row items-center justify-between border-b p-3.5">
 						<DrawerTitle className="text-xs font-bold">

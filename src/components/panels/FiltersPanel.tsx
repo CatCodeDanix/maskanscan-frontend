@@ -31,7 +31,7 @@ function SectionHeader({
 	subtitle?: string;
 }) {
 	return (
-		<div className="mb-3 space-y-0.5">
+		<div className="mb-2 space-y-0.5 text-right">
 			<div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
 				{Icon && <Icon className="size-3.5 text-primary" />}
 				<span>{title}</span>
@@ -48,55 +48,49 @@ function RangeRow({
 	maxValue,
 	onMinChange,
 	onMaxChange,
-	placeholderMin,
-	placeholderMax,
-	suffix = "",
+	placeholderMin = "از",
+	placeholderMax = "تا",
+	suffix = "تومان",
 }: {
-	minValue: number | undefined;
-	maxValue: number | undefined;
-	onMinChange: (v: number | undefined) => void;
-	onMaxChange: (v: number | undefined) => void;
-	placeholderMin: string;
-	placeholderMax: string;
+	minValue?: number;
+	maxValue?: number;
+	onMinChange: (val: number | undefined) => void;
+	onMaxChange: (val: number | undefined) => void;
+	placeholderMin?: string;
+	placeholderMax?: string;
 	suffix?: string;
 }) {
 	return (
 		<div className="space-y-1.5">
 			<div className="flex items-center gap-2">
-				<div className="relative flex-1">
-					<Input
-						type="number"
-						placeholder={placeholderMin}
-						value={minValue ?? ""}
-						onChange={(e) =>
-							onMinChange(e.target.value ? Number(e.target.value) : undefined)
-						}
-						className="h-9 text-xs ltr text-left pl-2 pr-2"
-						dir="ltr"
-					/>
-				</div>
-				<span className="shrink-0 text-xs font-medium text-muted-foreground">
-					تا
-				</span>
-				<div className="relative flex-1">
-					<Input
-						type="number"
-						placeholder={placeholderMax}
-						value={maxValue ?? ""}
-						onChange={(e) =>
-							onMaxChange(e.target.value ? Number(e.target.value) : undefined)
-						}
-						className="h-9 text-xs ltr text-left pl-2 pr-2"
-						dir="ltr"
-					/>
-				</div>
+				<Input
+					type="number"
+					placeholder={placeholderMin}
+					value={minValue ?? ""}
+					onChange={(e) =>
+						onMinChange(e.target.value ? Number(e.target.value) : undefined)
+					}
+					className="h-9 text-xs"
+					dir="ltr"
+				/>
+				<span className="text-xs text-muted-foreground">تا</span>
+				<Input
+					type="number"
+					placeholder={placeholderMax}
+					value={maxValue ?? ""}
+					onChange={(e) =>
+						onMaxChange(e.target.value ? Number(e.target.value) : undefined)
+					}
+					className="h-9 text-xs"
+					dir="ltr"
+				/>
 			</div>
 			{(minValue !== undefined || maxValue !== undefined) && (
-				<div className="flex items-center justify-between text-[11px] text-primary font-medium px-1">
+				<div className="flex justify-between text-[11px] text-primary font-medium px-1">
 					<span>
 						{minValue !== undefined
 							? `${formatToman(minValue)} ${suffix}`
-							: "از ابتدا"}
+							: "از ۰"}
 					</span>
 					<span>
 						{maxValue !== undefined
@@ -121,92 +115,32 @@ const BEDROOM_PRESETS = [
 export function FiltersPanel() {
 	const [showEquivalent, setShowEquivalent] = useState(false);
 
-	// Granular Zustand selectors
-	const dealType = useListingStore((s) => s.dealType);
-	const city = useListingStore((s) => s.city);
-	const district = useListingStore((s) => s.district);
-	const bedrooms = useListingStore((s) => s.bedrooms);
-	const minBedrooms = useListingStore((s) => s.minBedrooms);
-	const maxBedrooms = useListingStore((s) => s.maxBedrooms);
-	const hasParking = useListingStore((s) => s.hasParking);
-	const hasElevator = useListingStore((s) => s.hasElevator);
-	const hasStorage = useListingStore((s) => s.hasStorage);
-	const hasBalcony = useListingStore((s) => s.hasBalcony);
-	const isConvertible = useListingStore((s) => s.isConvertible);
-	const excludeAgreed = useListingStore((s) => s.excludeAgreed);
-	const setExcludeAgreed = useListingStore((s) => s.setExcludeAgreed);
-	const publisherType = useListingStore((s) => s.publisherType);
-	const minArea = useListingStore((s) => s.minArea);
-	const maxArea = useListingStore((s) => s.maxArea);
-
-	// Exact Rent & Deposit
-	const minDeposit = useListingStore((s) => s.minDeposit);
-	const maxDeposit = useListingStore((s) => s.maxDeposit);
-	const minRent = useListingStore((s) => s.minRent);
-	const maxRent = useListingStore((s) => s.maxRent);
-
-	// Optional Converted Full Deposit
-	const minEquivalentDeposit = useListingStore((s) => s.minEquivalentDeposit);
-	const maxEquivalentDeposit = useListingStore((s) => s.maxEquivalentDeposit);
-
-	// Buy
-	const minPrice = useListingStore((s) => s.minPrice);
-	const maxPrice = useListingStore((s) => s.maxPrice);
-	const minPricePerSqMeter = useListingStore((s) => s.minPricePerSqMeter);
-	const maxPricePerSqMeter = useListingStore((s) => s.maxPricePerSqMeter);
+	// Staged Draft Filters
+	const draft = useListingStore((s) => s.draftFilters);
+	const setDraft = useListingStore((s) => s.setDraft);
+	const patchDraft = useListingStore((s) => s.patchDraft);
+	const applyDraftFilters = useListingStore((s) => s.applyDraftFilters);
+	const resetDraftFilters = useListingStore((s) => s.resetDraftFilters);
 
 	const locationTree = useListingStore((s) => s.locationTree);
 	const isLoading = useListingStore((s) => s.isLoading);
 	const total = useListingStore((s) => s.total);
 
-	// Action selectors
-	const setDealType = useListingStore((s) => s.setDealType);
-	const setCity = useListingStore((s) => s.setCity);
-	const setDistrict = useListingStore((s) => s.setDistrict);
-	const setBedrooms = useListingStore((s) => s.setBedrooms);
-	const setMinBedrooms = useListingStore((s) => s.setMinBedrooms);
-	const setMaxBedrooms = useListingStore((s) => s.setMaxBedrooms);
-	const setHasParking = useListingStore((s) => s.setHasParking);
-	const setHasElevator = useListingStore((s) => s.setHasElevator);
-	const setHasStorage = useListingStore((s) => s.setHasStorage);
-	const setHasBalcony = useListingStore((s) => s.setHasBalcony);
-	const setIsConvertible = useListingStore((s) => s.setIsConvertible);
-	const setPublisherType = useListingStore((s) => s.setPublisherType);
-	const setMinArea = useListingStore((s) => s.setMinArea);
-	const setMaxArea = useListingStore((s) => s.setMaxArea);
-	const setMinDeposit = useListingStore((s) => s.setMinDeposit);
-	const setMaxDeposit = useListingStore((s) => s.setMaxDeposit);
-	const setMinRent = useListingStore((s) => s.setMinRent);
-	const setMaxRent = useListingStore((s) => s.setMaxRent);
-	const setMinEquivalentDeposit = useListingStore(
-		(s) => s.setMinEquivalentDeposit,
-	);
-	const setMaxEquivalentDeposit = useListingStore(
-		(s) => s.setMaxEquivalentDeposit,
-	);
-	const setMinPrice = useListingStore((s) => s.setMinPrice);
-	const setMaxPrice = useListingStore((s) => s.setMaxPrice);
-	const setMinPricePerSqMeter = useListingStore((s) => s.setMinPricePerSqMeter);
-	const setMaxPricePerSqMeter = useListingStore((s) => s.setMaxPricePerSqMeter);
-
-	const applyFilters = useListingStore((s) => s.applyFilters);
-	const resetFilters = useListingStore((s) => s.resetFilters);
-
 	const handleApply = useCallback(() => {
-		void applyFilters();
-	}, [applyFilters]);
+		applyDraftFilters();
+	}, [applyDraftFilters]);
 
 	const handleReset = useCallback(() => {
-		resetFilters();
-		void applyFilters();
-	}, [resetFilters, applyFilters]);
+		resetDraftFilters();
+		applyDraftFilters();
+	}, [resetDraftFilters, applyDraftFilters]);
 
-	// Location hierarchy resolution
+	// Location hierarchy resolution based on draft city
 	const selectedProvince = locationTree.find((p) =>
-		p.cities.some((c) => c.cityId === city),
+		p.cities.some((c) => c.cityId === draft.city),
 	);
 	const cities = selectedProvince?.cities ?? [];
-	const selectedCity = cities.find((c) => c.cityId === city);
+	const selectedCity = cities.find((c) => c.cityId === draft.city);
 	const districts = selectedCity?.districts ?? [];
 
 	return (
@@ -220,10 +154,19 @@ export function FiltersPanel() {
 							<button
 								key={t}
 								type="button"
-								onClick={() => setDealType(t)}
+								onClick={() => {
+									patchDraft({
+										dealType: t,
+										city: "",
+										district: "",
+										bedrooms: undefined,
+										minBedrooms: undefined,
+										maxBedrooms: undefined,
+									});
+								}}
 								className={cn(
 									"flex items-center justify-center rounded-lg py-2 text-xs font-semibold transition-all",
-									dealType === t
+									draft.dealType === t
 										? "bg-background text-primary shadow-sm"
 										: "text-muted-foreground hover:text-foreground",
 								)}
@@ -251,7 +194,10 @@ export function FiltersPanel() {
 								const prov = locationTree.find(
 									(p) => p.provinceId === e.target.value,
 								);
-								setCity(prov?.cities[0]?.cityId ?? "");
+								patchDraft({
+									city: prov?.cities[0]?.cityId ?? "",
+									district: "",
+								});
 							}}
 						>
 							<option value="">همه استان‌ها (سراسر کشور)</option>
@@ -265,8 +211,10 @@ export function FiltersPanel() {
 						{cities.length > 0 && (
 							<select
 								className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs focus:ring-1 focus:ring-primary"
-								value={city}
-								onChange={(e) => setCity(e.target.value)}
+								value={draft.city}
+								onChange={(e) => {
+									patchDraft({ city: e.target.value, district: "" });
+								}}
 							>
 								<option value="">همه شهرهای استان</option>
 								{cities.map((c) => (
@@ -280,8 +228,8 @@ export function FiltersPanel() {
 						{districts.length > 0 && (
 							<select
 								className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs focus:ring-1 focus:ring-primary"
-								value={district}
-								onChange={(e) => setDistrict(e.target.value)}
+								value={draft.district}
+								onChange={(e) => setDraft("district", e.target.value)}
 							>
 								<option value="">همه محله‌ها</option>
 								{districts.map((d) => (
@@ -297,7 +245,7 @@ export function FiltersPanel() {
 				<Separator />
 
 				{/* Primary Pricing Filters: Exact Deposit & Rent */}
-				{dealType === "rent" && (
+				{draft.dealType === "rent" && (
 					<div className="space-y-4">
 						{/* Exact Deposit */}
 						<div>
@@ -306,10 +254,10 @@ export function FiltersPanel() {
 								subtitle="تعیین دقیق حداقل و حداکثر رهن"
 							/>
 							<RangeRow
-								minValue={minDeposit}
-								maxValue={maxDeposit}
-								onMinChange={setMinDeposit}
-								onMaxChange={setMaxDeposit}
+								minValue={draft.minDeposit}
+								maxValue={draft.maxDeposit}
+								onMinChange={(val) => setDraft("minDeposit", val)}
+								onMaxChange={(val) => setDraft("maxDeposit", val)}
 								placeholderMin="حداقل رهن (تومان)"
 								placeholderMax="حداکثر رهن (تومان)"
 							/>
@@ -322,10 +270,10 @@ export function FiltersPanel() {
 								subtitle="تعیین دقیق حداقل و حداکثر اجاره ماهانه"
 							/>
 							<RangeRow
-								minValue={minRent}
-								maxValue={maxRent}
-								onMinChange={setMinRent}
-								onMaxChange={setMaxRent}
+								minValue={draft.minRent}
+								maxValue={draft.maxRent}
+								onMinChange={(val) => setDraft("minRent", val)}
+								onMaxChange={(val) => setDraft("maxRent", val)}
 								placeholderMin="حداقل اجاره"
 								placeholderMax="حداکثر اجاره"
 							/>
@@ -351,18 +299,18 @@ export function FiltersPanel() {
 							</button>
 
 							{(showEquivalent ||
-								minEquivalentDeposit !== undefined ||
-								maxEquivalentDeposit !== undefined) && (
+								draft.minEquivalentDeposit !== undefined ||
+								draft.maxEquivalentDeposit !== undefined) && (
 								<div className="pt-2 space-y-2">
 									<p className="text-[11px] text-muted-foreground">
 										تبدیل خودکار اجاره ماهانه به رهن کامل جهت جستجو بر اساس
 										بودجه کلی:
 									</p>
 									<RangeRow
-										minValue={minEquivalentDeposit}
-										maxValue={maxEquivalentDeposit}
-										onMinChange={setMinEquivalentDeposit}
-										onMaxChange={setMaxEquivalentDeposit}
+										minValue={draft.minEquivalentDeposit}
+										maxValue={draft.maxEquivalentDeposit}
+										onMinChange={(val) => setDraft("minEquivalentDeposit", val)}
+										onMaxChange={(val) => setDraft("maxEquivalentDeposit", val)}
 										placeholderMin="حداقل رهن معادل (تومان)"
 										placeholderMax="حداکثر رهن معادل (تومان)"
 									/>
@@ -373,15 +321,15 @@ export function FiltersPanel() {
 				)}
 
 				{/* Buy Pricing Filters */}
-				{dealType === "buy" && (
+				{draft.dealType === "buy" && (
 					<div className="space-y-4">
 						<div>
 							<SectionHeader title="قیمت کل (تومان)" />
 							<RangeRow
-								minValue={minPrice}
-								maxValue={maxPrice}
-								onMinChange={setMinPrice}
-								onMaxChange={setMaxPrice}
+								minValue={draft.minPrice}
+								maxValue={draft.maxPrice}
+								onMinChange={(val) => setDraft("minPrice", val)}
+								onMaxChange={(val) => setDraft("maxPrice", val)}
 								placeholderMin="حداقل قیمت کل"
 								placeholderMax="حداکثر قیمت کل"
 							/>
@@ -390,10 +338,10 @@ export function FiltersPanel() {
 						<div>
 							<SectionHeader title="قیمت هر متر مربع (تومان)" />
 							<RangeRow
-								minValue={minPricePerSqMeter}
-								maxValue={maxPricePerSqMeter}
-								onMinChange={setMinPricePerSqMeter}
-								onMaxChange={setMaxPricePerSqMeter}
+								minValue={draft.minPricePerSqMeter}
+								maxValue={draft.maxPricePerSqMeter}
+								onMinChange={(val) => setDraft("minPricePerSqMeter", val)}
+								onMaxChange={(val) => setDraft("maxPricePerSqMeter", val)}
 								placeholderMin="حداقل هر متر"
 								placeholderMax="حداکثر هر متر"
 							/>
@@ -416,8 +364,8 @@ export function FiltersPanel() {
 					</div>
 					<Switch
 						id="exclude-agreed-switch"
-						checked={excludeAgreed}
-						onCheckedChange={setExcludeAgreed}
+						checked={draft.excludeAgreed}
+						onCheckedChange={(val) => setDraft("excludeAgreed", val)}
 					/>
 				</div>
 
@@ -433,18 +381,24 @@ export function FiltersPanel() {
 					<div className="flex flex-wrap gap-1.5">
 						{BEDROOM_PRESETS.map((preset) => {
 							const isSelected =
-								bedrooms === preset.min && preset.min === preset.max;
+								draft.bedrooms === preset.min && preset.min === preset.max;
 							return (
 								<button
 									key={preset.label}
 									type="button"
 									onClick={() => {
 										if (preset.min === undefined) {
-											setBedrooms(undefined);
-											setMinBedrooms(undefined);
-											setMaxBedrooms(undefined);
+											patchDraft({
+												bedrooms: undefined,
+												minBedrooms: undefined,
+												maxBedrooms: undefined,
+											});
 										} else {
-											setBedrooms(preset.min);
+											patchDraft({
+												bedrooms: preset.min,
+												minBedrooms: undefined,
+												maxBedrooms: undefined,
+											});
 										}
 									}}
 									className={cn(
@@ -468,9 +422,10 @@ export function FiltersPanel() {
 							<Input
 								type="number"
 								placeholder="حداقل خواب"
-								value={minBedrooms ?? ""}
+								value={draft.minBedrooms ?? ""}
 								onChange={(e) =>
-									setMinBedrooms(
+									setDraft(
+										"minBedrooms",
 										e.target.value ? Number(e.target.value) : undefined,
 									)
 								}
@@ -481,9 +436,10 @@ export function FiltersPanel() {
 							<Input
 								type="number"
 								placeholder="حداکثر خواب"
-								value={maxBedrooms ?? ""}
+								value={draft.maxBedrooms ?? ""}
 								onChange={(e) =>
-									setMaxBedrooms(
+									setDraft(
+										"maxBedrooms",
 										e.target.value ? Number(e.target.value) : undefined,
 									)
 								}
@@ -503,9 +459,12 @@ export function FiltersPanel() {
 						<Input
 							type="number"
 							placeholder="حداقل متر"
-							value={minArea ?? ""}
+							value={draft.minArea ?? ""}
 							onChange={(e) =>
-								setMinArea(e.target.value ? Number(e.target.value) : undefined)
+								setDraft(
+									"minArea",
+									e.target.value ? Number(e.target.value) : undefined,
+								)
 							}
 							className="h-9 text-xs"
 							dir="ltr"
@@ -514,9 +473,12 @@ export function FiltersPanel() {
 						<Input
 							type="number"
 							placeholder="حداکثر متر"
-							value={maxArea ?? ""}
+							value={draft.maxArea ?? ""}
 							onChange={(e) =>
-								setMaxArea(e.target.value ? Number(e.target.value) : undefined)
+								setDraft(
+									"maxArea",
+									e.target.value ? Number(e.target.value) : undefined,
+								)
 							}
 							className="h-9 text-xs"
 							dir="ltr"
@@ -539,11 +501,14 @@ export function FiltersPanel() {
 								key={p.id}
 								type="button"
 								onClick={() =>
-									setPublisherType(p.id as "all" | "personal" | "agency")
+									setDraft(
+										"publisherType",
+										p.id as "all" | "personal" | "agency",
+									)
 								}
 								className={cn(
 									"rounded-lg border py-1.5 text-xs font-medium transition-all",
-									publisherType === p.id
+									draft.publisherType === p.id
 										? "border-primary bg-primary text-primary-foreground"
 										: "border-input bg-background hover:bg-accent",
 								)}
@@ -569,8 +534,8 @@ export function FiltersPanel() {
 							</label>
 							<Switch
 								id="filter-parking"
-								checked={hasParking}
-								onCheckedChange={setHasParking}
+								checked={draft.hasParking}
+								onCheckedChange={(val) => setDraft("hasParking", val)}
 							/>
 						</div>
 
@@ -583,8 +548,8 @@ export function FiltersPanel() {
 							</label>
 							<Switch
 								id="filter-elevator"
-								checked={hasElevator}
-								onCheckedChange={setHasElevator}
+								checked={draft.hasElevator}
+								onCheckedChange={(val) => setDraft("hasElevator", val)}
 							/>
 						</div>
 
@@ -597,8 +562,8 @@ export function FiltersPanel() {
 							</label>
 							<Switch
 								id="filter-storage"
-								checked={hasStorage}
-								onCheckedChange={setHasStorage}
+								checked={draft.hasStorage}
+								onCheckedChange={(val) => setDraft("hasStorage", val)}
 							/>
 						</div>
 
@@ -611,12 +576,12 @@ export function FiltersPanel() {
 							</label>
 							<Switch
 								id="filter-balcony"
-								checked={hasBalcony}
-								onCheckedChange={setHasBalcony}
+								checked={draft.hasBalcony}
+								onCheckedChange={(val) => setDraft("hasBalcony", val)}
 							/>
 						</div>
 
-						{dealType === "rent" && (
+						{draft.dealType === "rent" && (
 							<div className="flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-2.5">
 								<label
 									className="text-xs font-medium text-emerald-700 dark:text-emerald-400 cursor-pointer"
@@ -626,8 +591,8 @@ export function FiltersPanel() {
 								</label>
 								<Switch
 									id="filter-convertible"
-									checked={isConvertible}
-									onCheckedChange={setIsConvertible}
+									checked={draft.isConvertible}
+									onCheckedChange={(val) => setDraft("isConvertible", val)}
 								/>
 							</div>
 						)}

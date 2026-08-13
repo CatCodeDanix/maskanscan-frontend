@@ -2,10 +2,11 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { AlertCircle, Home, Loader2, RefreshCcw } from "lucide-react";
+import { AlertCircle, Loader2, RefreshCcw } from "lucide-react";
 import { useRef } from "react";
 import { PropertyCard } from "@/components/PropertyCard";
 import { Button } from "@/components/ui/button";
+import { LOTTIE_PRESETS, LottieLoader } from "@/components/ui/LottieLoader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useViewportListings } from "@/hooks/use-viewport-listings";
 import { useListingStore } from "@/store/listing-store";
@@ -68,10 +69,20 @@ export function ListingsPanel() {
 
 	if (isLoading && listings.length === 0) {
 		return (
-			<div className="space-y-3 p-3" dir="rtl">
-				{[0, 1, 2, 3].map((i) => (
-					<CardSkeleton key={i} />
-				))}
+			<div
+				className="flex h-full flex-col items-center justify-center p-6 text-center"
+				dir="rtl"
+			>
+				<LottieLoader
+					src={LOTTIE_PRESETS.loading}
+					size={100}
+					fallbackText="در حال جستجو و بارگذاری املاک در این محدوده..."
+				/>
+				<div className="mt-4 w-full space-y-3">
+					{[0, 1].map((i) => (
+						<CardSkeleton key={i} />
+					))}
+				</div>
 			</div>
 		);
 	}
@@ -79,7 +90,7 @@ export function ListingsPanel() {
 	if (error && listings.length === 0) {
 		return (
 			<div
-				className="flex flex-col items-center gap-3 p-6 text-center"
+				className="flex flex-col items-center justify-center gap-3 p-6 text-center h-full"
 				dir="rtl"
 			>
 				<AlertCircle className="size-8 text-destructive" />
@@ -100,13 +111,16 @@ export function ListingsPanel() {
 	if (!isLoading && listings.length === 0) {
 		return (
 			<div
-				className="flex flex-col items-center gap-3 p-6 text-center"
+				className="flex flex-col items-center justify-center gap-3 p-6 text-center h-full"
 				dir="rtl"
 			>
-				<Home className="size-8 text-muted-foreground/50" />
-				<p className="text-sm font-medium">هیچ آگهیی در این محدوده یافت نشد</p>
-				<p className="text-xs text-muted-foreground">
-					روی نقشه جابجا شوید، زوم را تغییر دهید یا فیلترها را پاکسازی کنید
+				<LottieLoader src={LOTTIE_PRESETS.empty} size={120} fallbackText="" />
+				<p className="text-sm font-bold text-foreground">
+					هیچ آگهیی در این محدوده یافت نشد
+				</p>
+				<p className="text-xs text-muted-foreground max-w-[260px]">
+					روی نقشه جابجا شوید، زوم را تغییر دهید یا فیلترهای جستجو را پاکسازی
+					کنید
 				</p>
 				<Button
 					size="sm"
@@ -115,6 +129,7 @@ export function ListingsPanel() {
 						resetFilters();
 						void refetch();
 					}}
+					className="mt-2"
 				>
 					پاک کردن فیلترها
 				</Button>

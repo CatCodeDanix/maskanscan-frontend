@@ -11,31 +11,7 @@ export function useFilterSync() {
 	const patchFilters = useListingStore((s) => s.patchFilters);
 	const fetchLocationTree = useListingStore((s) => s.fetchLocationTree);
 
-	const dealType = useListingStore((s) => s.dealType);
-	const city = useListingStore((s) => s.city);
-	const district = useListingStore((s) => s.district);
-	const bedrooms = useListingStore((s) => s.bedrooms);
-	const minBedrooms = useListingStore((s) => s.minBedrooms);
-	const maxBedrooms = useListingStore((s) => s.maxBedrooms);
-	const hasParking = useListingStore((s) => s.hasParking);
-	const hasElevator = useListingStore((s) => s.hasElevator);
-	const hasStorage = useListingStore((s) => s.hasStorage);
-	const hasBalcony = useListingStore((s) => s.hasBalcony);
-	const isConvertible = useListingStore((s) => s.isConvertible);
-	const excludeAgreed = useListingStore((s) => s.excludeAgreed);
-	const publisherType = useListingStore((s) => s.publisherType);
-	const minArea = useListingStore((s) => s.minArea);
-	const maxArea = useListingStore((s) => s.maxArea);
-	const minDeposit = useListingStore((s) => s.minDeposit);
-	const maxDeposit = useListingStore((s) => s.maxDeposit);
-	const minRent = useListingStore((s) => s.minRent);
-	const maxRent = useListingStore((s) => s.maxRent);
-	const minEquivalentDeposit = useListingStore((s) => s.minEquivalentDeposit);
-	const maxEquivalentDeposit = useListingStore((s) => s.maxEquivalentDeposit);
-	const minPrice = useListingStore((s) => s.minPrice);
-	const maxPrice = useListingStore((s) => s.maxPrice);
-	const minPricePerSqMeter = useListingStore((s) => s.minPricePerSqMeter);
-	const maxPricePerSqMeter = useListingStore((s) => s.maxPricePerSqMeter);
+	const appliedFilters = useListingStore((s) => s.appliedFilters);
 
 	// 1. Initial mount: parse URL query params & load location tree
 	useEffect(() => {
@@ -120,7 +96,7 @@ export function useFilterSync() {
 		void fetchLocationTree();
 	}, [fetchLocationTree, patchFilters]);
 
-	// 2. URL query params sync
+	// 2. URL query params sync (only syncs applied filters)
 	useEffect(() => {
 		if (skipFirstURLPush.current) {
 			skipFirstURLPush.current = false;
@@ -128,6 +104,33 @@ export function useFilterSync() {
 		}
 
 		const qs_params = new URLSearchParams();
+		const {
+			dealType,
+			city,
+			district,
+			bedrooms,
+			minBedrooms,
+			maxBedrooms,
+			hasParking,
+			hasElevator,
+			hasStorage,
+			hasBalcony,
+			isConvertible,
+			excludeAgreed,
+			publisherType,
+			minArea,
+			maxArea,
+			minDeposit,
+			maxDeposit,
+			minRent,
+			maxRent,
+			minEquivalentDeposit,
+			maxEquivalentDeposit,
+			minPrice,
+			maxPrice,
+			minPricePerSqMeter,
+			maxPricePerSqMeter,
+		} = appliedFilters;
 
 		if (dealType && dealType !== "rent") qs_params.set("dealType", dealType);
 		if (city) qs_params.set("city", city);
@@ -170,31 +173,5 @@ export function useFilterSync() {
 
 		const qs = qs_params.toString();
 		window.history.replaceState(null, "", qs ? `/?${qs}` : "/");
-	}, [
-		dealType,
-		city,
-		district,
-		bedrooms,
-		minBedrooms,
-		maxBedrooms,
-		hasParking,
-		hasElevator,
-		hasStorage,
-		hasBalcony,
-		isConvertible,
-		excludeAgreed,
-		publisherType,
-		minArea,
-		maxArea,
-		minDeposit,
-		maxDeposit,
-		minRent,
-		maxRent,
-		minEquivalentDeposit,
-		maxEquivalentDeposit,
-		minPrice,
-		maxPrice,
-		minPricePerSqMeter,
-		maxPricePerSqMeter,
-	]);
+	}, [appliedFilters]);
 }

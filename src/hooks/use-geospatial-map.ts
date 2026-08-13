@@ -47,90 +47,63 @@ export function useGeospatialMap({
 }: UseGeospatialMapProps) {
 	const queryClient = useQueryClient();
 
-	// Extract active filters from listing-store
-	const dealType = useListingStore((s) => s.dealType);
-	const city = useListingStore((s) => s.city);
-	const district = useListingStore((s) => s.district);
-	const bedrooms = useListingStore((s) => s.bedrooms);
-	const minBedrooms = useListingStore((s) => s.minBedrooms);
-	const maxBedrooms = useListingStore((s) => s.maxBedrooms);
-	const hasParking = useListingStore((s) => s.hasParking);
-	const hasElevator = useListingStore((s) => s.hasElevator);
-	const hasStorage = useListingStore((s) => s.hasStorage);
-	const hasBalcony = useListingStore((s) => s.hasBalcony);
-	const isConvertible = useListingStore((s) => s.isConvertible);
-	const excludeAgreed = useListingStore((s) => s.excludeAgreed);
-	const publisherType = useListingStore((s) => s.publisherType);
-	const minArea = useListingStore((s) => s.minArea);
-	const maxArea = useListingStore((s) => s.maxArea);
-	const minDeposit = useListingStore((s) => s.minDeposit);
-	const maxDeposit = useListingStore((s) => s.maxDeposit);
-	const minRent = useListingStore((s) => s.minRent);
-	const maxRent = useListingStore((s) => s.maxRent);
-	const minEquivalentDeposit = useListingStore((s) => s.minEquivalentDeposit);
-	const maxEquivalentDeposit = useListingStore((s) => s.maxEquivalentDeposit);
-	const minPrice = useListingStore((s) => s.minPrice);
-	const maxPrice = useListingStore((s) => s.maxPrice);
-	const minPricePerSqMeter = useListingStore((s) => s.minPricePerSqMeter);
-	const maxPricePerSqMeter = useListingStore((s) => s.maxPricePerSqMeter);
+	// Extract active committed filters from listing-store
+	const appliedFilters = useListingStore((s) => s.appliedFilters);
 
 	const filters = useMemo(
 		() => ({
-			dealType,
-			city: city || undefined,
-			district: district || undefined,
-			bedrooms,
-			minBedrooms,
-			maxBedrooms,
-			hasParking: hasParking || undefined,
-			hasElevator: hasElevator || undefined,
-			hasStorage: hasStorage || undefined,
-			hasBalcony: hasBalcony || undefined,
-			isConvertible: isConvertible || undefined,
-			excludeAgreed: excludeAgreed || undefined,
-			publisherType: publisherType !== "all" ? publisherType : undefined,
-			minArea,
-			maxArea,
-			minDeposit: dealType === "rent" ? minDeposit : undefined,
-			maxDeposit: dealType === "rent" ? maxDeposit : undefined,
-			minRent: dealType === "rent" ? minRent : undefined,
-			maxRent: dealType === "rent" ? maxRent : undefined,
+			dealType: appliedFilters.dealType,
+			city: appliedFilters.city || undefined,
+			district: appliedFilters.district || undefined,
+			bedrooms: appliedFilters.bedrooms,
+			minBedrooms: appliedFilters.minBedrooms,
+			maxBedrooms: appliedFilters.maxBedrooms,
+			hasParking: appliedFilters.hasParking || undefined,
+			hasElevator: appliedFilters.hasElevator || undefined,
+			hasStorage: appliedFilters.hasStorage || undefined,
+			hasBalcony: appliedFilters.hasBalcony || undefined,
+			isConvertible: appliedFilters.isConvertible || undefined,
+			excludeAgreed: appliedFilters.excludeAgreed || undefined,
+			publisherType:
+				appliedFilters.publisherType !== "all"
+					? appliedFilters.publisherType
+					: undefined,
+			minArea: appliedFilters.minArea,
+			maxArea: appliedFilters.maxArea,
+			minDeposit:
+				appliedFilters.dealType === "rent"
+					? appliedFilters.minDeposit
+					: undefined,
+			maxDeposit:
+				appliedFilters.dealType === "rent"
+					? appliedFilters.maxDeposit
+					: undefined,
+			minRent:
+				appliedFilters.dealType === "rent" ? appliedFilters.minRent : undefined,
+			maxRent:
+				appliedFilters.dealType === "rent" ? appliedFilters.maxRent : undefined,
 			minEquivalentDeposit:
-				dealType === "rent" ? minEquivalentDeposit : undefined,
+				appliedFilters.dealType === "rent"
+					? appliedFilters.minEquivalentDeposit
+					: undefined,
 			maxEquivalentDeposit:
-				dealType === "rent" ? maxEquivalentDeposit : undefined,
-			minPrice: dealType === "buy" ? minPrice : undefined,
-			maxPrice: dealType === "buy" ? maxPrice : undefined,
-			minPricePerSqMeter: dealType === "buy" ? minPricePerSqMeter : undefined,
-			maxPricePerSqMeter: dealType === "buy" ? maxPricePerSqMeter : undefined,
+				appliedFilters.dealType === "rent"
+					? appliedFilters.maxEquivalentDeposit
+					: undefined,
+			minPrice:
+				appliedFilters.dealType === "buy" ? appliedFilters.minPrice : undefined,
+			maxPrice:
+				appliedFilters.dealType === "buy" ? appliedFilters.maxPrice : undefined,
+			minPricePerSqMeter:
+				appliedFilters.dealType === "buy"
+					? appliedFilters.minPricePerSqMeter
+					: undefined,
+			maxPricePerSqMeter:
+				appliedFilters.dealType === "buy"
+					? appliedFilters.maxPricePerSqMeter
+					: undefined,
 		}),
-		[
-			dealType,
-			city,
-			district,
-			bedrooms,
-			minBedrooms,
-			maxBedrooms,
-			hasParking,
-			hasElevator,
-			hasStorage,
-			hasBalcony,
-			isConvertible,
-			excludeAgreed,
-			publisherType,
-			minArea,
-			maxArea,
-			minDeposit,
-			maxDeposit,
-			minRent,
-			maxRent,
-			minEquivalentDeposit,
-			maxEquivalentDeposit,
-			minPrice,
-			maxPrice,
-			minPricePerSqMeter,
-			maxPricePerSqMeter,
-		],
+		[appliedFilters],
 	);
 
 	const currentTier = getZoomTier(zoom);
