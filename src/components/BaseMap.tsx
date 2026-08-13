@@ -70,7 +70,7 @@ export default function BaseMap() {
 
 			debounceTimerRef.current = setTimeout(() => {
 				updateViewportBounds(e.viewState.zoom);
-			}, 180);
+			}, 60);
 		},
 		[updateViewportBounds],
 	);

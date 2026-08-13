@@ -107,11 +107,13 @@ export function useGeospatialMap({
 	);
 
 	const currentTier = getZoomTier(zoom);
+	const intZoom = Math.floor(zoom);
 
 	// Reconciliation tracking state
 	const lastFetchedBboxRef = useRef<BBox | null>(null);
 	const lastFetchedPaddedBboxRef = useRef<BBox | null>(null);
 	const lastFetchedTierRef = useRef<ZoomTier | null>(null);
+	const lastFetchedZoomRef = useRef<number | null>(null);
 
 	// Target bbox to request (held steady when panning within padded bounds at raw tier)
 	const [requestBBox, setRequestBBox] = useState<BBox | null>(viewportBBox);
@@ -121,21 +123,22 @@ export function useGeospatialMap({
 		if (!viewportBBox) return;
 
 		const tierChanged = lastFetchedTierRef.current !== currentTier;
+		const zoomChanged = lastFetchedZoomRef.current !== intZoom;
 
-		if (tierChanged) {
-			// Tier boundary crossed (< 14 <-> >= 14) -> always fetch
+		if (tierChanged || zoomChanged) {
+			// Zoom level changed or Tier boundary crossed -> always fetch fresh data for this zoom!
 			setRequestBBox(viewportBBox);
 			return;
 		}
 
 		if (currentTier === "raw" && lastFetchedPaddedBboxRef.current) {
-			// Within Raw Tier (>= 14): check if current viewport is inside padded last bbox
+			// Within Raw Tier (>= 14) at same zoom: check if current viewport is inside padded last bbox
 			if (isBBoxContained(viewportBBox, lastFetchedPaddedBboxRef.current)) {
 				// Contained -> skip network fetch, use local supercluster
 				return;
 			}
 		} else if (currentTier === "clustered" && lastFetchedBboxRef.current) {
-			// Clustered Tier (< 14): check small pan containment
+			// Clustered Tier (< 14) at same zoom: check small pan containment
 			const paddedClusterBbox = expandBBox(lastFetchedBboxRef.current, 0.15);
 			if (isBBoxContained(viewportBBox, paddedClusterBbox)) {
 				return;
@@ -144,7 +147,7 @@ export function useGeospatialMap({
 
 		// Otherwise, update request bbox
 		setRequestBBox(viewportBBox);
-	}, [viewportBBox, currentTier]);
+	}, [viewportBBox, currentTier, intZoom]);
 
 	// Stable snapped bbox for TanStack Query key
 	const snappedKeyBbox = useMemo(
@@ -155,7 +158,13 @@ export function useGeospatialMap({
 	// ── TanStack Query ───────────────────────────────────────────────────────
 	const { data, isLoading, isFetching, error, refetch } =
 		useQuery<MapDataResponse>({
-			queryKey: ["mapData", snappedKeyBbox, currentTier, filters],
+			queryKey: [
+				"mapData",
+				snappedKeyBbox,
+				currentTier,
+				currentTier === "clustered" ? intZoom : "raw",
+				filters,
+			],
 			queryFn: async () => {
 				if (!requestBBox) {
 					return {
@@ -177,6 +186,7 @@ export function useGeospatialMap({
 				if (res.success) {
 					lastFetchedBboxRef.current = requestBBox;
 					lastFetchedTierRef.current = res.zoomTier;
+					lastFetchedZoomRef.current = intZoom;
 					if (res.zoomTier === "raw") {
 						lastFetchedPaddedBboxRef.current = res.bbox; // res.bbox is the padded bbox
 					} else {
