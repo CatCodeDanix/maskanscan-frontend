@@ -129,6 +129,18 @@
 		@apply bg-background text-foreground;
 		font-feature-settings: "ss01", "ss02";
 	}
+	button:not(:disabled),
+	[role="button"]:not([aria-disabled="true"]),
+	a,
+	select,
+	summary,
+	input[type="button"],
+	input[type="submit"],
+	input[type="reset"],
+	input[type="checkbox"],
+	input[type="radio"] {
+		cursor: pointer;
+	}
 	*::-webkit-scrollbar {
 		width: 6px;
 		height: 6px;

@@ -102,7 +102,7 @@ function BoolBadge({
 	);
 }
 
-// ── Touch-Swipeable Gallery Component ─────────────────────────────────────────
+// ── Touch & Pointer Draggable Gallery Component ───────────────────────────────
 
 function SwipeableImageGallery({
 	images,
@@ -113,8 +113,10 @@ function SwipeableImageGallery({
 }) {
 	const [activeImage, setActiveImage] = useState(0);
 	const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
-	const touchStartX = useRef<number | null>(null);
-	const touchEndX = useRef<number | null>(null);
+	const [isDragging, setIsDragging] = useState(false);
+	const [dragOffset, setDragOffset] = useState(0);
+	const startXRef = useRef<number | null>(null);
+	const isPointerDownRef = useRef<boolean>(false);
 
 	const total = images.length;
 
@@ -126,29 +128,49 @@ function SwipeableImageGallery({
 		setActiveImage((prev) => (prev < total - 1 ? prev + 1 : 0));
 	}, [total]);
 
-	const onTouchStart = (e: React.TouchEvent) => {
-		touchStartX.current = e.targetTouches[0].clientX;
+	const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+		if (total <= 1) return;
+		isPointerDownRef.current = true;
+		startXRef.current = e.clientX;
+		setIsDragging(true);
+		e.currentTarget.setPointerCapture(e.pointerId);
 	};
 
-	const onTouchMove = (e: React.TouchEvent) => {
-		touchEndX.current = e.targetTouches[0].clientX;
+	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+		if (!isPointerDownRef.current || startXRef.current === null) return;
+		const delta = e.clientX - startXRef.current;
+		setDragOffset(delta);
 	};
 
-	const onTouchEnd = () => {
-		if (!touchStartX.current || !touchEndX.current) return;
-		const distance = touchStartX.current - touchEndX.current;
-		const isLeftSwipe = distance > 45;
-		const isRightSwipe = distance < -45;
+	const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+		if (!isPointerDownRef.current || startXRef.current === null) return;
+		const delta = e.clientX - startXRef.current;
+		const threshold = 35;
 
-		// In RTL layout: swipe left goes to next image, swipe right goes to previous image
-		if (isLeftSwipe) {
+		// In RTL layout: dragging left (negative delta) moves to next image
+		// dragging right (positive delta) moves to previous image
+		if (delta < -threshold) {
 			handleNext();
-		} else if (isRightSwipe) {
+		} else if (delta > threshold) {
 			handlePrev();
 		}
 
-		touchStartX.current = null;
-		touchEndX.current = null;
+		isPointerDownRef.current = false;
+		startXRef.current = null;
+		setIsDragging(false);
+		setDragOffset(0);
+		try {
+			e.currentTarget.releasePointerCapture(e.pointerId);
+		} catch {
+			// ignore
+		}
+	};
+
+	const handlePointerCancel = () => {
+		isPointerDownRef.current = false;
+		startXRef.current = null;
+		setIsDragging(false);
+		setDragOffset(0);
 	};
 
 	const currentSrc = images[activeImage];
@@ -157,26 +179,42 @@ function SwipeableImageGallery({
 	return (
 		<div className="space-y-2">
 			<div
-				className="group relative h-60 sm:h-64 w-full shrink-0 overflow-hidden rounded-2xl bg-muted select-none touch-pan-y"
-				onTouchStart={onTouchStart}
-				onTouchMove={onTouchMove}
-				onTouchEnd={onTouchEnd}
+				className={cn(
+					"group relative h-60 sm:h-64 w-full shrink-0 overflow-hidden rounded-2xl bg-muted select-none",
+					total > 1 ? "cursor-grab active:cursor-grabbing" : "cursor-default",
+				)}
+				style={{ touchAction: "pan-y" }}
+				onPointerDown={handlePointerDown}
+				onPointerMove={handlePointerMove}
+				onPointerUp={handlePointerUp}
+				onPointerCancel={handlePointerCancel}
 			>
-				{/* Main Active Image */}
+				{/* Main Active Image with Smooth Drag Feedback */}
 				{!isCurrentError && currentSrc ? (
-					<Image
-						src={currentSrc}
-						alt={`${title} - تصویر ${toPersianDigits(activeImage + 1)}`}
-						fill
-						sizes="(max-width: 768px) 100vw, 440px"
-						className="object-cover transition-all duration-300"
-						priority={activeImage < 2}
-						onError={() => {
-							setImageErrors((prev) => ({ ...prev, [activeImage]: true }));
+					<div
+						className="relative h-full w-full transition-transform"
+						style={{
+							transform: isDragging
+								? `translateX(${dragOffset * 0.35}px)`
+								: "none",
+							transitionDuration: isDragging ? "0ms" : "300ms",
 						}}
-					/>
+					>
+						<Image
+							src={currentSrc}
+							alt={`${title} - تصویر ${toPersianDigits(activeImage + 1)}`}
+							fill
+							draggable={false}
+							sizes="(max-width: 768px) 100vw, 440px"
+							className="object-cover pointer-events-none select-none"
+							priority={activeImage < 2}
+							onError={() => {
+								setImageErrors((prev) => ({ ...prev, [activeImage]: true }));
+							}}
+						/>
+					</div>
 				) : (
-					<div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground bg-muted">
+					<div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground bg-muted select-none">
 						<ImageIcon className="size-8 opacity-40" />
 						<span className="text-xs">تصویر در دسترس نیست</span>
 					</div>
@@ -184,7 +222,7 @@ function SwipeableImageGallery({
 
 				{/* Floating Counter Badge */}
 				{total > 1 && (
-					<div className="absolute top-3 right-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md shadow-md">
+					<div className="absolute top-3 right-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md shadow-md pointer-events-none">
 						{toPersianDigits(activeImage + 1)} / {toPersianDigits(total)}
 					</div>
 				)}
@@ -194,16 +232,22 @@ function SwipeableImageGallery({
 					<>
 						<button
 							type="button"
-							onClick={handleNext}
-							className="absolute left-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95"
+							onClick={(e) => {
+								e.stopPropagation();
+								handleNext();
+							}}
+							className="absolute left-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95 z-10"
 							aria-label="تصویر بعدی"
 						>
 							<ChevronLeft className="size-4" />
 						</button>
 						<button
 							type="button"
-							onClick={handlePrev}
-							className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95"
+							onClick={(e) => {
+								e.stopPropagation();
+								handlePrev();
+							}}
+							className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95 z-10"
 							aria-label="تصویر قبلی"
 						>
 							<ChevronRight className="size-4" />
@@ -214,7 +258,7 @@ function SwipeableImageGallery({
 
 			{/* Thumbnails Row */}
 			{total > 1 && (
-				<div className="flex items-center gap-1.5 overflow-x-auto px-1 py-1 no-scrollbar">
+				<div className="flex items-center gap-1.5 overflow-x-auto px-1 py-1 no-scrollbar select-none">
 					{images.map((src, i) => (
 						<button
 							key={src}
@@ -231,8 +275,9 @@ function SwipeableImageGallery({
 								src={src}
 								alt={`بند انگشتی ${toPersianDigits(i + 1)}`}
 								fill
+								draggable={false}
 								sizes="64px"
-								className="object-cover"
+								className="object-cover pointer-events-none select-none"
 							/>
 						</button>
 					))}
@@ -266,13 +311,16 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 			className="flex h-full flex-col overflow-hidden bg-background"
 			dir="rtl"
 		>
-			{/* Top Loading Progress Bar */}
+			{/* Top Scanning Line & Refined Loading Indicator */}
 			{isLoadingDetail && (
-				<div className="flex items-center justify-between bg-primary/10 px-4 py-1.5 text-xs text-primary border-b border-primary/20 shrink-0">
-					<span className="flex items-center gap-1.5 text-[11px] font-semibold">
+				<div className="relative shrink-0">
+					<div className="h-0.5 w-full bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse" />
+					<div className="flex items-center justify-center gap-2 py-1.5 px-4 bg-primary/5 border-b border-primary/15 text-primary text-xs font-semibold">
 						<Loader2 className="size-3.5 animate-spin" />
-						در حال دریافت جزئیات کامل آگهی...
-					</span>
+						<span className="text-[11px]">
+							در حال به‌روزرسانی مشخصات تکمیلی...
+						</span>
+					</div>
 				</div>
 			)}
 
