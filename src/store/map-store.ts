@@ -29,7 +29,7 @@ export const useMapStore = create<MapStore>((set, get) => ({
 
 	setMapStyle: (style) => set({ mapStyle: style }),
 
-	activeOverlays: ["metro", "brt"],
+	activeOverlays: [],
 
 	toggleOverlay: (id) =>
 		set((state) => ({

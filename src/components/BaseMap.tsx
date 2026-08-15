@@ -1,22 +1,32 @@
 "use client";
 
-import * as maplibregl from "maplibre-gl";
-import Map, {
-	type MapRef,
-	type ViewStateChangeEvent,
-} from "react-map-gl/maplibre";
-import "maplibre-gl/dist/maplibre-gl.css";
-import { useCallback, useRef, useState } from "react";
 import { useMapStore } from "@/store/map-store";
 import type { BBox } from "@/types/geospatial";
+import * as maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+import { useCallback, useRef, useState } from "react";
+import Map, {
+	type MapRef,
+	type ViewStateChangeEvent
+} from "react-map-gl/maplibre";
 import DeckMap from "./DeckMap";
 import { MapViewStateContext, type ViewState } from "./MapViewStateContext";
+
+// Combined Tehran & Alborz Provinces Bounding Box with inclusive buffer:
+// [minLng (West), minLat (South), maxLng (East), maxLat (North)]
+// West: 50.0 (includes western Alborz, Eshtehard, Taleghan)
+// South: 35.0 (includes southern Tehran province, Robat Karim, Varamin, Hasanabad)
+// East: 53.3 (includes eastern Tehran province, Damavand, Firuzkuh)
+// North: 36.5 (includes northern Alborz/Shemiran mountain ridges)
+const TEHRAN_ALBORZ_BOUNDS: [number, number, number, number] = [
+	50.0, 35.0, 53.3, 36.5,
+];
 
 const INITIAL_VIEW_STATE: ViewState = {
 	longitude: 51.389,
 	latitude: 35.689,
 	zoom: 10,
-	bbox: [51.15, 35.55, 51.62, 35.85],
+	bbox: [50.8, 35.4, 51.9, 36.0],
 };
 
 export default function BaseMap() {
@@ -88,6 +98,7 @@ export default function BaseMap() {
 		[syncViewport],
 	);
 
+
 	return (
 		<MapViewStateContext.Provider
 			value={{ ...viewState, isLoaded: isMapLoaded }}
@@ -97,6 +108,8 @@ export default function BaseMap() {
 				mapLib={maplibregl}
 				reuseMaps
 				initialViewState={INITIAL_VIEW_STATE}
+				minZoom={9}
+				maxBounds={TEHRAN_ALBORZ_BOUNDS}
 				style={{ width: "100%", height: "100%" }}
 				mapStyle={mapStyle}
 				onMove={onMove}

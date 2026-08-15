@@ -148,6 +148,21 @@ const getCursor = ({ isHovering }: { isHovering: boolean }) =>
 
 const DeckMap = () => {
 	const { current: mapInstance } = useMap();
+
+	useEffect(() => {
+		if (!mapInstance) return;
+
+		const handleIdle = () => {
+			useMapStore.setState({ activeOverlays: ["metro", "brt"] });
+		};
+
+		mapInstance.once("idle", handleIdle);
+
+		return () => {
+			mapInstance.off("idle", handleIdle);
+		};
+	}, [mapInstance]);
+
 	const transitLayers = useTransitLayers();
 	const selectListingById = useListingStore((s) => s.selectListingById);
 	const selectedListing = useListingStore((s) => s.selectedListing);
