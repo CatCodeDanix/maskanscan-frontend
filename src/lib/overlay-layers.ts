@@ -5,10 +5,10 @@ import type { Feature, LineString, MultiLineString, Point } from "geojson";
 import { useMemo } from "react";
 import type { TransitGeometry, TransitProperties } from "@/data";
 import {
-	isfahanMetro,
-	mashhadMetro,
-	shirazMetro,
-	tabrizMetro,
+	// isfahanMetro,
+	// mashhadMetro,
+	// shirazMetro,
+	// tabrizMetro,
 	tehranBRT,
 	tehranMetro,
 } from "@/data";
@@ -19,10 +19,10 @@ type TransitFeature = Feature<TransitGeometry, TransitProperties>;
 
 const METRO_FEATURES: TransitFeature[] = [
 	...tehranMetro.features,
-	...mashhadMetro.features,
-	...shirazMetro.features,
-	...tabrizMetro.features,
-	...isfahanMetro.features,
+	// ...mashhadMetro.features,
+	// ...shirazMetro.features,
+	// ...tabrizMetro.features,
+	// ...isfahanMetro.features,
 ];
 
 const BRT_FEATURES: TransitFeature[] = [...tehranBRT.features];

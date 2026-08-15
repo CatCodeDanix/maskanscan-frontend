@@ -136,209 +136,80 @@ export function FiltersPanel() {
 	return (
 		<div className="flex h-full flex-col bg-background text-right" dir="rtl">
 			<div className="flex-1 overflow-y-auto p-4 space-y-6">
-				{/* Deal Type Switcher */}
-				<div>
-					<SectionHeader icon={Home} title="نوع معامله" />
-					<div className="grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">
-						{(["rent", "buy"] as const).map((t) => (
-							<button
-								key={t}
-								type="button"
-								onClick={() => {
-									patchDraft({
-										dealType: t,
-										city: "",
-										district: "",
-										bedrooms: undefined,
-										minBedrooms: undefined,
-										maxBedrooms: undefined,
-									});
-								}}
-								className={cn(
-									"flex items-center justify-center rounded-lg py-2 text-xs font-semibold transition-all",
-									draft.dealType === t
-										? "bg-background text-primary shadow-sm"
-										: "text-muted-foreground hover:text-foreground",
-								)}
-							>
-								{t === "rent" ? "رهن و اجاره" : "خرید و فروش"}
-							</button>
-						))}
-					</div>
-				</div>
-
-				<Separator />
-
-				{/* Location taxonomy (Currently scoped to Tehran Province) */}
-				{/* 
-				<div className="space-y-3">
-					<SectionHeader
-						icon={MapPin}
-						title="استان و شهر"
-						subtitle="انتخاب محدوده جغرافیایی جستجو"
-					/>
-					<div className="space-y-2">
-						<select
-							className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs focus:ring-1 focus:ring-primary"
-							value={selectedProvince?.provinceId ?? ""}
-							onChange={(e) => {
-								const prov = locationTree.find(
-									(p) => p.provinceId === e.target.value,
-								);
-								patchDraft({
-									city: prov?.cities[0]?.cityId ?? "",
-									district: "",
-								});
-							}}
-						>
-							<option value="">همه استان‌ها (سراسر کشور)</option>
-							{locationTree.map((p) => (
-								<option key={p.provinceId} value={p.provinceId}>
-									{p.provinceName}
-								</option>
-							))}
-						</select>
-
-						{cities.length > 0 && (
-							<select
-								className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs focus:ring-1 focus:ring-primary"
-								value={draft.city}
-								onChange={(e) => {
-									patchDraft({ city: e.target.value, district: "" });
-								}}
-							>
-								<option value="">همه شهرهای استان</option>
-								{cities.map((c) => (
-									<option key={c.cityId} value={c.cityId}>
-										{c.cityName}
-									</option>
-								))}
-							</select>
-						)}
-
-						{districts.length > 0 && (
-							<select
-								className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs focus:ring-1 focus:ring-primary"
-								value={draft.district}
-								onChange={(e) => setDraft("district", e.target.value)}
-							>
-								<option value="">همه محله‌ها</option>
-								{districts.map((d) => (
-									<option key={d.districtId} value={d.districtId}>
-										{d.districtName}
-									</option>
-								))}
-							</select>
-						)}
-					</div>
-				</div>
-
-				<Separator />
-
 				{/* Primary Pricing Filters: Exact Deposit & Rent */}
-				{draft.dealType === "rent" && (
-					<div className="space-y-4">
-						{/* Exact Deposit */}
-						<div>
-							<SectionHeader
-								title="مبلغ رهن / ودیعه مستقیم (تومان)"
-								subtitle="تعیین دقیق حداقل و حداکثر رهن"
-							/>
-							<RangeRow
-								minValue={draft.minDeposit}
-								maxValue={draft.maxDeposit}
-								onMinChange={(val) => setDraft("minDeposit", val)}
-								onMaxChange={(val) => setDraft("maxDeposit", val)}
-								placeholderMin="حداقل رهن (تومان)"
-								placeholderMax="حداکثر رهن (تومان)"
-							/>
-						</div>
+				<div className="space-y-4">
+					{/* Exact Deposit */}
+					<div>
+						<SectionHeader
+							icon={Home}
+							title="مبلغ رهن / ودیعه مستقیم (تومان)"
+							subtitle="تعیین دقیق حداقل و حداکثر رهن"
+						/>
+						<RangeRow
+							minValue={draft.minDeposit}
+							maxValue={draft.maxDeposit}
+							onMinChange={(val) => setDraft("minDeposit", val)}
+							onMaxChange={(val) => setDraft("maxDeposit", val)}
+							placeholderMin="حداقل رهن (تومان)"
+							placeholderMax="حداکثر رهن (تومان)"
+						/>
+					</div>
 
-						{/* Exact Monthly Rent */}
-						<div>
-							<SectionHeader
-								title="اجاره ماهانه مستقیم (تومان)"
-								subtitle="تعیین دقیق حداقل و حداکثر اجاره ماهانه"
-							/>
-							<RangeRow
-								minValue={draft.minRent}
-								maxValue={draft.maxRent}
-								onMinChange={(val) => setDraft("minRent", val)}
-								onMaxChange={(val) => setDraft("maxRent", val)}
-								placeholderMin="حداقل اجاره"
-								placeholderMax="حداکثر اجاره"
-							/>
-						</div>
+					{/* Exact Monthly Rent */}
+					<div>
+						<SectionHeader
+							title="اجاره ماهانه مستقیم (تومان)"
+							subtitle="تعیین دقیق حداقل و حداکثر اجاره ماهانه"
+						/>
+						<RangeRow
+							minValue={draft.minRent}
+							maxValue={draft.maxRent}
+							onMinChange={(val) => setDraft("minRent", val)}
+							onMaxChange={(val) => setDraft("maxRent", val)}
+							placeholderMin="حداقل اجاره"
+							placeholderMax="حداکثر اجاره"
+						/>
+					</div>
 
-						{/* Optional Equivalent Deposit Accordion */}
-						<div className="rounded-xl border border-border bg-card p-3 space-y-2">
-							<button
-								type="button"
-								onClick={() => setShowEquivalent(!showEquivalent)}
-								className="flex w-full items-center justify-between text-xs font-semibold"
-							>
-								<div className="flex items-center gap-1.5 text-primary">
-									<Info className="size-3.5" />
-									<span>فیلتر اختیاری: رهن کامل معادل (معادل‌سازی)</span>
-								</div>
-								<ChevronDown
-									className={cn(
-										"size-4 transition-transform",
-										showEquivalent && "rotate-180",
-									)}
+					{/* Optional Equivalent Deposit Accordion */}
+					<div className="rounded-xl border border-border bg-card p-3 space-y-2">
+						<button
+							type="button"
+							onClick={() => setShowEquivalent(!showEquivalent)}
+							className="flex w-full items-center justify-between text-xs font-semibold cursor-pointer"
+						>
+							<div className="flex items-center gap-1.5 text-primary">
+								<Info className="size-3.5" />
+								<span>فیلتر اختیاری: رهن کامل معادل (معادل‌سازی)</span>
+							</div>
+							<ChevronDown
+								className={cn(
+									"size-4 transition-transform",
+									showEquivalent && "rotate-180",
+								)}
+							/>
+						</button>
+
+						{(showEquivalent ||
+							draft.minEquivalentDeposit !== undefined ||
+							draft.maxEquivalentDeposit !== undefined) && (
+							<div className="pt-2 space-y-2">
+								<p className="text-[11px] text-muted-foreground">
+									تبدیل خودکار اجاره ماهانه به رهن کامل جهت جستجو بر اساس بودجه
+									کلی:
+								</p>
+								<RangeRow
+									minValue={draft.minEquivalentDeposit}
+									maxValue={draft.maxEquivalentDeposit}
+									onMinChange={(val) => setDraft("minEquivalentDeposit", val)}
+									onMaxChange={(val) => setDraft("maxEquivalentDeposit", val)}
+									placeholderMin="حداقل رهن معادل (تومان)"
+									placeholderMax="حداکثر رهن معادل (تومان)"
 								/>
-							</button>
-
-							{(showEquivalent ||
-								draft.minEquivalentDeposit !== undefined ||
-								draft.maxEquivalentDeposit !== undefined) && (
-								<div className="pt-2 space-y-2">
-									<p className="text-[11px] text-muted-foreground">
-										تبدیل خودکار اجاره ماهانه به رهن کامل جهت جستجو بر اساس
-										بودجه کلی:
-									</p>
-									<RangeRow
-										minValue={draft.minEquivalentDeposit}
-										maxValue={draft.maxEquivalentDeposit}
-										onMinChange={(val) => setDraft("minEquivalentDeposit", val)}
-										onMaxChange={(val) => setDraft("maxEquivalentDeposit", val)}
-										placeholderMin="حداقل رهن معادل (تومان)"
-										placeholderMax="حداکثر رهن معادل (تومان)"
-									/>
-								</div>
-							)}
-						</div>
+							</div>
+						)}
 					</div>
-				)}
-
-				{/* Buy Pricing Filters */}
-				{draft.dealType === "buy" && (
-					<div className="space-y-4">
-						<div>
-							<SectionHeader title="قیمت کل (تومان)" />
-							<RangeRow
-								minValue={draft.minPrice}
-								maxValue={draft.maxPrice}
-								onMinChange={(val) => setDraft("minPrice", val)}
-								onMaxChange={(val) => setDraft("maxPrice", val)}
-								placeholderMin="حداقل قیمت کل"
-								placeholderMax="حداکثر قیمت کل"
-							/>
-						</div>
-
-						<div>
-							<SectionHeader title="قیمت هر متر مربع (تومان)" />
-							<RangeRow
-								minValue={draft.minPricePerSqMeter}
-								maxValue={draft.maxPricePerSqMeter}
-								onMinChange={(val) => setDraft("minPricePerSqMeter", val)}
-								onMaxChange={(val) => setDraft("maxPricePerSqMeter", val)}
-								placeholderMin="حداقل هر متر"
-								placeholderMax="حداکثر هر متر"
-							/>
-						</div>
-					</div>
-				)}
+				</div>
 
 				{/* Exclude Agreed / Negotiable Price Switch */}
 				<div className="flex items-center justify-between rounded-xl border bg-card p-3 shadow-2xs">

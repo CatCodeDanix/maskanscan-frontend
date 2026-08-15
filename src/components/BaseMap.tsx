@@ -12,8 +12,6 @@ import type { BBox } from "@/types/geospatial";
 import DeckMap from "./DeckMap";
 import { MapViewStateContext, type ViewState } from "./MapViewStateContext";
 
-const API_KEY = process.env.NEXT_PUBLIC_MAPIR_API_KEY;
-
 const INITIAL_VIEW_STATE: ViewState = {
 	longitude: 51.389,
 	latitude: 35.689,
@@ -28,13 +26,6 @@ export default function BaseMap() {
 	const [viewState, setViewState] = useState<ViewState>(INITIAL_VIEW_STATE);
 	const [isMapLoaded, setIsMapLoaded] = useState(false);
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-	const transformRequest = useCallback((url: string) => {
-		if (API_KEY && url.includes("map.ir")) {
-			return { url, headers: { "x-api-key": API_KEY } };
-		}
-		return { url };
-	}, []);
 
 	// Helper to extract current viewport BBox from MapLibre bounds
 	const updateViewportBounds = useCallback(
@@ -102,7 +93,6 @@ export default function BaseMap() {
 				initialViewState={INITIAL_VIEW_STATE}
 				style={{ width: "100%", height: "100%" }}
 				mapStyle={mapStyle}
-				transformRequest={transformRequest}
 				onMove={onMove}
 				onMoveEnd={handleMoveEnd}
 				onLoad={handleMapLoad}

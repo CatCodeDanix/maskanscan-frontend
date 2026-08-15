@@ -1,7 +1,5 @@
 import type { StyleSpecification } from "maplibre-gl";
 
-const API_KEY = process.env.NEXT_PUBLIC_MAPIR_API_KEY;
-
 export type MapStyleType = "vector" | "raster" | "overlay";
 
 export type MapStyleDef = {
@@ -144,15 +142,6 @@ export const MAP_STYLES: MapStyleDef[] = [
 		id: "openfreemap",
 		name: "برداری (OpenFreeMap)",
 		url: "https://tiles.openfreemap.org/styles/bright",
-		type: "vector",
-		preview: "/stylespreview/mapir-xyz-no-building.png",
-	},
-	{
-		id: "mapir-default",
-		name: "پیش‌فرض map.ir",
-		url: API_KEY
-			? `https://map.ir/vector/styles/main/mapir-xyz-style.json?x-api-key=${API_KEY}`
-			: CARTO_LIGHT_RASTER,
 		type: "vector",
 		preview: "/stylespreview/mapir-xyz-no-building.png",
 	},

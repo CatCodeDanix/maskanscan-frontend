@@ -37,7 +37,6 @@ Create a `.env` file in the root directory:
 
 ```env
 DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54328/maskanscan"
-NEXT_PUBLIC_MAPIR_API_KEY="your-mapir-api-key"
 ```
 
 ### 3. Database Migration

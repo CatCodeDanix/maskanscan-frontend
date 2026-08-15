@@ -34,11 +34,8 @@ function buildGeospatialWhereClause(filters: ListingFilters, bbox?: BBox) {
 		);
 	}
 
-	if (filters.dealType) {
-		conditions.push(eq(scrapedListings.dealType, filters.dealType));
-	} else {
-		conditions.push(eq(scrapedListings.dealType, "rent"));
-	}
+	// Always strictly filter rent postings
+	conditions.push(eq(scrapedListings.dealType, "rent"));
 
 	if (filters.city) {
 		conditions.push(eq(scrapedListings.city, filters.city.toLowerCase()));
@@ -79,24 +76,6 @@ function buildGeospatialWhereClause(filters: ListingFilters, bbox?: BBox) {
 				scrapedListings.equivalentFullDepositTomans,
 				filters.maxEquivalentDeposit,
 			),
-		);
-	}
-
-	// Buy price filters
-	if (filters.minPrice !== undefined) {
-		conditions.push(gte(scrapedListings.totalPriceTomans, filters.minPrice));
-	}
-	if (filters.maxPrice !== undefined) {
-		conditions.push(lte(scrapedListings.totalPriceTomans, filters.maxPrice));
-	}
-	if (filters.minPricePerSqMeter !== undefined) {
-		conditions.push(
-			gte(scrapedListings.pricePerSqMeterTomans, filters.minPricePerSqMeter),
-		);
-	}
-	if (filters.maxPricePerSqMeter !== undefined) {
-		conditions.push(
-			lte(scrapedListings.pricePerSqMeterTomans, filters.maxPricePerSqMeter),
 		);
 	}
 
