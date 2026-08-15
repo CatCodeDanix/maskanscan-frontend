@@ -90,16 +90,28 @@ export const defaultNavItems: NavItem[] = [
 
 // ── Store ─────────────────────────────────────────────────────────────────────
 
+export type DrawerPresentationMode = "overlay" | "push";
+
 interface NavigationState {
 	items: NavItem[];
 	activeItemId: string;
+	drawerMode: DrawerPresentationMode;
+	isDrawerOpen: boolean;
 	setActiveItemId: (id: string) => void;
+	setDrawerMode: (mode: DrawerPresentationMode) => void;
+	setIsDrawerOpen: (open: boolean) => void;
+	toggleDrawer: () => void;
 	getItemById: (id: string) => NavItem | undefined;
 }
 
 export const useNavigationStore = create<NavigationState>((set, get) => ({
 	items: defaultNavItems,
 	activeItemId: "listings",
+	drawerMode: "overlay",
+	isDrawerOpen: true,
 	setActiveItemId: (id) => set({ activeItemId: id }),
+	setDrawerMode: (mode) => set({ drawerMode: mode }),
+	setIsDrawerOpen: (open) => set({ isDrawerOpen: open }),
+	toggleDrawer: () => set((state) => ({ isDrawerOpen: !state.isDrawerOpen })),
 	getItemById: (id) => get().items.find((item) => item.id === id),
 }));

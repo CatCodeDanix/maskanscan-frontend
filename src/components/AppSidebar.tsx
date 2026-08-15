@@ -105,17 +105,20 @@ export function AppSidebar({ onItemClick, ...props }: AppSidebarProps) {
 								<Link href="/" aria-label="صفحه اصلی مسکن‌اسکن">
 									<div
 										className="
-                      bg-primary
-                      text-foreground
+                      bg-primary/10
+                      text-primary
+                      border border-primary/25
+                      hover:bg-primary hover:text-primary-foreground
+                      transition-all
                       flex
                       aspect-square
                       size-8
                       items-center
                       justify-center
-                      rounded-lg
+                      rounded-xl
                     "
 									>
-										<Home className="size-5" />
+										<Home className="size-4.5" />
 									</div>
 
 									<div className="grid flex-1 text-right text-sm/tight">

@@ -1,7 +1,7 @@
 "use client";
 
 import type { PickingInfo } from "@deck.gl/core";
-import { ScatterplotLayer, TextLayer } from "@deck.gl/layers";
+import { IconLayer, ScatterplotLayer } from "@deck.gl/layers";
 import type { Feature, LineString, MultiLineString, Point } from "geojson";
 import { useEffect, useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -72,6 +72,31 @@ function getIsFallback(pin: MapPinItem | UnifiedListing): boolean {
 		return Boolean(pin.isFallback);
 	}
 	return false;
+}
+
+// ── SVG Cluster Sprite Generator (Combines Circle + Number into 1 Atomic Quad) ─
+
+const clusterSvgCache = new Map<string, string>();
+
+function getClusterIconSvg(count: number): string {
+	const displayCount = formatClusterCount(count);
+	const cacheKey = `${displayCount}`;
+	const cached = clusterSvgCache.get(cacheKey);
+	if (cached) return cached;
+
+	const svgSize = 64;
+	const center = 32;
+	const radius = Math.min(28, Math.max(20, 20 + Math.log10(count) * 3));
+	const fontSize = displayCount.length > 3 ? 12 : 14;
+
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgSize}" height="${svgSize}" viewBox="0 0 ${svgSize} ${svgSize}">
+  <circle cx="${center}" cy="${center}" r="${radius}" fill="#4f46e5" stroke="#ffffff" stroke-width="3"/>
+  <text x="${center}" y="${center + 1}" fill="#ffffff" font-family="IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif" font-size="${fontSize}" font-weight="700" text-anchor="middle" dominant-baseline="central">${displayCount}</text>
+</svg>`;
+
+	const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+	clusterSvgCache.set(cacheKey, dataUrl);
+	return dataUrl;
 }
 
 // ── Tooltips ──────────────────────────────────────────────────────────────────
@@ -155,6 +180,7 @@ const DeckMap = () => {
 	const viewportBBox =
 		useMapStore((s) => s.viewportBBox) ?? viewState.bbox ?? null;
 	const zoom = viewState?.zoom ?? 10;
+	const isMapReady = Boolean(viewState?.isLoaded);
 
 	// Geospatial Pipeline TanStack Query Hook
 	const {
@@ -291,11 +317,11 @@ const DeckMap = () => {
 		return { clusterItems: clusters, pinItems: pins };
 	}, [renderItems, fallbackHighlightItem]);
 
-	// ── 1. Cluster Background Circles Layer (WebGL GPU-Antialiased) ───────────
-	const clusterCirclesLayer = useMemo(
+	// ── 1. Unified Cluster Layer (Circle + Number inside Single Quad) ─────────
+	const clusterIconsLayer = useMemo(
 		() =>
-			new ScatterplotLayer<UnifiedRenderItem>({
-				id: "geospatial-cluster-circles",
+			new IconLayer<UnifiedRenderItem>({
+				id: "geospatial-cluster-icons",
 				data: clusterItems,
 				getPosition: (d) => {
 					if (d.type === "backend-cluster") {
@@ -306,26 +332,34 @@ const DeckMap = () => {
 					}
 					return [0, 0];
 				},
-				getRadius: (d) => {
+				getIcon: (d) => {
 					const count =
 						d.type === "backend-cluster"
 							? d.cluster.count
 							: d.type === "supercluster-cluster"
 								? d.feature.properties.point_count
 								: 1;
-					return Math.min(32, Math.max(20, 20 + Math.log10(count) * 3.5));
+
+					return {
+						url: getClusterIconSvg(count),
+						width: 64,
+						height: 64,
+						anchorX: 32,
+						anchorY: 32,
+					};
 				},
-				radiusUnits: "pixels",
-				radiusScale: 1,
-				radiusMinPixels: 20,
-				radiusMaxPixels: 34,
-				getFillColor: [79, 70, 229, 245], // Royal Indigo for all clusters
-				getLineColor: [255, 255, 255, 255],
-				lineWidthUnits: "pixels",
-				lineWidthMinPixels: 2.5,
-				stroked: true,
-				filled: true,
-				antialiasing: true,
+				getSize: (d) => {
+					const count =
+						d.type === "backend-cluster"
+							? d.cluster.count
+							: d.type === "supercluster-cluster"
+								? d.feature.properties.point_count
+								: 1;
+					return Math.min(64, Math.max(44, 44 + Math.log10(count) * 6));
+				},
+				sizeUnits: "pixels",
+				sizeScale: 1,
+				billboard: true,
 				pickable: true,
 				onClick: ({ object }) => {
 					if (!object) return;
@@ -359,49 +393,7 @@ const DeckMap = () => {
 		[clusterItems, mapInstance, zoom, clientSupercluster],
 	);
 
-	// ── 2. Cluster Numbers Text Layer (Crisp Typography) ─────────────────────
-	const clusterNumbersLayer = useMemo(
-		() =>
-			new TextLayer<UnifiedRenderItem>({
-				id: "geospatial-cluster-numbers",
-				data: clusterItems,
-				getPosition: (d) => {
-					if (d.type === "backend-cluster") {
-						return [d.cluster.longitude, d.cluster.latitude];
-					}
-					if (d.type === "supercluster-cluster") {
-						return d.feature.geometry.coordinates as [number, number];
-					}
-					return [0, 0];
-				},
-				getText: (d) => {
-					if (d.type === "backend-cluster") {
-						return formatClusterCount(d.cluster.count);
-					}
-					if (d.type === "supercluster-cluster") {
-						return formatClusterCount(d.feature.properties.point_count);
-					}
-					return "";
-				},
-				getSize: 13,
-				getColor: [255, 255, 255, 255],
-				getTextAnchor: "middle",
-				getAlignmentBaseline: "center",
-				fontFamily: "IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif",
-				fontWeight: "700",
-				fontSettings: {
-					sdf: false,
-				},
-				outlineWidth: 1.5,
-				outlineColor: [0, 0, 0, 100],
-				characterSet: "auto",
-				billboard: true,
-				pickable: false,
-			}),
-		[clusterItems],
-	);
-
-	// ── 3. Individual Property Pins (WebGL Antialiased Circles) ───────────────
+	// ── 2. Individual Property Pins (WebGL Antialiased Circles) ───────────────
 	const individualPinsLayer = useMemo(
 		() =>
 			new ScatterplotLayer<UnifiedRenderItem>({
@@ -445,6 +437,7 @@ const DeckMap = () => {
 				stroked: true,
 				filled: true,
 				antialiasing: true,
+				billboard: true,
 				pickable: true,
 				onClick: ({ object }) => {
 					if (object && object.type === "pin") {
@@ -456,7 +449,7 @@ const DeckMap = () => {
 		[pinItems, selectedListing, selectListingById],
 	);
 
-	// ── 4. Pin Inner Center Dot Layer (White Vector Center) ───────────────────
+	// ── 3. Pin Inner Center Dot Layer (White Vector Center) ───────────────────
 	const pinCenterDotsLayer = useMemo(
 		() =>
 			new ScatterplotLayer<UnifiedRenderItem>({
@@ -472,27 +465,28 @@ const DeckMap = () => {
 				stroked: false,
 				filled: true,
 				antialiasing: true,
+				billboard: true,
 				pickable: false,
 			}),
 		[pinItems],
 	);
 
-	const layers = useMemo(
-		() => [
+	// Only provide layers once the Map projection is completely loaded to eliminate initial render flash
+	const layers = useMemo(() => {
+		if (!isMapReady) return [];
+		return [
 			...transitLayers,
-			clusterCirclesLayer,
-			clusterNumbersLayer,
+			clusterIconsLayer,
 			individualPinsLayer,
 			pinCenterDotsLayer,
-		],
-		[
-			transitLayers,
-			clusterCirclesLayer,
-			clusterNumbersLayer,
-			individualPinsLayer,
-			pinCenterDotsLayer,
-		],
-	);
+		];
+	}, [
+		isMapReady,
+		transitLayers,
+		clusterIconsLayer,
+		individualPinsLayer,
+		pinCenterDotsLayer,
+	]);
 
 	return (
 		<>

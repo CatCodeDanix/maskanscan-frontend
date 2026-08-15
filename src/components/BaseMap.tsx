@@ -26,6 +26,7 @@ export default function BaseMap() {
 	const mapStyle = useMapStore((s) => s.mapStyle);
 	const setViewport = useMapStore((s) => s.setViewport);
 	const [viewState, setViewState] = useState<ViewState>(INITIAL_VIEW_STATE);
+	const [isMapLoaded, setIsMapLoaded] = useState(false);
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
 	const transformRequest = useCallback((url: string) => {
@@ -56,6 +57,7 @@ export default function BaseMap() {
 				...prev,
 				bbox,
 				zoom: currentZoom,
+				isLoaded: true,
 			}));
 		},
 		[setViewport],
@@ -76,19 +78,23 @@ export default function BaseMap() {
 	);
 
 	const onMove = useCallback((e: ViewStateChangeEvent) => {
-		setViewState({
+		setViewState((prev) => ({
+			...prev,
 			longitude: e.viewState.longitude,
 			latitude: e.viewState.latitude,
 			zoom: e.viewState.zoom,
-		});
+		}));
 	}, []);
 
 	const handleMapLoad = useCallback(() => {
+		setIsMapLoaded(true);
 		updateViewportBounds(INITIAL_VIEW_STATE.zoom);
 	}, [updateViewportBounds]);
 
 	return (
-		<MapViewStateContext.Provider value={viewState}>
+		<MapViewStateContext.Provider
+			value={{ ...viewState, isLoaded: isMapLoaded }}
+		>
 			<Map
 				ref={mapRef}
 				mapLib={maplibregl}

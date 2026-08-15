@@ -77,17 +77,17 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 				)}
 
 				{/* Source badge */}
-				<div className="absolute top-2 right-2 flex items-center gap-1">
+				<div className="absolute top-2 right-2 z-10 flex items-center gap-1.5">
 					<span
 						className={cn(
-							"rounded-md px-1.5 py-0.5 text-[10px] font-semibold shadow-xs",
+							"rounded-md px-2 py-0.5 text-[10px] font-bold shadow-md tracking-tight",
 							getSourceColor(listing.source),
 						)}
 					>
 						{getSourceLabel(listing.source)}
 					</span>
 					{totalSources > 1 && (
-						<span className="rounded-md bg-black/60 px-1.5 py-0.5 text-[10px] text-white font-medium">
+						<span className="rounded-md bg-black/75 px-1.5 py-0.5 text-[10px] text-white font-bold backdrop-blur-xs shadow-md">
 							+{toPersianDigits(totalSources - 1)}
 						</span>
 					)}

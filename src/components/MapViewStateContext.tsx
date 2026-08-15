@@ -8,6 +8,7 @@ export interface ViewState {
 	latitude: number;
 	zoom: number;
 	bbox?: BBox | null;
+	isLoaded?: boolean;
 }
 
 export const MapViewStateContext = createContext<ViewState>({
@@ -15,6 +16,7 @@ export const MapViewStateContext = createContext<ViewState>({
 	latitude: 35.689,
 	zoom: 10,
 	bbox: [51.15, 35.55, 51.62, 35.85],
+	isLoaded: false,
 });
 
 export function useMapViewState() {
