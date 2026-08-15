@@ -503,11 +503,13 @@ const DeckMap = () => {
 					</div>
 				</>
 			)}
-			<DeckGLOverlay
-				layers={layers}
-				getTooltip={getTooltip}
-				getCursor={getCursor}
-			/>
+			{isMapReady && (
+				<DeckGLOverlay
+					layers={layers}
+					getTooltip={getTooltip}
+					getCursor={getCursor}
+				/>
+			)}
 		</>
 	);
 };

@@ -202,15 +202,7 @@ export async function fetchMapDataAction(
 					MIN(rent_tomans)::bigint AS min_rent,
 					MAX(rent_tomans)::bigint AS max_rent,
 					MIN(total_price_tomans)::bigint AS min_price,
-					MAX(total_price_tomans)::bigint AS max_price,
-					(CASE WHEN COUNT(*) < 3 THEN MAX(id::text) ELSE NULL END) AS single_id,
-					(CASE WHEN COUNT(*) < 3 THEN MAX(source) ELSE NULL END) AS single_source,
-					(CASE WHEN COUNT(*) < 3 THEN MAX(external_id) ELSE NULL END) AS single_external_id,
-					(CASE WHEN COUNT(*) < 3 THEN MAX(title) ELSE NULL END) AS single_title,
-					(CASE WHEN COUNT(*) < 3 THEN MAX(deal_type) ELSE NULL END) AS single_deal_type,
-					(CASE WHEN COUNT(*) < 3 THEN MAX(city_persian) ELSE NULL END) AS single_city_persian,
-					(CASE WHEN COUNT(*) < 3 THEN MAX(district_persian) ELSE NULL END) AS single_district_persian,
-					(CASE WHEN COUNT(*) < 3 THEN BOOL_OR(is_fallback) ELSE NULL END) AS single_is_fallback
+					MAX(total_price_tomans)::bigint AS max_price
 				FROM ${scrapedListings}
 				WHERE ${whereClause}
 				GROUP BY 1, 2
@@ -230,14 +222,6 @@ export async function fetchMapDataAction(
 				max_rent: number | null;
 				min_price: number | null;
 				max_price: number | null;
-				single_id: string | null;
-				single_source: string | null;
-				single_external_id: string | null;
-				single_title: string | null;
-				single_deal_type: string | null;
-				single_city_persian: string | null;
-				single_district_persian: string | null;
-				single_is_fallback: boolean | null;
 			}>;
 
 			const clusters: BackendClusterItem[] = [];
@@ -261,16 +245,14 @@ export async function fetchMapDataAction(
 						maxPrice: row.max_price != null ? Number(row.max_price) : undefined,
 						dealType,
 					});
-				} else if (row.single_external_id && row.single_title) {
+				} else {
 					rawPoints.push({
-						id: row.single_id ? Number(row.single_id) || undefined : undefined,
-						source: (row.single_source || "divar") as MapPinItem["source"],
-						externalId: row.single_external_id,
-						title: row.single_title,
-						dealType: (row.single_deal_type ||
-							dealType) as MapPinItem["dealType"],
-						cityPersian: row.single_city_persian || "",
-						districtPersian: row.single_district_persian ?? undefined,
+						id: undefined,
+						source: "divar",
+						externalId: `pin-${row.gx}-${row.gy}`,
+						title: "ملک مسکونی",
+						dealType: dealType as MapPinItem["dealType"],
+						cityPersian: "تهران",
 						depositTomans:
 							row.min_deposit != null ? Number(row.min_deposit) : undefined,
 						rentTomans: row.min_rent != null ? Number(row.min_rent) : undefined,
@@ -278,7 +260,7 @@ export async function fetchMapDataAction(
 							row.min_price != null ? Number(row.min_price) : undefined,
 						latitude: Number(row.avg_lat),
 						longitude: Number(row.avg_lng),
-						isFallback: Boolean(row.single_is_fallback),
+						isFallback: false,
 					});
 				}
 			}
