@@ -1,5 +1,6 @@
 "use client";
 
+import useEmblaCarousel from "embla-carousel-react";
 import {
 	BedDouble,
 	Building2,
@@ -27,7 +28,6 @@ import {
 	X,
 } from "lucide-react";
 import Image from "next/image";
-import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 import { useMap } from "react-map-gl/maplibre";
 import { Button } from "@/components/ui/button";

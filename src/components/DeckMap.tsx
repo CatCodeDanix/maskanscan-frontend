@@ -1,7 +1,7 @@
 "use client";
 
 import type { PickingInfo } from "@deck.gl/core";
-import { ScatterplotLayer, TextLayer } from "@deck.gl/layers";
+import { IconLayer, ScatterplotLayer } from "@deck.gl/layers";
 import type { Feature, LineString, MultiLineString, Point } from "geojson";
 import { useEffect, useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -20,6 +20,71 @@ import type { BackendClusterItem } from "@/types/geospatial";
 import type { MapPinItem, UnifiedListing } from "@/types/listing";
 import DeckGLOverlay from "./DeckGLOverlay";
 import { useMapViewState } from "./MapViewStateContext";
+
+// ── Unified Cluster Badge Generator & Cache ──────────────────────────────────
+type ClusterBadgeIcon = {
+	url: string;
+	width: number;
+	height: number;
+	anchorX: number;
+	anchorY: number;
+};
+
+const clusterBadgeCache = new Map<string, ClusterBadgeIcon>();
+
+function getClusterBadgeIcon(text: string, radius: number): ClusterBadgeIcon {
+	const key = `${text}_${radius}`;
+	const cached = clusterBadgeCache.get(key);
+	if (cached) return cached;
+
+	if (typeof document === "undefined") {
+		return { url: "", width: 64, height: 64, anchorX: 32, anchorY: 32 };
+	}
+
+	const padding = 6;
+	const size = Math.ceil((radius + padding) * 2 * 2); // 2x Retina scale
+	const center = size / 2;
+	const r = radius * 2;
+
+	const canvas = document.createElement("canvas");
+	canvas.width = size;
+	canvas.height = size;
+	const ctx = canvas.getContext("2d");
+
+	if (ctx) {
+		ctx.imageSmoothingEnabled = true;
+
+		// 1. Antialiased Indigo Circle Background
+		ctx.beginPath();
+		ctx.arc(center, center, r, 0, Math.PI * 2);
+		ctx.fillStyle = "rgba(79, 70, 229, 0.96)"; // Royal Indigo
+		ctx.fill();
+
+		// 2. Crisp White Stroke Border
+		ctx.lineWidth = 5; // 2.5px at 2x
+		ctx.strokeStyle = "#ffffff";
+		ctx.stroke();
+
+		// 3. Crisp Persian Typography Centered Inside Circle
+		const fontSize = text.length > 3 ? 24 : 28;
+		ctx.font = `bold ${fontSize}px IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif`;
+		ctx.fillStyle = "#ffffff";
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+		ctx.fillText(text, center, center);
+	}
+
+	const iconObj: ClusterBadgeIcon = {
+		url: canvas.toDataURL(),
+		width: size,
+		height: size,
+		anchorX: size / 2,
+		anchorY: size / 2,
+	};
+
+	clusterBadgeCache.set(key, iconObj);
+	return iconObj;
+}
 
 // ── Supercluster feature types ────────────────────────────────────────────────
 
@@ -307,11 +372,11 @@ const DeckMap = () => {
 		return { clusterItems: clusters, pinItems: pins };
 	}, [renderItems, fallbackHighlightItem]);
 
-	// ── 1. Cluster Circles Layer (Antialiased WebGL Circles) ───────────────────
-	const clusterCirclesLayer = useMemo(
+	// ── 1. Unified Cluster Layer (Circle + Stroke + Persian Text as Single Atomic Sprite) ──
+	const clustersUnifiedLayer = useMemo(
 		() =>
-			new ScatterplotLayer<UnifiedRenderItem>({
-				id: "geospatial-cluster-circles",
+			new IconLayer<UnifiedRenderItem>({
+				id: "geospatial-clusters-unified",
 				data: clusterItems,
 				getPosition: (d) => {
 					if (d.type === "backend-cluster") {
@@ -322,26 +387,30 @@ const DeckMap = () => {
 					}
 					return [0, 0];
 				},
-				getRadius: (d) => {
+				getIcon: (d) => {
 					const count =
 						d.type === "backend-cluster"
 							? d.cluster.count
 							: d.type === "supercluster-cluster"
 								? d.feature.properties.point_count
 								: 1;
-					return Math.min(32, Math.max(18, 18 + Math.log10(count) * 4));
+					const radius = Math.min(32, Math.max(18, 18 + Math.log10(count) * 4));
+					const countStr = formatClusterCount(count);
+					return getClusterBadgeIcon(countStr, radius);
 				},
-				radiusUnits: "pixels",
-				radiusScale: 1,
-				radiusMinPixels: 18,
-				radiusMaxPixels: 34,
-				getFillColor: [79, 70, 229, 245], // Royal Indigo
-				getLineColor: [255, 255, 255, 255],
-				lineWidthUnits: "pixels",
-				lineWidthMinPixels: 2.5,
-				stroked: true,
-				filled: true,
-				antialiasing: true,
+				getSize: (d) => {
+					const count =
+						d.type === "backend-cluster"
+							? d.cluster.count
+							: d.type === "supercluster-cluster"
+								? d.feature.properties.point_count
+								: 1;
+					const radius = Math.min(32, Math.max(18, 18 + Math.log10(count) * 4));
+					// Total size including padding around circle
+					return (radius + 6) * 2;
+				},
+				sizeUnits: "pixels",
+				sizeScale: 1,
 				billboard: true,
 				pickable: true,
 				onClick: ({ object }) => {
@@ -376,82 +445,7 @@ const DeckMap = () => {
 		[clusterItems, mapInstance, zoom, clientSupercluster],
 	);
 
-	// ── 2. Cluster Numbers Text Layer (Razor-Sharp Persian Typography) ────────
-	const clusterNumbersLayer = useMemo(
-		() =>
-			new TextLayer<UnifiedRenderItem>({
-				id: "geospatial-cluster-numbers",
-				data: clusterItems,
-				getPosition: (d) => {
-					if (d.type === "backend-cluster") {
-						return [d.cluster.longitude, d.cluster.latitude];
-					}
-					if (d.type === "supercluster-cluster") {
-						return d.feature.geometry.coordinates as [number, number];
-					}
-					return [0, 0];
-				},
-				getText: (d) => {
-					const count =
-						d.type === "backend-cluster"
-							? d.cluster.count
-							: d.type === "supercluster-cluster"
-								? d.feature.properties.point_count
-								: 1;
-					return formatClusterCount(count);
-				},
-				characterSet: [
-					"۰",
-					"۱",
-					"۲",
-					"۳",
-					"۴",
-					"۵",
-					"۶",
-					"۷",
-					"۸",
-					"۹",
-					"k",
-					"K",
-					"M",
-					"m",
-					".",
-					"0",
-					"1",
-					"2",
-					"3",
-					"4",
-					"5",
-					"6",
-					"7",
-					"8",
-					"9",
-				],
-				fontSettings: { sdf: false },
-				fontFamily: "IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif",
-				fontWeight: "700",
-				getSize: (d) => {
-					const count =
-						d.type === "backend-cluster"
-							? d.cluster.count
-							: d.type === "supercluster-cluster"
-								? d.feature.properties.point_count
-								: 1;
-					const str = formatClusterCount(count);
-					return str.length > 3 ? 12 : 14;
-				},
-				sizeUnits: "pixels",
-				sizeScale: 1,
-				getColor: [255, 255, 255, 255],
-				getTextAnchor: "middle",
-				getAlignmentBaseline: "center",
-				billboard: true,
-				pickable: false,
-			}),
-		[clusterItems],
-	);
-
-	// ── 3. Individual Property Pins (WebGL Antialiased Circles) ───────────────
+	// ── 2. Individual Property Pins (WebGL Antialiased Circles) ───────────────
 	const individualPinsLayer = useMemo(
 		() =>
 			new ScatterplotLayer<UnifiedRenderItem>({
@@ -507,7 +501,7 @@ const DeckMap = () => {
 		[pinItems, selectedListing, selectListingById],
 	);
 
-	// ── 4. Pin Inner Center Dot Layer (White Vector Center) ───────────────────
+	// ── 3. Pin Inner Center Dot Layer (White Vector Center) ───────────────────
 	const pinCenterDotsLayer = useMemo(
 		() =>
 			new ScatterplotLayer<UnifiedRenderItem>({
@@ -532,15 +526,13 @@ const DeckMap = () => {
 	const layers = useMemo(() => {
 		return [
 			...transitLayers,
-			clusterCirclesLayer,
-			clusterNumbersLayer,
+			clustersUnifiedLayer,
 			individualPinsLayer,
 			pinCenterDotsLayer,
 		];
 	}, [
 		transitLayers,
-		clusterCirclesLayer,
-		clusterNumbersLayer,
+		clustersUnifiedLayer,
 		individualPinsLayer,
 		pinCenterDotsLayer,
 	]);

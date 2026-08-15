@@ -368,7 +368,9 @@ export async function fetchViewportListingsAction(
 			const countResult = await db.execute(
 				sql`SELECT COUNT(*)::int AS cnt FROM (SELECT 1 FROM ${scrapedListings} WHERE ${whereClause} LIMIT 5000) s`,
 			);
-			const rowCount = Number((countResult.rows[0] as { cnt: number })?.cnt ?? 0);
+			const rowCount = Number(
+				(countResult.rows[0] as { cnt: number })?.cnt ?? 0,
+			);
 			total = rowCount >= 5000 ? 5000 : rowCount;
 		}
 

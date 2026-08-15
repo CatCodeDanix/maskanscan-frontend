@@ -426,7 +426,8 @@ export const useListingStore = create<ListingState>((set, get) => ({
 		}),
 
 	// Data actions
-	setSelectedListing: (l) => set({ selectedListing: l, isLoadingDetail: false }),
+	setSelectedListing: (l) =>
+		set({ selectedListing: l, isLoadingDetail: false }),
 
 	selectListingById: async (
 		source: string,
@@ -443,7 +444,9 @@ export const useListingStore = create<ListingState>((set, get) => ({
 		const state = get();
 		// 1. Check in current loaded listings
 		const foundInListings = state.listings.find(
-			(l) => l.source.toLowerCase() === source.toLowerCase() && l.externalId === externalId,
+			(l) =>
+				l.source.toLowerCase() === source.toLowerCase() &&
+				l.externalId === externalId,
 		);
 		if (foundInListings) {
 			detailCache.set(cacheKey, foundInListings);
@@ -454,7 +457,9 @@ export const useListingStore = create<ListingState>((set, get) => ({
 		// 2. Check in favorites
 		const favoriteListings = useFavoritesStore.getState().favoriteListings;
 		const foundInFavs = favoriteListings.find(
-			(l) => l.source.toLowerCase() === source.toLowerCase() && l.externalId === externalId,
+			(l) =>
+				l.source.toLowerCase() === source.toLowerCase() &&
+				l.externalId === externalId,
 		);
 		if (foundInFavs) {
 			detailCache.set(cacheKey, foundInFavs);

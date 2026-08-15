@@ -37,18 +37,17 @@ export function NavUser({
 	const initials = getInitials(user.name);
 
 	return (
-		<DropdownMenu>
+		<DropdownMenu dir="rtl">
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DropdownMenuTrigger asChild>
 						<button
 							type="button"
-							className="relative flex size-9.5 items-center justify-center rounded-xl transition-all duration-150 hover:bg-muted/80 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/40"
-							aria-label="حساب کاربری"
+							className="group relative flex size-9.5 items-center justify-center rounded-xl p-0 transition-all duration-200 hover:scale-105 hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 active:scale-95"
 						>
-							<Avatar className="size-8 rounded-lg border border-border/60">
+							<Avatar className="size-8.5 rounded-lg border border-border/80 shadow-xs transition-shadow group-hover:shadow-md">
 								<AvatarImage src={user.avatar || undefined} alt={user.name} />
-								<AvatarFallback className="rounded-lg bg-primary/10 text-primary font-bold text-xs">
+								<AvatarFallback className="rounded-lg bg-primary/15 text-primary font-bold text-xs">
 									{initials}
 								</AvatarFallback>
 							</Avatar>
@@ -65,7 +64,6 @@ export function NavUser({
 				side="left"
 				align="end"
 				sideOffset={12}
-				dir="rtl"
 			>
 				<DropdownMenuLabel className="p-2 font-normal">
 					<div className="flex items-center gap-3">

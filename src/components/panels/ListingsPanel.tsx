@@ -161,7 +161,8 @@ export function ListingsPanel() {
 			<div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b bg-background/95 px-3.5 py-2.5 text-xs backdrop-blur-xs shadow-2xs">
 				<span className="font-semibold text-muted-foreground text-xs">
 					نمایش {listings.length.toLocaleString("fa-IR")} از{" "}
-					{total >= 5000 ? "+۵,۰۰۰" : total.toLocaleString("fa-IR")} آگهی در این محدوده
+					{total >= 5000 ? "+۵,۰۰۰" : total.toLocaleString("fa-IR")} آگهی در این
+					محدوده
 				</span>
 
 				<TooltipProvider>
