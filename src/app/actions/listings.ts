@@ -305,16 +305,18 @@ export async function queryMapPinsAction(filters: ListingFilters = {}) {
 
 export async function getListingByIdAction(source: string, externalId: string) {
 	try {
+		const conditions = [
+			eq(scrapedListings.externalId, externalId),
+			eq(scrapedListings.isActive, true),
+		];
+		if (source) {
+			conditions.push(eq(scrapedListings.source, source.toLowerCase()));
+		}
+
 		const [item] = await db
 			.select()
 			.from(scrapedListings)
-			.where(
-				and(
-					eq(scrapedListings.source, source),
-					eq(scrapedListings.externalId, externalId),
-					eq(scrapedListings.isActive, true),
-				),
-			)
+			.where(and(...conditions))
 			.limit(1);
 
 		if (!item) return { success: false, listing: null };

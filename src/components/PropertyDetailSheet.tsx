@@ -16,7 +16,6 @@ import {
 	ImageIcon,
 	Info,
 	Layers,
-	Loader2,
 	MapPin,
 	Maximize2,
 	Phone,
@@ -28,7 +27,8 @@ import {
 	X,
 } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import { useCallback, useEffect, useState } from "react";
 import { useMap } from "react-map-gl/maplibre";
 import { Button } from "@/components/ui/button";
 import {
@@ -102,7 +102,7 @@ function BoolBadge({
 	);
 }
 
-// ── Touch & Pointer Draggable Gallery Component ───────────────────────────────
+// ── Native RTL Image Carousel Component (Powered by Embla) ─────────────────────
 
 function SwipeableImageGallery({
 	images,
@@ -111,146 +111,115 @@ function SwipeableImageGallery({
 	images: string[];
 	title: string;
 }) {
-	const [activeImage, setActiveImage] = useState(0);
+	const [emblaRef, emblaApi] = useEmblaCarousel({
+		direction: "rtl",
+		loop: images.length > 1,
+		skipSnaps: false,
+		dragFree: false,
+	});
+
+	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
-	const [isDragging, setIsDragging] = useState(false);
-	const [dragOffset, setDragOffset] = useState(0);
-	const startXRef = useRef<number | null>(null);
-	const isPointerDownRef = useRef<boolean>(false);
+
+	const onSelect = useCallback(() => {
+		if (!emblaApi) return;
+		setSelectedIndex(emblaApi.selectedScrollSnap());
+	}, [emblaApi]);
+
+	useEffect(() => {
+		if (!emblaApi) return;
+		onSelect();
+		emblaApi.on("select", onSelect);
+		emblaApi.on("reInit", onSelect);
+		return () => {
+			emblaApi.off("select", onSelect);
+			emblaApi.off("reInit", onSelect);
+		};
+	}, [emblaApi, onSelect]);
+
+	const scrollPrev = useCallback(() => {
+		if (emblaApi) emblaApi.scrollPrev();
+	}, [emblaApi]);
+
+	const scrollNext = useCallback(() => {
+		if (emblaApi) emblaApi.scrollNext();
+	}, [emblaApi]);
+
+	const scrollTo = useCallback(
+		(index: number) => {
+			if (emblaApi) emblaApi.scrollTo(index);
+		},
+		[emblaApi],
+	);
 
 	const total = images.length;
 
-	const handlePrev = useCallback(() => {
-		setActiveImage((prev) => (prev > 0 ? prev - 1 : total - 1));
-	}, [total]);
-
-	const handleNext = useCallback(() => {
-		setActiveImage((prev) => (prev < total - 1 ? prev + 1 : 0));
-	}, [total]);
-
-	const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-		if (total <= 1) return;
-		isPointerDownRef.current = true;
-		startXRef.current = e.clientX;
-		setIsDragging(true);
-		e.currentTarget.setPointerCapture(e.pointerId);
-	};
-
-	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-		if (!isPointerDownRef.current || startXRef.current === null) return;
-		const delta = e.clientX - startXRef.current;
-		setDragOffset(delta);
-	};
-
-	const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-		if (!isPointerDownRef.current || startXRef.current === null) return;
-		const delta = e.clientX - startXRef.current;
-		const threshold = 35;
-
-		// In RTL layout: dragging left (negative delta) moves to next image
-		// dragging right (positive delta) moves to previous image
-		if (delta < -threshold) {
-			handleNext();
-		} else if (delta > threshold) {
-			handlePrev();
-		}
-
-		isPointerDownRef.current = false;
-		startXRef.current = null;
-		setIsDragging(false);
-		setDragOffset(0);
-		try {
-			e.currentTarget.releasePointerCapture(e.pointerId);
-		} catch {
-			// ignore
-		}
-	};
-
-	const handlePointerCancel = () => {
-		isPointerDownRef.current = false;
-		startXRef.current = null;
-		setIsDragging(false);
-		setDragOffset(0);
-	};
-
-	const currentSrc = images[activeImage];
-	const isCurrentError = imageErrors[activeImage];
-
 	return (
-		<div className="space-y-2">
-			<div
-				className={cn(
-					"group relative h-60 sm:h-64 w-full shrink-0 overflow-hidden rounded-2xl bg-muted select-none",
-					total > 1 ? "cursor-grab active:cursor-grabbing" : "cursor-default",
-				)}
-				style={{ touchAction: "pan-y" }}
-				onPointerDown={handlePointerDown}
-				onPointerMove={handlePointerMove}
-				onPointerUp={handlePointerUp}
-				onPointerCancel={handlePointerCancel}
-			>
-				{/* Main Active Image with Smooth Drag Feedback */}
-				{!isCurrentError && currentSrc ? (
-					<div
-						className="relative h-full w-full transition-transform"
-						style={{
-							transform: isDragging
-								? `translateX(${dragOffset * 0.35}px)`
-								: "none",
-							transitionDuration: isDragging ? "0ms" : "300ms",
-						}}
-					>
-						<Image
-							src={currentSrc}
-							alt={`${title} - تصویر ${toPersianDigits(activeImage + 1)}`}
-							fill
-							draggable={false}
-							sizes="(max-width: 768px) 100vw, 440px"
-							className="object-cover pointer-events-none select-none"
-							priority={activeImage < 2}
-							onError={() => {
-								setImageErrors((prev) => ({ ...prev, [activeImage]: true }));
-							}}
-						/>
+		<div className="space-y-2 select-none" dir="rtl">
+			{/* Main Carousel Viewport */}
+			<div className="group relative h-56 sm:h-60 w-full overflow-hidden rounded-xl bg-muted border border-border/70 shadow-2xs">
+				<div className="h-full w-full overflow-hidden" ref={emblaRef}>
+					<div className="flex h-full w-full touch-pan-y">
+						{images.map((src, i) => (
+							<div
+								key={src}
+								className="relative h-full w-full min-w-0 flex-[0_0_100%]"
+							>
+								{!imageErrors[i] ? (
+									<Image
+										src={src}
+										alt={`${title} - تصویر ${toPersianDigits(i + 1)}`}
+										fill
+										draggable={false}
+										sizes="(max-width: 768px) 100vw, 440px"
+										className="object-cover pointer-events-none select-none"
+										priority={i < 2}
+										onError={() => {
+											setImageErrors((prev) => ({ ...prev, [i]: true }));
+										}}
+									/>
+								) : (
+									<div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground bg-muted select-none">
+										<ImageIcon className="size-8 opacity-40" />
+										<span className="text-xs">تصویر در دسترس نیست</span>
+									</div>
+								)}
+							</div>
+						))}
 					</div>
-				) : (
-					<div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground bg-muted select-none">
-						<ImageIcon className="size-8 opacity-40" />
-						<span className="text-xs">تصویر در دسترس نیست</span>
-					</div>
-				)}
+				</div>
 
 				{/* Floating Counter Badge */}
 				{total > 1 && (
-					<div className="absolute top-3 right-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md shadow-md pointer-events-none">
-						{toPersianDigits(activeImage + 1)} / {toPersianDigits(total)}
+					<div className="absolute top-2.5 right-2.5 rounded-full bg-black/65 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md shadow-md pointer-events-none z-10 select-none">
+						{toPersianDigits(selectedIndex + 1)} از {toPersianDigits(total)}
 					</div>
 				)}
 
-				{/* Next / Previous Navigation Controls */}
+				{/* Next / Previous Navigation Controls (RTL-aware) */}
 				{total > 1 && (
 					<>
 						<button
 							type="button"
 							onClick={(e) => {
 								e.stopPropagation();
-								handleNext();
+								scrollPrev();
 							}}
-							className="absolute left-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95 z-10"
-							aria-label="تصویر بعدی"
+							className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95 z-10 cursor-pointer"
+							aria-label="تصویر قبلی"
 						>
-							<ChevronLeft className="size-4" />
+							<ChevronRight className="size-4" />
 						</button>
 						<button
 							type="button"
 							onClick={(e) => {
 								e.stopPropagation();
-								handlePrev();
+								scrollNext();
 							}}
-							className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95 z-10"
-							aria-label="تصویر قبلی"
+							className="absolute left-2.5 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white backdrop-blur-md shadow-md transition-all hover:bg-black/80 hover:scale-110 active:scale-95 z-10 cursor-pointer"
+							aria-label="تصویر بعدی"
 						>
-							<ChevronRight className="size-4" />
+							<ChevronLeft className="size-4" />
 						</button>
 					</>
 				)}
@@ -258,15 +227,15 @@ function SwipeableImageGallery({
 
 			{/* Thumbnails Row */}
 			{total > 1 && (
-				<div className="flex items-center gap-1.5 overflow-x-auto px-1 py-1 no-scrollbar select-none">
+				<div className="flex items-center gap-1.5 overflow-x-auto px-0.5 py-0.5 no-scrollbar select-none">
 					{images.map((src, i) => (
 						<button
 							key={src}
 							type="button"
-							onClick={() => setActiveImage(i)}
+							onClick={() => scrollTo(i)}
 							className={cn(
-								"relative h-12 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-all",
-								i === activeImage
+								"relative h-11 w-15 shrink-0 overflow-hidden rounded-lg border-2 transition-all cursor-pointer",
+								i === selectedIndex
 									? "border-primary ring-2 ring-primary/30 scale-105"
 									: "border-transparent opacity-60 hover:opacity-100",
 							)}
@@ -276,7 +245,7 @@ function SwipeableImageGallery({
 								alt={`بند انگشتی ${toPersianDigits(i + 1)}`}
 								fill
 								draggable={false}
-								sizes="64px"
+								sizes="60px"
 								className="object-cover pointer-events-none select-none"
 							/>
 						</button>
@@ -308,23 +277,15 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 
 	return (
 		<div
-			className="flex h-full flex-col overflow-hidden bg-background"
+			className="relative flex h-full flex-col overflow-hidden bg-background"
 			dir="rtl"
 		>
-			{/* Top Scanning Line & Refined Loading Indicator */}
+			{/* Top Scanning Line (0px height impact, flush under header) */}
 			{isLoadingDetail && (
-				<div className="relative shrink-0">
-					<div className="h-0.5 w-full bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse" />
-					<div className="flex items-center justify-center gap-2 py-1.5 px-4 bg-primary/5 border-b border-primary/15 text-primary text-xs font-semibold">
-						<Loader2 className="size-3.5 animate-spin" />
-						<span className="text-[11px]">
-							در حال به‌روزرسانی مشخصات تکمیلی...
-						</span>
-					</div>
-				</div>
+				<div className="pointer-events-none absolute top-0 left-0 right-0 z-30 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse" />
 			)}
 
-			<div className="flex-1 overflow-y-auto p-4 space-y-5">
+			<div className="flex-1 overflow-y-auto px-3.5 pt-2.5 pb-12 space-y-4">
 				{/* Images Gallery */}
 				{listing.images && listing.images.length > 0 ? (
 					<SwipeableImageGallery
@@ -332,15 +293,16 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 						title={listing.title}
 					/>
 				) : isLoadingDetail ? (
-					<div className="h-56 w-full rounded-2xl bg-muted flex items-center justify-center">
-						<Loader2 className="size-6 animate-spin text-primary/60" />
+					<div className="relative h-56 sm:h-60 w-full shrink-0 overflow-hidden rounded-xl bg-muted/60 flex items-center justify-center border border-border/40 shadow-2xs">
+						<Skeleton className="absolute inset-0" />
+						<ImageIcon className="size-8 text-muted-foreground/30 z-10" />
 					</div>
 				) : null}
 
 				{/* Title & Location Header */}
-				<div className="flex items-start justify-between gap-3">
+				<div className="flex items-start justify-between gap-3 pt-0.5">
 					<div className="flex-1 space-y-1">
-						<h2 className="text-base font-bold leading-snug text-foreground">
+						<h2 className="text-sm sm:text-base font-bold leading-snug text-foreground">
 							{listing.title}
 						</h2>
 						<p className="text-xs font-medium text-muted-foreground">
@@ -356,7 +318,7 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 									<Button
 										variant="outline"
 										size="icon"
-										className="size-9 rounded-full hover:bg-primary/10 hover:border-primary/40"
+										className="size-8.5 rounded-xl hover:bg-primary/10 hover:border-primary/40 cursor-pointer"
 										onClick={() => {
 											const lat =
 												listing.location?.latitude ??
@@ -394,13 +356,13 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 									<Button
 										variant="outline"
 										size="icon"
-										className="size-9 rounded-full hover:bg-rose-500/10 hover:border-rose-500/40"
+										className="size-8.5 rounded-xl hover:bg-rose-500/10 hover:border-rose-500/40 cursor-pointer"
 										onClick={() => toggleFavorite(listing)}
 										aria-label="نشان کردن آگهی"
 									>
 										<Heart
 											className={cn(
-												"size-4.5 transition-all",
+												"size-4 transition-all",
 												isFav
 													? "fill-red-500 text-red-500 scale-110"
 													: "text-muted-foreground",
@@ -425,7 +387,7 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 				)}
 
 				{/* Pricing Card */}
-				<div className="rounded-xl border border-border bg-card p-3.5 space-y-2 shadow-2xs">
+				<div className="rounded-xl border border-border bg-card p-3 space-y-2 shadow-2xs">
 					<div className="flex items-center justify-between text-xs font-semibold text-muted-foreground border-b pb-2">
 						<span>نوع معامله</span>
 						<span className="text-primary font-bold">
@@ -497,7 +459,7 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 						<Button
 							size="sm"
 							variant="outline"
-							className="h-8 gap-1.5 text-xs font-semibold"
+							className="h-8 gap-1.5 text-xs font-semibold cursor-pointer"
 							onClick={() => {
 								if (listing.publisherPhone) {
 									handleCopyPhone(listing.publisherPhone);
@@ -523,7 +485,7 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 
 				{/* Description Text */}
 				{listing.description ? (
-					<div className="space-y-1.5 rounded-xl border bg-card p-3.5">
+					<div className="space-y-1.5 rounded-xl border bg-card p-3">
 						<div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
 							<Info className="size-3.5 text-primary" />
 							<span>توضیحات آگهی</span>
@@ -533,7 +495,7 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 						</p>
 					</div>
 				) : isLoadingDetail ? (
-					<div className="space-y-2 rounded-xl border bg-card p-3.5">
+					<div className="space-y-2 rounded-xl border bg-card p-3">
 						<Skeleton className="h-4 w-1/4" />
 						<Skeleton className="h-3 w-full" />
 						<Skeleton className="h-3 w-4/5" />
@@ -725,17 +687,17 @@ export function PropertyDetailSheet() {
 			>
 				<DrawerContent
 					showOverlay={false}
-					className="mb-14 h-[85dvh] max-h-[85dvh] border-t shadow-2xl"
+					className="mb-14 h-[85dvh] max-h-[85dvh] border-t shadow-2xl gap-0 p-0 bg-background"
 				>
-					<DrawerHeader className="flex shrink-0 flex-row items-center justify-between border-b p-3.5">
-						<DrawerTitle className="text-xs font-bold">
-							جزئیات آگهی ملک
+					<DrawerHeader className="flex shrink-0 flex-row items-center justify-between border-b px-4 py-2.5 bg-background">
+						<DrawerTitle className="text-sm font-bold text-foreground">
+							جزئیات کامل آگهی
 						</DrawerTitle>
 						<DrawerClose asChild>
 							<Button
 								variant="ghost"
 								size="icon"
-								className="size-7 rounded-lg"
+								className="size-7.5 rounded-lg cursor-pointer"
 								onClick={onClose}
 							>
 								<X className="size-4" />
@@ -759,16 +721,16 @@ export function PropertyDetailSheet() {
 				side="left"
 				showOverlay={false}
 				showCloseButton={false}
-				className="flex w-[440px] flex-col p-0 sm:max-w-[440px] border-r shadow-2xl"
+				className="flex w-[420px] sm:w-[440px] flex-col gap-0 p-0 border-r shadow-2xl bg-background"
 			>
-				<SheetHeader className="flex shrink-0 flex-row items-center justify-between border-b p-3.5">
-					<SheetTitle className="text-xs font-bold">
+				<SheetHeader className="flex shrink-0 flex-row items-center justify-between border-b px-4 py-2.5 bg-background">
+					<SheetTitle className="text-sm font-bold text-foreground">
 						جزئیات کامل آگهی
 					</SheetTitle>
 					<Button
 						variant="ghost"
 						size="icon"
-						className="size-7 rounded-lg"
+						className="size-7.5 rounded-lg cursor-pointer"
 						onClick={onClose}
 					>
 						<X className="size-4" />

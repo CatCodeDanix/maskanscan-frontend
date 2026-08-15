@@ -27,10 +27,13 @@ export default function BaseMap() {
 	const [isMapLoaded, setIsMapLoaded] = useState(false);
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-	// Helper to extract current viewport BBox from MapLibre bounds
-	const updateViewportBounds = useCallback(
-		(currentZoom: number) => {
-			const map = mapRef.current?.getMap();
+	const syncViewport = useCallback(
+		(targetMap: maplibregl.Map | MapRef | undefined, currentZoom: number) => {
+			const map =
+				(targetMap as MapRef)?.getMap?.() ??
+				(targetMap as maplibregl.Map) ??
+				mapRef.current?.getMap() ??
+				mapRef.current;
 			if (!map) return;
 
 			const bounds = map.getBounds();
@@ -54,7 +57,7 @@ export default function BaseMap() {
 		[setViewport],
 	);
 
-	// Debounce moveend (150-200ms) to trigger reconciliation checks
+	// Debounce moveend (100ms) to trigger geospatial query updates
 	const handleMoveEnd = useCallback(
 		(e: ViewStateChangeEvent) => {
 			if (debounceTimerRef.current) {
@@ -62,10 +65,10 @@ export default function BaseMap() {
 			}
 
 			debounceTimerRef.current = setTimeout(() => {
-				updateViewportBounds(e.viewState.zoom);
-			}, 60);
+				syncViewport(e.target, e.viewState.zoom);
+			}, 100);
 		},
-		[updateViewportBounds],
+		[syncViewport],
 	);
 
 	const onMove = useCallback((e: ViewStateChangeEvent) => {
@@ -77,10 +80,13 @@ export default function BaseMap() {
 		}));
 	}, []);
 
-	const handleMapLoad = useCallback(() => {
-		setIsMapLoaded(true);
-		updateViewportBounds(INITIAL_VIEW_STATE.zoom);
-	}, [updateViewportBounds]);
+	const handleMapLoad = useCallback(
+		(e: { target: maplibregl.Map }) => {
+			setIsMapLoaded(true);
+			syncViewport(e.target, INITIAL_VIEW_STATE.zoom);
+		},
+		[syncViewport],
+	);
 
 	return (
 		<MapViewStateContext.Provider

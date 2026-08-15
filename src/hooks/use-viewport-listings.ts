@@ -5,9 +5,9 @@ import {
 	useInfiniteQuery,
 	useQueryClient,
 } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { fetchViewportListingsAction } from "@/app/actions/geospatial";
-import { expandBBox, isBBoxContained, snapBBox } from "@/lib/geospatial";
+import { snapBBox } from "@/lib/geospatial";
 import { useListingStore } from "@/store/listing-store";
 import type { BBox, ViewportListingsResponse } from "@/types/geospatial";
 import type { UnifiedListing } from "@/types/listing";
@@ -80,30 +80,15 @@ export function useViewportListings({
 		[appliedFilters],
 	);
 
-	// Reconciliation tracking for list
-	const lastListBboxRef = useRef<BBox | null>(null);
-	const [activeListBbox, setActiveListBbox] = useState<BBox | null>(
-		viewportBBox,
-	);
-
-	useEffect(() => {
-		if (!viewportBBox) return;
-
-		// If current viewport is within last fetched padded bbox (15% margin), don't reset list
-		if (lastListBboxRef.current) {
-			const padded = expandBBox(lastListBboxRef.current, 0.15);
-			if (isBBoxContained(viewportBBox, padded)) {
-				return;
-			}
-		}
-
-		lastListBboxRef.current = viewportBBox;
-		setActiveListBbox(viewportBBox);
-	}, [viewportBBox]);
-
+	// Snap bbox to 0.01 precision (~1km) for caching, using primitive coordinates for stable dependencies
 	const snappedBbox = useMemo(
-		() => (activeListBbox ? snapBBox(activeListBbox, 0.01) : null),
-		[activeListBbox],
+		() => (viewportBBox ? snapBBox(viewportBBox, 0.01) : null),
+		[
+			viewportBBox?.[0],
+			viewportBBox?.[1],
+			viewportBBox?.[2],
+			viewportBBox?.[3],
+		],
 	);
 
 	const {
@@ -118,7 +103,7 @@ export function useViewportListings({
 	} = useInfiniteQuery<ViewportListingsResponse>({
 		queryKey: ["listingsViewport", snappedBbox, filters],
 		queryFn: async ({ pageParam = 1 }) => {
-			if (!activeListBbox) {
+			if (!viewportBBox) {
 				return {
 					success: true,
 					items: [],
@@ -130,7 +115,7 @@ export function useViewportListings({
 			}
 
 			const res = await fetchViewportListingsAction({
-				bbox: activeListBbox,
+				bbox: viewportBBox,
 				filters,
 				page: pageParam as number,
 				limit: 20,
@@ -143,7 +128,7 @@ export function useViewportListings({
 			if (!lastPage.hasMore) return undefined;
 			return lastPage.page + 1;
 		},
-		enabled: Boolean(activeListBbox),
+		enabled: Boolean(viewportBBox),
 		placeholderData: keepPreviousData,
 		staleTime: 20 * 60 * 1000,
 		gcTime: 20 * 60 * 1000,

@@ -34,8 +34,9 @@ function buildGeospatialWhereClause(filters: ListingFilters, bbox?: BBox) {
 		);
 	}
 
-	// Always strictly filter rent postings
-	conditions.push(eq(scrapedListings.dealType, "rent"));
+	// Deal type filter (defaults to rent)
+	const dealType = filters.dealType || "rent";
+	conditions.push(eq(scrapedListings.dealType, dealType));
 
 	if (filters.city) {
 		conditions.push(eq(scrapedListings.city, filters.city.toLowerCase()));
@@ -176,6 +177,12 @@ export async function fetchMapDataAction(
 					COUNT(*)::int AS point_count,
 					AVG(longitude)::float8 AS avg_lng,
 					AVG(latitude)::float8 AS avg_lat,
+					MIN(id) AS sample_id,
+					MIN(source) AS sample_source,
+					MIN(external_id) AS sample_external_id,
+					MIN(title) AS sample_title,
+					MIN(city_persian) AS sample_city_persian,
+					MIN(district_persian) AS sample_district_persian,
 					MIN(deposit_tomans)::bigint AS min_deposit,
 					MAX(deposit_tomans)::bigint AS max_deposit,
 					MIN(rent_tomans)::bigint AS min_rent,
@@ -195,6 +202,12 @@ export async function fetchMapDataAction(
 				point_count: number;
 				avg_lng: number;
 				avg_lat: number;
+				sample_id: string | number | null;
+				sample_source: string | null;
+				sample_external_id: string | null;
+				sample_title: string | null;
+				sample_city_persian: string | null;
+				sample_district_persian: string | null;
 				min_deposit: number | null;
 				max_deposit: number | null;
 				min_rent: number | null;
@@ -224,14 +237,18 @@ export async function fetchMapDataAction(
 						maxPrice: row.max_price != null ? Number(row.max_price) : undefined,
 						dealType,
 					});
-				} else {
+				} else if (row.sample_external_id) {
 					rawPoints.push({
-						id: undefined,
-						source: "divar",
-						externalId: `pin-${row.gx}-${row.gy}`,
-						title: "ملک مسکونی",
+						id:
+							typeof row.sample_id === "number"
+								? row.sample_id
+								: Number(row.sample_id) || undefined,
+						source: (row.sample_source as MapPinItem["source"]) || "divar",
+						externalId: row.sample_external_id,
+						title: row.sample_title || "ملک مسکونی",
 						dealType: dealType as MapPinItem["dealType"],
-						cityPersian: "تهران",
+						cityPersian: row.sample_city_persian || "تهران",
+						districtPersian: row.sample_district_persian ?? undefined,
 						depositTomans:
 							row.min_deposit != null ? Number(row.min_deposit) : undefined,
 						rentTomans: row.min_rent != null ? Number(row.min_rent) : undefined,
@@ -331,25 +348,31 @@ export async function fetchViewportListingsAction(
 		const page = Math.max(1, params.page || 1);
 		const limit = Math.min(100, Math.max(1, params.limit || 20));
 		const offset = (page - 1) * limit;
-
 		const whereClause = buildGeospatialWhereClause(filters, bbox);
 
-		const [totalResult] = await db
-			.select({ total: count() })
-			.from(scrapedListings)
-			.where(whereClause);
-
-		const total = Number(totalResult?.total ?? 0);
-
+		// Fetch limit + 1 items to determine hasMore without expensive full-table scans
 		const rawItems = await db
 			.select()
 			.from(scrapedListings)
 			.where(whereClause)
 			.orderBy(desc(scrapedListings.publishedAt), desc(scrapedListings.id))
-			.limit(limit)
+			.limit(limit + 1)
 			.offset(offset);
 
-		const items: UnifiedListing[] = rawItems.map((item) => {
+		const hasMore = rawItems.length > limit;
+		const pageItems = hasMore ? rawItems.slice(0, limit) : rawItems;
+
+		// Fast approximate count capped to avoid 150k-row scan timeouts
+		let total = offset + pageItems.length;
+		if (hasMore) {
+			const countResult = await db.execute(
+				sql`SELECT COUNT(*)::int AS cnt FROM (SELECT 1 FROM ${scrapedListings} WHERE ${whereClause} LIMIT 5000) s`,
+			);
+			const rowCount = Number((countResult.rows[0] as { cnt: number })?.cnt ?? 0);
+			total = rowCount >= 5000 ? 5000 : rowCount;
+		}
+
+		const items: UnifiedListing[] = pageItems.map((item) => {
 			const lat = item.latitude;
 			const lng = item.longitude;
 			const location =

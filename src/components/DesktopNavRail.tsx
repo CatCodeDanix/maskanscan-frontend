@@ -14,8 +14,8 @@ import { cn } from "@/lib/utils";
 import { type NavItem, useNavigationStore } from "@/store/navigation-store";
 
 export const placeholderUser = {
-	name: "کاربر",
-	email: "user@example.com",
+	name: "کاربر مسکن‌اسکن",
+	email: "user@maskanscan.ir",
 	avatar: "",
 };
 
@@ -56,22 +56,22 @@ export function DesktopNavRail({ onItemClick }: DesktopNavRailProps) {
 	return (
 		<TooltipProvider delayDuration={150}>
 			<aside
-				className="w-13 shrink-0 h-full border-l bg-background/95 flex flex-col items-center py-2 justify-between z-30 select-none shadow-xs"
+				className="w-13 shrink-0 h-full border-l bg-background/95 flex flex-col items-center py-2.5 justify-between z-30 select-none shadow-xs"
 				dir="rtl"
 			>
 				{/* Top Brand Home Button */}
-				<div className="flex flex-col items-center gap-3">
+				<div className="flex flex-col items-center gap-2.5 w-full">
 					<Tooltip>
 						<TooltipTrigger asChild>
 							<Link
 								href="/"
 								aria-label="صفحه اصلی مسکن‌اسکن"
-								className="flex size-9.5 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/25 hover:bg-primary hover:text-primary-foreground transition-all duration-200 shadow-2xs group"
+								className="flex size-9.5 items-center justify-center rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 shadow-2xs group"
 							>
-								<Home className="size-4.5 transition-transform group-hover:scale-105" />
+								<Home className="size-4.5 transition-transform group-hover:scale-110" />
 							</Link>
 						</TooltipTrigger>
-						<TooltipContent side="left" className="text-xs">
+						<TooltipContent side="left" className="text-xs font-medium">
 							صفحه اصلی
 						</TooltipContent>
 					</Tooltip>
@@ -79,7 +79,7 @@ export function DesktopNavRail({ onItemClick }: DesktopNavRailProps) {
 					<div className="h-px w-6 bg-border/80 my-0.5" />
 
 					{/* Navigation Icons Menu */}
-					<nav className="flex flex-col items-center gap-1.5">
+					<nav className="flex flex-col items-center gap-1.5 w-full px-1.5">
 						{items.map((item) => {
 							const isActive = isDrawerOpen && item.id === activeItemId;
 
@@ -92,7 +92,7 @@ export function DesktopNavRail({ onItemClick }: DesktopNavRailProps) {
 											className={cn(
 												"relative flex size-9.5 items-center justify-center rounded-xl transition-all duration-150 cursor-pointer",
 												isActive
-													? "bg-primary text-primary-foreground shadow-xs font-semibold scale-100"
+													? "bg-primary text-primary-foreground shadow-xs font-semibold scale-100 ring-2 ring-primary/20"
 													: "text-muted-foreground hover:text-foreground hover:bg-muted/80",
 											)}
 											aria-label={item.title}
@@ -100,7 +100,7 @@ export function DesktopNavRail({ onItemClick }: DesktopNavRailProps) {
 											<item.icon className="size-4.5 shrink-0" />
 										</button>
 									</TooltipTrigger>
-									<TooltipContent side="left" className="text-xs">
+									<TooltipContent side="left" className="text-xs font-medium">
 										{item.title}
 									</TooltipContent>
 								</Tooltip>
@@ -110,7 +110,7 @@ export function DesktopNavRail({ onItemClick }: DesktopNavRailProps) {
 				</div>
 
 				{/* Bottom User Avatar */}
-				<div className="flex flex-col items-center pt-2">
+				<div className="flex flex-col items-center pt-2 pb-1">
 					<NavUser user={placeholderUser} />
 				</div>
 			</aside>

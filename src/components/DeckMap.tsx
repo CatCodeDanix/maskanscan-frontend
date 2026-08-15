@@ -1,7 +1,7 @@
 "use client";
 
 import type { PickingInfo } from "@deck.gl/core";
-import { IconLayer, ScatterplotLayer } from "@deck.gl/layers";
+import { ScatterplotLayer, TextLayer } from "@deck.gl/layers";
 import type { Feature, LineString, MultiLineString, Point } from "geojson";
 import { useEffect, useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -11,7 +11,7 @@ import TransitTooltip from "@/components/map/TransitTooltip";
 import { LottieLoader } from "@/components/ui/LottieLoader";
 import type { TransitProperties } from "@/data";
 import { useGeospatialMap } from "@/hooks/use-geospatial-map";
-import { formatToman } from "@/lib/format";
+import { formatToman, toPersianDigits } from "@/lib/format";
 import { formatClusterPriceSummary } from "@/lib/geospatial";
 import { useTransitLayers } from "@/lib/overlay-layers";
 import { useListingStore } from "@/store/listing-store";
@@ -42,14 +42,15 @@ function isSuperclusterCluster(f: SuperclusterFeature): f is ClusterFeature {
 	return (f as ClusterFeature).properties.cluster === true;
 }
 
-function toPersianDigits(n: number): string {
-	return n.toLocaleString("fa-IR");
-}
-
 function formatClusterCount(count: number): string {
-	if (count < 1000) return count.toLocaleString("fa-IR");
-	const inThousands = (count / 1000).toFixed(1).replace(/\.0$/, "");
-	return `${Number(inThousands).toLocaleString("fa-IR")}k`;
+	if (!count) return "";
+	if (count < 1000) return toPersianDigits(count);
+	if (count < 10000) {
+		const inThousands = (count / 1000).toFixed(1).replace(/\.0$/, "");
+		return `${toPersianDigits(inThousands)}k`;
+	}
+	const inThousands = Math.round(count / 1000);
+	return `${toPersianDigits(inThousands)}k`;
 }
 
 function formatPinPrice(pin: MapPinItem | UnifiedListing): string {
@@ -72,31 +73,6 @@ function getIsFallback(pin: MapPinItem | UnifiedListing): boolean {
 		return Boolean(pin.isFallback);
 	}
 	return false;
-}
-
-// ── SVG Cluster Sprite Generator (Combines Circle + Number into 1 Atomic Quad) ─
-
-const clusterSvgCache = new Map<string, string>();
-
-function getClusterIconSvg(count: number): string {
-	const displayCount = formatClusterCount(count);
-	const cacheKey = `${displayCount}`;
-	const cached = clusterSvgCache.get(cacheKey);
-	if (cached) return cached;
-
-	const svgSize = 64;
-	const center = 32;
-	const radius = Math.min(28, Math.max(20, 20 + Math.log10(count) * 3));
-	const fontSize = displayCount.length > 3 ? 12 : 14;
-
-	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgSize}" height="${svgSize}" viewBox="0 0 ${svgSize} ${svgSize}">
-  <circle cx="${center}" cy="${center}" r="${radius}" fill="#4f46e5" stroke="#ffffff" stroke-width="3"/>
-  <text x="${center}" y="${center + 1}" fill="#ffffff" font-family="IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif" font-size="${fontSize}" font-weight="700" text-anchor="middle" dominant-baseline="central">${displayCount}</text>
-</svg>`;
-
-	const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-	clusterSvgCache.set(cacheKey, dataUrl);
-	return dataUrl;
 }
 
 // ── Tooltips ──────────────────────────────────────────────────────────────────
@@ -180,7 +156,6 @@ const DeckMap = () => {
 	const viewportBBox =
 		useMapStore((s) => s.viewportBBox) ?? viewState.bbox ?? null;
 	const zoom = viewState?.zoom ?? 10;
-	const isMapReady = Boolean(viewState?.isLoaded);
 
 	// Geospatial Pipeline TanStack Query Hook
 	const {
@@ -317,11 +292,11 @@ const DeckMap = () => {
 		return { clusterItems: clusters, pinItems: pins };
 	}, [renderItems, fallbackHighlightItem]);
 
-	// ── 1. Unified Cluster Layer (Circle + Number inside Single Quad) ─────────
-	const clusterIconsLayer = useMemo(
+	// ── 1. Cluster Circles Layer (Antialiased WebGL Circles) ───────────────────
+	const clusterCirclesLayer = useMemo(
 		() =>
-			new IconLayer<UnifiedRenderItem>({
-				id: "geospatial-cluster-icons",
+			new ScatterplotLayer<UnifiedRenderItem>({
+				id: "geospatial-cluster-circles",
 				data: clusterItems,
 				getPosition: (d) => {
 					if (d.type === "backend-cluster") {
@@ -332,33 +307,26 @@ const DeckMap = () => {
 					}
 					return [0, 0];
 				},
-				getIcon: (d) => {
+				getRadius: (d) => {
 					const count =
 						d.type === "backend-cluster"
 							? d.cluster.count
 							: d.type === "supercluster-cluster"
 								? d.feature.properties.point_count
 								: 1;
-
-					return {
-						url: getClusterIconSvg(count),
-						width: 64,
-						height: 64,
-						anchorX: 32,
-						anchorY: 32,
-					};
+					return Math.min(32, Math.max(18, 18 + Math.log10(count) * 4));
 				},
-				getSize: (d) => {
-					const count =
-						d.type === "backend-cluster"
-							? d.cluster.count
-							: d.type === "supercluster-cluster"
-								? d.feature.properties.point_count
-								: 1;
-					return Math.min(64, Math.max(44, 44 + Math.log10(count) * 6));
-				},
-				sizeUnits: "pixels",
-				sizeScale: 1,
+				radiusUnits: "pixels",
+				radiusScale: 1,
+				radiusMinPixels: 18,
+				radiusMaxPixels: 34,
+				getFillColor: [79, 70, 229, 245], // Royal Indigo
+				getLineColor: [255, 255, 255, 255],
+				lineWidthUnits: "pixels",
+				lineWidthMinPixels: 2.5,
+				stroked: true,
+				filled: true,
+				antialiasing: true,
 				billboard: true,
 				pickable: true,
 				onClick: ({ object }) => {
@@ -393,7 +361,82 @@ const DeckMap = () => {
 		[clusterItems, mapInstance, zoom, clientSupercluster],
 	);
 
-	// ── 2. Individual Property Pins (WebGL Antialiased Circles) ───────────────
+	// ── 2. Cluster Numbers Text Layer (Razor-Sharp Persian Typography) ────────
+	const clusterNumbersLayer = useMemo(
+		() =>
+			new TextLayer<UnifiedRenderItem>({
+				id: "geospatial-cluster-numbers",
+				data: clusterItems,
+				getPosition: (d) => {
+					if (d.type === "backend-cluster") {
+						return [d.cluster.longitude, d.cluster.latitude];
+					}
+					if (d.type === "supercluster-cluster") {
+						return d.feature.geometry.coordinates as [number, number];
+					}
+					return [0, 0];
+				},
+				getText: (d) => {
+					const count =
+						d.type === "backend-cluster"
+							? d.cluster.count
+							: d.type === "supercluster-cluster"
+								? d.feature.properties.point_count
+								: 1;
+					return formatClusterCount(count);
+				},
+				characterSet: [
+					"۰",
+					"۱",
+					"۲",
+					"۳",
+					"۴",
+					"۵",
+					"۶",
+					"۷",
+					"۸",
+					"۹",
+					"k",
+					"K",
+					"M",
+					"m",
+					".",
+					"0",
+					"1",
+					"2",
+					"3",
+					"4",
+					"5",
+					"6",
+					"7",
+					"8",
+					"9",
+				],
+				fontSettings: { sdf: false },
+				fontFamily: "IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif",
+				fontWeight: "700",
+				getSize: (d) => {
+					const count =
+						d.type === "backend-cluster"
+							? d.cluster.count
+							: d.type === "supercluster-cluster"
+								? d.feature.properties.point_count
+								: 1;
+					const str = formatClusterCount(count);
+					return str.length > 3 ? 12 : 14;
+				},
+				sizeUnits: "pixels",
+				sizeScale: 1,
+				getColor: [255, 255, 255, 255],
+				getTextAnchor: "middle",
+				getAlignmentBaseline: "center",
+				billboard: true,
+				pickable: false,
+			}),
+		[clusterItems],
+	);
+
+	// ── 3. Individual Property Pins (WebGL Antialiased Circles) ───────────────
 	const individualPinsLayer = useMemo(
 		() =>
 			new ScatterplotLayer<UnifiedRenderItem>({
@@ -449,7 +492,7 @@ const DeckMap = () => {
 		[pinItems, selectedListing, selectListingById],
 	);
 
-	// ── 3. Pin Inner Center Dot Layer (White Vector Center) ───────────────────
+	// ── 4. Pin Inner Center Dot Layer (White Vector Center) ───────────────────
 	const pinCenterDotsLayer = useMemo(
 		() =>
 			new ScatterplotLayer<UnifiedRenderItem>({
@@ -471,19 +514,18 @@ const DeckMap = () => {
 		[pinItems],
 	);
 
-	// Only provide layers once the Map projection is completely loaded to eliminate initial render flash
 	const layers = useMemo(() => {
-		if (!isMapReady) return [];
 		return [
 			...transitLayers,
-			clusterIconsLayer,
+			clusterCirclesLayer,
+			clusterNumbersLayer,
 			individualPinsLayer,
 			pinCenterDotsLayer,
 		];
 	}, [
-		isMapReady,
 		transitLayers,
-		clusterIconsLayer,
+		clusterCirclesLayer,
+		clusterNumbersLayer,
 		individualPinsLayer,
 		pinCenterDotsLayer,
 	]);
@@ -503,13 +545,11 @@ const DeckMap = () => {
 					</div>
 				</>
 			)}
-			{isMapReady && (
-				<DeckGLOverlay
-					layers={layers}
-					getTooltip={getTooltip}
-					getCursor={getCursor}
-				/>
-			)}
+			<DeckGLOverlay
+				layers={layers}
+				getTooltip={getTooltip}
+				getCursor={getCursor}
+			/>
 		</>
 	);
 };

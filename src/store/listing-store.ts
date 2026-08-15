@@ -186,6 +186,8 @@ function getFiltersObject(
 
 // ── Store ─────────────────────────────────────────────────────────────────────
 
+const detailCache = new Map<string, UnifiedListing>();
+
 export const useListingStore = create<ListingState>((set, get) => ({
 	// Data
 	listings: [],
@@ -424,19 +426,27 @@ export const useListingStore = create<ListingState>((set, get) => ({
 		}),
 
 	// Data actions
-	setSelectedListing: (l) => set({ selectedListing: l }),
+	setSelectedListing: (l) => set({ selectedListing: l, isLoadingDetail: false }),
 
 	selectListingById: async (
 		source: string,
 		externalId: string,
 		pinFallback?: MapPinItem | UnifiedListing,
 	) => {
+		const cacheKey = `${source.toLowerCase()}:${externalId}`;
+		const cached = detailCache.get(cacheKey);
+		if (cached) {
+			set({ selectedListing: cached, isLoadingDetail: false });
+			return;
+		}
+
 		const state = get();
 		// 1. Check in current loaded listings
 		const foundInListings = state.listings.find(
-			(l) => l.source === source && l.externalId === externalId,
+			(l) => l.source.toLowerCase() === source.toLowerCase() && l.externalId === externalId,
 		);
 		if (foundInListings) {
+			detailCache.set(cacheKey, foundInListings);
 			set({ selectedListing: foundInListings, isLoadingDetail: false });
 			return;
 		}
@@ -444,9 +454,10 @@ export const useListingStore = create<ListingState>((set, get) => ({
 		// 2. Check in favorites
 		const favoriteListings = useFavoritesStore.getState().favoriteListings;
 		const foundInFavs = favoriteListings.find(
-			(l) => l.source === source && l.externalId === externalId,
+			(l) => l.source.toLowerCase() === source.toLowerCase() && l.externalId === externalId,
 		);
 		if (foundInFavs) {
+			detailCache.set(cacheKey, foundInFavs);
 			set({ selectedListing: foundInFavs, isLoadingDetail: false });
 			return;
 		}
@@ -488,7 +499,11 @@ export const useListingStore = create<ListingState>((set, get) => ({
 		try {
 			const res = await getListingByIdAction(source, externalId);
 			if (res.success && res.listing) {
-				set({ selectedListing: res.listing, isLoadingDetail: false });
+				detailCache.set(cacheKey, res.listing);
+				const current = get().selectedListing;
+				if (!current || current.externalId === externalId) {
+					set({ selectedListing: res.listing, isLoadingDetail: false });
+				}
 			} else {
 				set({ isLoadingDetail: false });
 			}
