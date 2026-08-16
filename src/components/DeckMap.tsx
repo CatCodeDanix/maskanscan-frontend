@@ -1,19 +1,18 @@
 "use client";
 
-import type { PickingInfo } from "@deck.gl/core";
-import { ScatterplotLayer, TextLayer } from "@deck.gl/layers";
-import type { Feature, LineString, MultiLineString, Point } from "geojson";
-import { useEffect, useMemo } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+import { IconLayer, ScatterplotLayer } from "@deck.gl/layers";
+import { useEffect, useMemo, useState } from "react";
 import { useMap } from "react-map-gl/maplibre";
 import type Supercluster from "supercluster";
-import TransitTooltip from "@/components/map/TransitTooltip";
+import {
+	type HoveredObject,
+	type HoverInfo,
+	MapHoverTooltip,
+} from "@/components/map/MapHoverTooltip";
 import { LottieLoader } from "@/components/ui/LottieLoader";
-import type { TransitProperties } from "@/data";
 import { useGeospatialMap } from "@/hooks/use-geospatial-map";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { formatToman, toPersianDigits } from "@/lib/format";
-import { formatClusterPriceSummary } from "@/lib/geospatial";
+import { toPersianDigits } from "@/lib/format";
 import { useTransitLayers } from "@/lib/overlay-layers";
 import { useListingStore } from "@/store/listing-store";
 import { useMapStore } from "@/store/map-store";
@@ -22,6 +21,91 @@ import type { BackendClusterItem } from "@/types/geospatial";
 import type { MapPinItem, UnifiedListing } from "@/types/listing";
 import DeckGLOverlay from "./DeckGLOverlay";
 import { useMapViewState } from "./MapViewStateContext";
+
+// ── Unified Cluster Badge Generator & Cache ──────────────────────────────────
+type ClusterBadgeIcon = {
+	url: string;
+	width: number;
+	height: number;
+	anchorX: number;
+	anchorY: number;
+};
+
+const clusterBadgeCache = new Map<string, ClusterBadgeIcon>();
+
+function getClusterFontFamily(): string {
+	if (typeof document === "undefined") return "IRANSansX, sans-serif";
+	const font = getComputedStyle(document.body).fontFamily;
+	return font || "IRANSansX, Vazirmatn, Tahoma, sans-serif";
+}
+
+function getClusterRadius(count: number): number {
+	if (count < 100) return 18;
+	if (count < 1000) return 21;
+	if (count < 5000) return 24;
+	return 27;
+}
+
+function getClusterBadgeIcon(text: string, radius: number): ClusterBadgeIcon {
+	const key = `${text}_${radius}`;
+	const cached = clusterBadgeCache.get(key);
+	if (cached) return cached;
+
+	if (typeof document === "undefined") {
+		return { url: "", width: 64, height: 64, anchorX: 32, anchorY: 32 };
+	}
+
+	// 2x scale: exact 1:1 match with Retina/High-DPI displays without downsampling blur
+	const scale = 2;
+	const padding = 2;
+	const logicalSize = (radius + padding) * 2;
+	const pixelSize = logicalSize * scale;
+	const center = pixelSize / 2;
+	const r = radius * scale;
+
+	const canvas = document.createElement("canvas");
+	canvas.width = pixelSize;
+	canvas.height = pixelSize;
+	const ctx = canvas.getContext("2d");
+
+	if (ctx) {
+		ctx.imageSmoothingEnabled = true;
+		ctx.imageSmoothingQuality = "high";
+
+		// 1. Antialiased Royal Indigo Circle Background
+		ctx.beginPath();
+		ctx.arc(center, center, r, 0, Math.PI * 2);
+		ctx.fillStyle = "rgba(79, 70, 229, 0.96)"; // Royal Indigo
+		ctx.fill();
+
+		// 2. Crisp White Stroke Border
+		ctx.lineWidth = 2 * scale; // 2px crisp border
+		ctx.strokeStyle = "#ffffff";
+		ctx.stroke();
+
+		// 3. Crisp Persian Typography using actual IRANSansX font from document.body
+		const fontFam = getClusterFontFamily();
+		const baseFontSize = text.length > 4 ? 11 : text.length > 3 ? 12 : 13.5;
+		const scaledFontSize = Math.round(baseFontSize * scale);
+		ctx.font = `bold ${scaledFontSize}px ${fontFam}`;
+		ctx.fillStyle = "#ffffff";
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+		ctx.direction = "rtl";
+		ctx.fillText(text, center, center + Math.round(0.5 * scale));
+	}
+
+	const iconObj: ClusterBadgeIcon = {
+		url: canvas.toDataURL("image/png"),
+		width: pixelSize,
+		height: pixelSize,
+		anchorX: pixelSize / 2,
+		anchorY: pixelSize / 2,
+	};
+
+	clusterBadgeCache.set(key, iconObj);
+	return iconObj;
+}
 
 // ── Supercluster feature types ────────────────────────────────────────────────
 
@@ -55,94 +139,6 @@ function formatClusterCount(count: number): string {
 	return `${toPersianDigits(inThousands)}k`;
 }
 
-function formatPinPrice(pin: MapPinItem | UnifiedListing): string {
-	if (pin.dealType === "rent") {
-		if (pin.depositTomans && pin.rentTomans) {
-			return `${formatToman(pin.depositTomans)} رهن • ${formatToman(pin.rentTomans)} اجاره`;
-		}
-		if (pin.depositTomans) return `${formatToman(pin.depositTomans)} رهن`;
-		if (pin.rentTomans) return `${formatToman(pin.rentTomans)} اجاره`;
-		return "توافقی";
-	}
-	return pin.totalPriceTomans ? formatToman(pin.totalPriceTomans) : "توافقی";
-}
-
-function getIsFallback(pin: MapPinItem | UnifiedListing): boolean {
-	if ("location" in pin && pin.location) {
-		return Boolean(pin.location.isFallback);
-	}
-	if ("isFallback" in pin) {
-		return Boolean(pin.isFallback);
-	}
-	return false;
-}
-
-// ── Tooltips ──────────────────────────────────────────────────────────────────
-
-function getTooltip(
-	info: PickingInfo<
-		| UnifiedRenderItem
-		| Feature<Point | LineString | MultiLineString, TransitProperties>
-	>,
-) {
-	if (!info.object) return null;
-
-	const obj = info.object as UnifiedRenderItem;
-
-	// 1. Backend Cluster Tooltip
-	if ("type" in obj && obj.type === "backend-cluster") {
-		const cluster = obj.cluster;
-		return {
-			html: `<div style="font-family:inherit;direction:rtl;text-align:right;padding:6px 10px">
-        <p style="font-size:12px;font-weight:700;margin:0;color:var(--foreground, #0f172a)">${toPersianDigits(cluster.count)} آگهی ملک در این محدوده</p>
-        <p style="font-size:11px;margin:2px 0 0;color:var(--primary, #6366f1);font-weight:600">${formatClusterPriceSummary(cluster)}</p>
-        <p style="font-size:10px;margin:3px 0 0;color:var(--muted-foreground, #64748b)">برای زوم و مشاهده آگهی‌ها کلیک کنید</p>
-      </div>`,
-			className: "deck-tooltip-reset",
-		};
-	}
-
-	// 2. Frontend Supercluster Tooltip
-	if ("type" in obj && obj.type === "supercluster-cluster") {
-		const cluster = obj.feature;
-		return {
-			html: `<div style="font-family:inherit;direction:rtl;text-align:right;padding:6px 10px">
-        <p style="font-size:12px;font-weight:700;margin:0;color:var(--foreground, #0f172a)">${toPersianDigits(cluster.properties.point_count)} آگهی ملک</p>
-        <p style="font-size:11px;margin:3px 0 0;color:var(--muted-foreground, #64748b)">برای زوم و مشاهده آگهی‌ها کلیک کنید</p>
-      </div>`,
-			className: "deck-tooltip-reset",
-		};
-	}
-
-	// 3. Single Listing Pin Tooltip
-	if ("type" in obj && obj.type === "pin") {
-		const pin = obj.pin;
-		return {
-			html: `<div style="font-family:inherit;direction:rtl;text-align:right;min-width:170px;padding:6px 8px">
-        <p style="font-size:12px;font-weight:700;margin:0 0 4px;line-height:1.3">${pin.title}</p>
-        <p style="font-size:11px;margin:0;opacity:0.8">${pin.cityPersian}${pin.districtPersian ? ` • ${pin.districtPersian}` : ""}</p>
-        <p style="font-size:12px;font-weight:700;margin:4px 0 0;color:${pin.dealType === "rent" ? "#f59e0b" : "#10b981"}">${formatPinPrice(pin)}</p>
-        ${getIsFallback(pin) ? '<p style="font-size:10px;margin:4px 0 0;color:#f59e0b">⚠️ موقعیت تقریبی محله</p>' : ""}
-      </div>`,
-			className: "deck-tooltip-reset",
-		};
-	}
-
-	// 4. Transit tooltip
-	const transitFeature = info.object as Feature<
-		Point | LineString | MultiLineString,
-		TransitProperties
-	>;
-	if (transitFeature.properties) {
-		const html = renderToStaticMarkup(
-			<TransitTooltip properties={transitFeature.properties} />,
-		);
-		return { html, className: "deck-tooltip-reset" };
-	}
-
-	return null;
-}
-
 const getCursor = ({ isHovering }: { isHovering: boolean }) =>
 	isHovering ? "pointer" : "grab";
 
@@ -170,6 +166,19 @@ const DeckMap = () => {
 	const drawerMode = useNavigationStore((s) => s.drawerMode);
 	const isDesktopOverlayOpen =
 		!isMobile && isDrawerOpen && drawerMode === "overlay";
+
+	const [fontLoaded, setFontLoaded] = useState(false);
+
+	useEffect(() => {
+		if (typeof document !== "undefined" && document.fonts) {
+			document.fonts.ready.then(() => {
+				clusterBadgeCache.clear();
+				setFontLoaded(true);
+			});
+		}
+	}, []);
+
+	const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
 
 	const transitLayers = useTransitLayers();
 	const selectListingById = useListingStore((s) => s.selectListingById);
@@ -315,12 +324,15 @@ const DeckMap = () => {
 		return { clusterItems: clusters, pinItems: pins };
 	}, [renderItems, fallbackHighlightItem]);
 
-	// ── 1. Cluster Circles Layer (WebGL GPU Vector Circles) ──────────────────
-	const clustersCirclesLayer = useMemo(
+	// ── 1. Unified Cluster Layer (Single Atomic Sprite: Circle + Stroke + Centered Text) ──
+	const clustersUnifiedLayer = useMemo(
 		() =>
-			new ScatterplotLayer<UnifiedRenderItem>({
-				id: "geospatial-clusters-circles",
+			new IconLayer<UnifiedRenderItem>({
+				id: "geospatial-clusters-unified",
 				data: clusterItems,
+				updateTriggers: {
+					getIcon: [fontLoaded],
+				},
 				getPosition: (d) => {
 					if (d.type === "backend-cluster") {
 						return [d.cluster.longitude, d.cluster.latitude];
@@ -330,24 +342,29 @@ const DeckMap = () => {
 					}
 					return [0, 0];
 				},
-				getRadius: (d) => {
+				getIcon: (d) => {
 					const count =
 						d.type === "backend-cluster"
 							? d.cluster.count
 							: d.type === "supercluster-cluster"
 								? d.feature.properties.point_count
 								: 1;
-					return Math.min(32, Math.max(18, 18 + Math.log10(count) * 4));
+					const radius = getClusterRadius(count);
+					const countStr = formatClusterCount(count);
+					return getClusterBadgeIcon(countStr, radius);
 				},
-				radiusUnits: "pixels",
-				radiusScale: 1,
-				getFillColor: [79, 70, 229, 245], // Royal Indigo
-				getLineColor: [255, 255, 255, 255],
-				lineWidthUnits: "pixels",
-				lineWidthMinPixels: 2.5,
-				stroked: true,
-				filled: true,
-				antialiasing: true,
+				getSize: (d) => {
+					const count =
+						d.type === "backend-cluster"
+							? d.cluster.count
+							: d.type === "supercluster-cluster"
+								? d.feature.properties.point_count
+								: 1;
+					const radius = getClusterRadius(count);
+					return (radius + 2) * 2;
+				},
+				sizeUnits: "pixels",
+				sizeScale: 1,
 				billboard: true,
 				pickable: true,
 				onClick: ({ object }) => {
@@ -379,63 +396,10 @@ const DeckMap = () => {
 					}
 				},
 			}),
-		[clusterItems, mapInstance, zoom, clientSupercluster],
+		[clusterItems, mapInstance, zoom, clientSupercluster, fontLoaded],
 	);
 
-	// ── 2. Cluster Text Layer (GPU Vector Signed Distance Field Typography) ──
-	const clustersTextLayer = useMemo(
-		() =>
-			new TextLayer<UnifiedRenderItem>({
-				id: "geospatial-clusters-text",
-				data: clusterItems,
-				getPosition: (d) => {
-					if (d.type === "backend-cluster") {
-						return [d.cluster.longitude, d.cluster.latitude];
-					}
-					if (d.type === "supercluster-cluster") {
-						return d.feature.geometry.coordinates as [number, number];
-					}
-					return [0, 0];
-				},
-				getText: (d) => {
-					const count =
-						d.type === "backend-cluster"
-							? d.cluster.count
-							: d.type === "supercluster-cluster"
-								? d.feature.properties.point_count
-								: 1;
-					return formatClusterCount(count);
-				},
-				getSize: (d) => {
-					const count =
-						d.type === "backend-cluster"
-							? d.cluster.count
-							: d.type === "supercluster-cluster"
-								? d.feature.properties.point_count
-								: 1;
-					const countStr = formatClusterCount(count);
-					return countStr.length > 3 ? 12 : 14;
-				},
-				sizeUnits: "pixels",
-				sizeScale: 1,
-				getColor: [255, 255, 255, 255],
-				getTextAnchor: "middle",
-				getAlignmentBaseline: "center",
-				fontFamily: "IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif",
-				fontWeight: "bold",
-				fontSettings: {
-					sdf: true,
-					fontSize: 64,
-					buffer: 8,
-				},
-				characterSet: "auto",
-				billboard: true,
-				pickable: false,
-			}),
-		[clusterItems],
-	);
-
-	// ── 3. Individual Property Pins (WebGL Antialiased Circles) ───────────────
+	// ── 2. Individual Property Pins (WebGL Antialiased Circles) ───────────────
 	const individualPinsLayer = useMemo(
 		() =>
 			new ScatterplotLayer<UnifiedRenderItem>({
@@ -482,7 +446,7 @@ const DeckMap = () => {
 				billboard: true,
 				pickable: true,
 				onClick: ({ object }) => {
-					if (object && object.type === "pin") {
+					if (object?.type === "pin") {
 						const pin = object.pin;
 						void selectListingById(pin.source, pin.externalId, pin);
 					}
@@ -491,7 +455,7 @@ const DeckMap = () => {
 		[pinItems, selectedListing, selectListingById],
 	);
 
-	// ── 4. Pin Inner Center Dot Layer (White Vector Center) ───────────────────
+	// ── 3. Pin Inner Center Dot Layer (White Vector Center) ───────────────────
 	const pinCenterDotsLayer = useMemo(
 		() =>
 			new ScatterplotLayer<UnifiedRenderItem>({
@@ -516,15 +480,13 @@ const DeckMap = () => {
 	const layers = useMemo(() => {
 		return [
 			...transitLayers,
-			clustersCirclesLayer,
-			clustersTextLayer,
+			clustersUnifiedLayer,
 			individualPinsLayer,
 			pinCenterDotsLayer,
 		];
 	}, [
 		transitLayers,
-		clustersCirclesLayer,
-		clustersTextLayer,
+		clustersUnifiedLayer,
 		individualPinsLayer,
 		pinCenterDotsLayer,
 	]);
@@ -551,8 +513,23 @@ const DeckMap = () => {
 			)}
 			<DeckGLOverlay
 				layers={layers}
-				getTooltip={getTooltip}
 				getCursor={getCursor}
+				onHover={(info) => {
+					setHoverInfo(
+						info.object
+							? {
+									x: info.x,
+									y: info.y,
+									object: info.object as HoveredObject,
+								}
+							: null,
+					);
+				}}
+			/>
+			<MapHoverTooltip
+				hoverInfo={hoverInfo}
+				isDesktopOverlayOpen={isDesktopOverlayOpen}
+				isMobile={isMobile}
 			/>
 		</>
 	);

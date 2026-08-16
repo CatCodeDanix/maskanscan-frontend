@@ -127,7 +127,12 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+		font-family: var(--font-iran-sans), var(--font-sans), system-ui, sans-serif;
 		font-feature-settings: "ss01", "ss02";
+	}
+	.maplibregl-map {
+		font-family:
+			var(--font-iran-sans), var(--font-sans), system-ui, sans-serif !important;
 	}
 	button:not(:disabled),
 	[role="button"]:not([aria-disabled="true"]),
