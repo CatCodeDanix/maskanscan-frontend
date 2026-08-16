@@ -16,6 +16,7 @@ import { formatClusterPriceSummary } from "@/lib/geospatial";
 import { useTransitLayers } from "@/lib/overlay-layers";
 import { useListingStore } from "@/store/listing-store";
 import { useMapStore } from "@/store/map-store";
+import { useNavigationStore } from "@/store/navigation-store";
 import type { BackendClusterItem } from "@/types/geospatial";
 import type { MapPinItem, UnifiedListing } from "@/types/listing";
 import DeckGLOverlay from "./DeckGLOverlay";
@@ -227,6 +228,10 @@ const DeckMap = () => {
 			mapInstance.off("idle", handleIdle);
 		};
 	}, [mapInstance]);
+
+	const isDrawerOpen = useNavigationStore((s) => s.isDrawerOpen);
+	const drawerMode = useNavigationStore((s) => s.drawerMode);
+	const isOverlayOpen = isDrawerOpen && drawerMode === "overlay";
 
 	const transitLayers = useTransitLayers();
 	const selectListingById = useListingStore((s) => s.selectListingById);
@@ -539,14 +544,19 @@ const DeckMap = () => {
 
 	return (
 		<>
-			{/* Top Scanning Line & Clean DotLottie Floating HUD */}
+			{/* Top Scanning Line & Prominent Circular DotLottie Floating HUD */}
 			{(isLoading || isFetching) && (
 				<>
 					<div className="pointer-events-none absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse z-30" />
-					<div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center rounded-2xl border border-primary/20 bg-background/90 p-2 shadow-2xl backdrop-blur-md transition-all animate-in fade-in zoom-in-95 duration-200">
+					<div
+						style={{
+							left: isOverlayOpen ? "calc(50% - 190px)" : "50%",
+						}}
+						className="pointer-events-none absolute top-4 -translate-x-1/2 z-30 flex size-20 md:size-22 items-center justify-center rounded-full border-2 border-primary/30 bg-background/95 p-2 shadow-2xl backdrop-blur-md transition-all animate-in fade-in zoom-in-95 duration-200"
+					>
 						<LottieLoader
 							src="/animations/map-loading.lottie"
-							size={54}
+							size={76}
 							className="shrink-0"
 						/>
 					</div>

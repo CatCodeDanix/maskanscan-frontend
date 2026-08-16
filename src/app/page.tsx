@@ -96,18 +96,21 @@ function AppContent() {
 						)}
 					</div>
 
-					{/* Center Logo and Brand */}
-					<div className="flex items-center justify-center gap-2">
+					{/* Center Logo and Brand with Logo between مسکن and اسکن */}
+					<div className="flex items-center justify-center gap-1.5 md:gap-2 select-none">
+						<span className="text-primary text-base font-extrabold md:text-lg tracking-tight">
+							مسکن
+						</span>
 						<Image
 							src="/logo.svg"
-							className="block size-8 md:size-9 shrink-0"
-							width={36}
-							height={36}
+							className="block size-7 md:size-8 shrink-0 hover:scale-105 transition-transform"
+							width={32}
+							height={32}
 							priority
 							alt="MaskanScan Logo"
 						/>
-						<span className="text-primary text-base font-bold md:text-lg tracking-tight">
-							مسکن‌اسکن
+						<span className="text-primary text-base font-extrabold md:text-lg tracking-tight">
+							اسکن
 						</span>
 					</div>
 

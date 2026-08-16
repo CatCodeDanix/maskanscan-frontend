@@ -30,6 +30,14 @@ vi.mock("next/navigation", () => ({
 	useParams: () => ({}),
 }));
 
+// ── Theme Provider Mock ───────────────────────────────────────────────────────
+vi.mock("@wrksz/themes/client", () => ({
+	useTheme: () => ({
+		theme: "dark",
+		setTheme: vi.fn(),
+	}),
+}));
+
 // ── JSDOM Browser API Polyfills ───────────────────────────────────────────────
 Object.defineProperty(window, "matchMedia", {
 	writable: true,

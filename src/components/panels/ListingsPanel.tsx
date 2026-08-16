@@ -134,7 +134,7 @@ export function ListingsPanel() {
 					<Home className="size-8 text-muted-foreground/60" />
 				</div>
 				<p className="text-sm font-bold text-foreground">
-					هیچ آگهیی در این محدوده یافت نشد
+					هیچ آگهی‌ای در این محدوده یافت نشد
 				</p>
 				<p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
 					روی نقشه جابجا شوید، زوم را تغییر دهید یا فیلترهای جستجو را پاکسازی
