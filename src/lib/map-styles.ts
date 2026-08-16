@@ -10,6 +10,17 @@ export type MapStyleDef = {
 	preview?: string;
 };
 
+// ── OpenFreeMap Vector Styles (100% Free, Open-Source & Fast) ────────────────
+export const VECTOR_LIBERTY_STYLE =
+	"https://tiles.openfreemap.org/styles/liberty";
+export const VECTOR_DARK_STYLE = "https://tiles.openfreemap.org/styles/dark";
+export const VECTOR_POSITRON_STYLE =
+	"https://tiles.openfreemap.org/styles/positron";
+export const VECTOR_BRIGHT_STYLE =
+	"https://tiles.openfreemap.org/styles/bright";
+export const VECTOR_FIORD_STYLE = "https://tiles.openfreemap.org/styles/fiord";
+
+// ── Raster Styles Specifications ─────────────────────────────────────────────
 export const CARTO_LIGHT_RASTER: StyleSpecification = {
 	version: 8,
 	sources: {
@@ -110,39 +121,70 @@ export const OSM_RASTER: StyleSpecification = {
 };
 
 export const MAP_STYLES: MapStyleDef[] = [
+	// Vector Styles (Default High Performance)
+	{
+		id: "vector-dark",
+		name: "برداری تاریک (Dark)",
+		url: VECTOR_DARK_STYLE,
+		type: "vector",
+		preview: "/stylespreview/mapir-style-dark.png",
+	},
+	{
+		id: "vector-liberty",
+		name: "برداری روشن (Liberty)",
+		url: VECTOR_LIBERTY_STYLE,
+		type: "vector",
+		preview: "/stylespreview/mapir-xyz-no-building.png",
+	},
+	{
+		id: "vector-positron",
+		name: "برداری مینیمال (Positron)",
+		url: VECTOR_POSITRON_STYLE,
+		type: "vector",
+		preview: "/stylespreview/mapir-xyz-no-building.png",
+	},
+	{
+		id: "vector-bright",
+		name: "برداری استاندارد (Bright)",
+		url: VECTOR_BRIGHT_STYLE,
+		type: "vector",
+		preview: "/stylespreview/mapir-xyz-no-building.png",
+	},
+	{
+		id: "vector-fiord",
+		name: "برداری سرمه‌ای (Fiord)",
+		url: VECTOR_FIORD_STYLE,
+		type: "vector",
+		preview: "/stylespreview/mapir-xyz-no-building.png",
+	},
+
+	// Raster Styles
 	{
 		id: "default",
-		name: "نقشه روشن (Carto)",
+		name: "رستر روشن (Carto)",
 		url: CARTO_LIGHT_RASTER,
 		type: "raster",
 		preview: "/stylespreview/mapir-xyz-no-building.png",
 	},
 	{
-		id: "voyager",
-		name: "نقشه رنگی (Voyager)",
-		url: CARTO_VOYAGER_RASTER,
-		type: "raster",
-		preview: "/stylespreview/mapir-xyz-no-building.png",
-	},
-	{
 		id: "dark",
-		name: "نقشه تاریک (Carto)",
+		name: "رستر تاریک (Carto)",
 		url: CARTO_DARK_RASTER,
 		type: "raster",
 		preview: "/stylespreview/mapir-style-dark.png",
 	},
 	{
-		id: "osm",
-		name: "نقشه OpenStreetMap",
-		url: OSM_RASTER,
+		id: "voyager",
+		name: "رستر رنگی (Voyager)",
+		url: CARTO_VOYAGER_RASTER,
 		type: "raster",
 		preview: "/stylespreview/mapir-xyz-no-building.png",
 	},
 	{
-		id: "openfreemap",
-		name: "برداری (OpenFreeMap)",
-		url: "https://tiles.openfreemap.org/styles/liberty",
-		type: "vector",
+		id: "osm",
+		name: "رستر OpenStreetMap",
+		url: OSM_RASTER,
+		type: "raster",
 		preview: "/stylespreview/mapir-xyz-no-building.png",
 	},
 ];

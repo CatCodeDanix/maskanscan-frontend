@@ -1,11 +1,10 @@
 import type { StyleSpecification } from "maplibre-gl";
 import { create } from "zustand";
-import { MAP_STYLES } from "@/lib/map-styles";
+import { VECTOR_DARK_STYLE, VECTOR_LIBERTY_STYLE } from "@/lib/map-styles";
 import type { BBox } from "@/types/geospatial";
 
-const DARK_STYLE =
-	MAP_STYLES.find((s) => s.id === "dark")?.url ?? MAP_STYLES[1].url;
-const DEFAULT_STYLE = MAP_STYLES[0].url;
+const DARK_STYLE = VECTOR_DARK_STYLE;
+const DEFAULT_LIGHT_STYLE = VECTOR_LIBERTY_STYLE;
 
 // Default Tehran BBox: [minLng, minLat, maxLng, maxLat]
 const DEFAULT_TEHRAN_BBOX: BBox = [51.15, 35.55, 51.62, 35.85];
@@ -25,7 +24,8 @@ type MapStore = {
 };
 
 export const useMapStore = create<MapStore>((set, get) => ({
-	mapStyle: DEFAULT_STYLE,
+	// Default to high-performance Vector Light style (Liberty)
+	mapStyle: DEFAULT_LIGHT_STYLE,
 
 	setMapStyle: (style) => set({ mapStyle: style }),
 
@@ -53,7 +53,7 @@ export const useMapStore = create<MapStore>((set, get) => ({
 		} else {
 			if (mapStyle === DARK_STYLE) {
 				set({
-					mapStyle: previousStyle ?? DEFAULT_STYLE,
+					mapStyle: previousStyle ?? DEFAULT_LIGHT_STYLE,
 					previousStyle: null,
 				});
 			}

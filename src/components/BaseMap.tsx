@@ -12,6 +12,15 @@ import Map, {
 import DeckMap from "./DeckMap";
 import { MapViewStateContext, type ViewState } from "./MapViewStateContext";
 
+// Configure MapLibre v6 Web Worker and RTL Text Plugin for Persian/Arabic shaping
+if (typeof window !== "undefined") {
+	maplibregl.config.WORKER_URL = "/workers/maplibre-gl-worker.mjs";
+
+	if (maplibregl.getRTLTextPluginStatus() === "unavailable") {
+		maplibregl.setRTLTextPlugin("/workers/mapbox-gl-rtl-text.js", true);
+	}
+}
+
 // Combined Tehran & Alborz Provinces Bounding Box with inclusive buffer:
 // [minLng (West), minLat (South), maxLng (East), maxLat (North)]
 // West: 50.0 (includes western Alborz, Eshtehard, Taleghan)
