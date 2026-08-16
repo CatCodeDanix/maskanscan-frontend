@@ -1,6 +1,6 @@
 "use client";
 
-import { LogIn, Sparkles, UserPlus } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -204,9 +204,8 @@ export function AuthDialog({
 
 								<Button
 									type="submit"
-									className="w-full h-10.5 text-xs font-bold gap-2 mt-1 rounded-xl shadow-md"
+									className="w-full h-10.5 text-xs font-bold mt-1 rounded-xl shadow-md cursor-pointer"
 								>
-									<LogIn className="size-4" />
 									ورود به سامانه
 								</Button>
 							</form>
@@ -271,9 +270,8 @@ export function AuthDialog({
 
 								<Button
 									type="submit"
-									className="w-full h-10.5 text-xs font-bold gap-2 mt-1 rounded-xl shadow-md"
+									className="w-full h-10.5 text-xs font-bold mt-1 rounded-xl shadow-md cursor-pointer"
 								>
-									<UserPlus className="size-4" />
 									ثبت نام در مسکن‌اسکن
 								</Button>
 							</form>

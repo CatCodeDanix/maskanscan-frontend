@@ -11,6 +11,7 @@ import TransitTooltip from "@/components/map/TransitTooltip";
 import { LottieLoader } from "@/components/ui/LottieLoader";
 import type { TransitProperties } from "@/data";
 import { useGeospatialMap } from "@/hooks/use-geospatial-map";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { formatToman, toPersianDigits } from "@/lib/format";
 import { formatClusterPriceSummary } from "@/lib/geospatial";
 import { useTransitLayers } from "@/lib/overlay-layers";
@@ -33,6 +34,12 @@ type ClusterBadgeIcon = {
 
 const clusterBadgeCache = new Map<string, ClusterBadgeIcon>();
 
+if (typeof document !== "undefined" && document.fonts) {
+	void document.fonts.ready.then(() => {
+		clusterBadgeCache.clear();
+	});
+}
+
 function getClusterBadgeIcon(text: string, radius: number): ClusterBadgeIcon {
 	const key = `${text}_${radius}`;
 	const cached = clusterBadgeCache.get(key);
@@ -42,33 +49,38 @@ function getClusterBadgeIcon(text: string, radius: number): ClusterBadgeIcon {
 		return { url: "", width: 64, height: 64, anchorX: 32, anchorY: 32 };
 	}
 
+	// 4x Supersampling for razor-sharp Retina/High-DPI rendering
+	const scale = 4;
 	const padding = 6;
-	const size = Math.ceil((radius + padding) * 2 * 2); // 2x Retina scale
-	const center = size / 2;
-	const r = radius * 2;
+	const logicalSize = (radius + padding) * 2;
+	const pixelSize = Math.ceil(logicalSize * scale);
+	const center = pixelSize / 2;
+	const r = radius * scale;
 
 	const canvas = document.createElement("canvas");
-	canvas.width = size;
-	canvas.height = size;
+	canvas.width = pixelSize;
+	canvas.height = pixelSize;
 	const ctx = canvas.getContext("2d");
 
 	if (ctx) {
 		ctx.imageSmoothingEnabled = true;
+		ctx.imageSmoothingQuality = "high";
 
-		// 1. Antialiased Indigo Circle Background
+		// 1. Antialiased Royal Indigo Circle Background
 		ctx.beginPath();
 		ctx.arc(center, center, r, 0, Math.PI * 2);
-		ctx.fillStyle = "rgba(79, 70, 229, 0.96)"; // Royal Indigo
+		ctx.fillStyle = "rgba(79, 70, 229, 0.98)";
 		ctx.fill();
 
 		// 2. Crisp White Stroke Border
-		ctx.lineWidth = 5; // 2.5px at 2x
+		ctx.lineWidth = 2.5 * scale;
 		ctx.strokeStyle = "#ffffff";
 		ctx.stroke();
 
-		// 3. Crisp Persian Typography Centered Inside Circle
-		const fontSize = text.length > 3 ? 24 : 28;
-		ctx.font = `bold ${fontSize}px IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif`;
+		// 3. Ultra-Crisp Persian Typography Centered Inside Circle
+		const baseFontSize = text.length > 3 ? 12 : 14;
+		const scaledFontSize = Math.round(baseFontSize * scale);
+		ctx.font = `bold ${scaledFontSize}px IRANSansX, Vazirmatn, Tahoma, Arial, sans-serif`;
 		ctx.fillStyle = "#ffffff";
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
@@ -76,11 +88,11 @@ function getClusterBadgeIcon(text: string, radius: number): ClusterBadgeIcon {
 	}
 
 	const iconObj: ClusterBadgeIcon = {
-		url: canvas.toDataURL(),
-		width: size,
-		height: size,
-		anchorX: size / 2,
-		anchorY: size / 2,
+		url: canvas.toDataURL("image/png"),
+		width: pixelSize,
+		height: pixelSize,
+		anchorX: pixelSize / 2,
+		anchorY: pixelSize / 2,
 	};
 
 	clusterBadgeCache.set(key, iconObj);
@@ -229,9 +241,11 @@ const DeckMap = () => {
 		};
 	}, [mapInstance]);
 
+	const isMobile = useIsMobile();
 	const isDrawerOpen = useNavigationStore((s) => s.isDrawerOpen);
 	const drawerMode = useNavigationStore((s) => s.drawerMode);
-	const isOverlayOpen = isDrawerOpen && drawerMode === "overlay";
+	const isDesktopOverlayOpen =
+		!isMobile && isDrawerOpen && drawerMode === "overlay";
 
 	const transitLayers = useTransitLayers();
 	const selectListingById = useListingStore((s) => s.selectListingById);
@@ -550,7 +564,7 @@ const DeckMap = () => {
 					<div className="pointer-events-none absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse z-30" />
 					<div
 						style={{
-							left: isOverlayOpen ? "calc(50% - 190px)" : "50%",
+							left: isDesktopOverlayOpen ? "calc(50% - 190px)" : "50%",
 						}}
 						className="pointer-events-none absolute top-4 -translate-x-1/2 z-30 flex size-20 md:size-22 items-center justify-center rounded-full border-2 border-primary/30 bg-background/95 p-2 shadow-2xl backdrop-blur-md transition-all animate-in fade-in zoom-in-95 duration-200"
 					>

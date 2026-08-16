@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useFilterSync } from "@/hooks/use-filter-sync";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useListingStore } from "@/store/listing-store";
 import { useNavigationStore } from "@/store/navigation-store";
 
 function AppContent() {
@@ -30,14 +31,25 @@ function AppContent() {
 	const toggleDrawer = useNavigationStore((s) => s.toggleDrawer);
 	const setIsDrawerOpen = useNavigationStore((s) => s.setIsDrawerOpen);
 	const drawerMode = useNavigationStore((s) => s.drawerMode);
+	const selectedListing = useListingStore((s) => s.selectedListing);
+	const setSelectedListing = useListingStore((s) => s.setSelectedListing);
 
 	const triggerRef = useRef<HTMLButtonElement>(null);
 	const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
 	const handleItemClick = (itemId: string) => {
 		if (isMobile) {
+			const hasDetailOpen = selectedListing !== null;
+			if (hasDetailOpen) {
+				setSelectedListing(null);
+			}
+
 			if (itemId === activeItemId) {
-				triggerRef.current?.click();
+				// If detail sheet was open, dismissing it already returns to the active panel.
+				// Only toggle drawer open/closed if detail sheet was NOT open.
+				if (!hasDetailOpen) {
+					triggerRef.current?.click();
+				}
 			} else {
 				setActiveItemId(itemId);
 				if (!mobileDrawerOpen) {

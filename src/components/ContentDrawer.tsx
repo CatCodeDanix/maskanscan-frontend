@@ -35,7 +35,7 @@ export function ContentDrawer({
 			<DrawerTrigger ref={triggerRef} className="hidden" />
 			<DrawerContent
 				showOverlay={false}
-				className="mb-14 h-[75dvh] max-h-[85dvh] flex flex-col p-0"
+				className="mb-14 h-[75dvh] max-h-[85dvh] flex flex-col p-0 bg-background border-t shadow-2xl"
 				style={
 					{
 						"--initial-transform": "calc(100% + 3.5rem)",
@@ -43,7 +43,7 @@ export function ContentDrawer({
 				}
 			>
 				<DrawerHeader
-					className="shrink-0 flex items-center justify-between border-b px-4 py-2.5 text-right"
+					className="shrink-0 flex items-center justify-between border-b px-4 py-2.5 text-right bg-background"
 					dir="rtl"
 				>
 					<DrawerTitle className="text-xs font-bold text-foreground">

@@ -27,10 +27,13 @@ export function BottomBar({ onItemClick }: BottomBarProps) {
 	return (
 		<div
 			className="
-        bg-background fixed inset-x-0 bottom-0 z-100 flex w-full items-center
-        justify-around border-t p-2
+        bg-background/95 backdrop-blur-md fixed inset-x-0 bottom-0 z-[60] flex w-full items-center
+        justify-around border-t p-2 pointer-events-auto shadow-lg
         md:hidden
       "
+			style={{
+				paddingBottom: "max(0.5rem, env(safe-area-inset-bottom, 0px))",
+			}}
 		>
 			{items.map((item) => {
 				const Icon = item.icon;

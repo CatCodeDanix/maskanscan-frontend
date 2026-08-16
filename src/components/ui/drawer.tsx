@@ -65,7 +65,7 @@ function DrawerContent({
 				data-slot="drawer-content"
 				className={cn(
 					`
-            group/drawer-content bg-popover text-popover-foreground fixed z-50
+            group/drawer-content bg-background text-foreground fixed z-50
             flex h-auto flex-col text-sm
             data-[vaul-drawer-direction=bottom]:inset-x-0
             data-[vaul-drawer-direction=bottom]:bottom-0
