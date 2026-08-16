@@ -111,6 +111,7 @@ export default function BaseMap() {
 				maxBounds={TEHRAN_ALBORZ_BOUNDS}
 				style={{ width: "100%", height: "100%" }}
 				mapStyle={mapStyle}
+				styleDiffing={false}
 				onMove={onMove}
 				onMoveEnd={handleMoveEnd}
 				onLoad={handleMapLoad}

@@ -141,7 +141,7 @@ export const MAP_STYLES: MapStyleDef[] = [
 	{
 		id: "openfreemap",
 		name: "برداری (OpenFreeMap)",
-		url: "https://tiles.openfreemap.org/styles/bright",
+		url: "https://tiles.openfreemap.org/styles/liberty",
 		type: "vector",
 		preview: "/stylespreview/mapir-xyz-no-building.png",
 	},
