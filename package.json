@@ -15,8 +15,7 @@
 		"test:e2e": "playwright test",
 		"db:push": "drizzle-kit push",
 		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate",
-		"email:dev": "email dev"
+		"db:migrate": "drizzle-kit migrate"
 	},
 	"dependencies": {
 		"@gsap/react": "^2.1.2",
@@ -25,7 +24,6 @@
 		"@tanstack/react-virtual": "^3.14.9",
 		"@types/supercluster": "^7.1.3",
 		"@wrksz/themes": "^1.2.0",
-		"better-auth": "^1.6.27",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"deck.gl": "^9.3.10",
@@ -40,9 +38,7 @@
 		"radix-ui": "^1.6.7",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
-		"react-email": "6.9.2",
 		"react-map-gl": "^8.1.2",
-		"resend": "^6.20.0",
 		"shadcn": "^4.18.0",
 		"sonner": "^2.0.8",
 		"supercluster": "^9.0.0",
@@ -56,7 +52,6 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.5.8",
 		"@playwright/test": "^1.62.1",
-		"@react-email/ui": "6.9.2",
 		"@tailwindcss/postcss": "^4.3.3",
 		"@testing-library/jest-dom": "^7.0.1",
 		"@testing-library/react": "^16.3.2",

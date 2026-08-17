@@ -93,7 +93,7 @@ export function useFilterSync() {
 				: {}),
 		});
 
-		void fetchLocationTree();
+		// void fetchLocationTree();
 	}, [fetchLocationTree, patchFilters]);
 
 	// 2. URL query params sync (only syncs applied filters)
