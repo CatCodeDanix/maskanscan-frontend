@@ -44,7 +44,7 @@ export function HeroSection() {
 
 			{/* High-Contrast Dual Scrim Overlays for pristine readability in Light & Dark modes */}
 			<div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/90 via-background/65 to-background dark:from-background/85 dark:via-background/55 dark:to-background pointer-events-none" />
-			<div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_75%_55%_at_50%_45%,var(--tw-gradient-stops))] from-background/95 via-background/75 to-transparent dark:from-background/90 dark:via-background/60 dark:to-transparent pointer-events-none" />
+			<div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_75%_55%_at_50%_45%,var(--tw-gradient-stops))] from-background/95 via-background/75 to-transparent dark:from-background/92 dark:via-background/65 dark:to-transparent pointer-events-none" />
 			<div className="absolute inset-x-0 bottom-0 h-40 z-[2] bg-gradient-to-t from-background via-background/85 to-transparent pointer-events-none" />
 
 			<div className="relative z-10 w-full max-w-4xl lg:max-w-5xl mx-auto space-y-6 pointer-events-auto">

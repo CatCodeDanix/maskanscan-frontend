@@ -111,6 +111,15 @@ export const TEHRAN_NEIGHBORHOODS: NeighborhoodPin[] = [
 	},
 ];
 
+function getBuildingColor(height: number, randomSeed: number): number {
+	// Sophisticated architectural palette with subtle, balanced accent towers
+	if (height > 2.2 && randomSeed > 0.7) return 0xd97706; // Rare warm saffron golden beacon (~5%)
+	if (height > 1.8 && randomSeed > 0.75) return 0x0284c7; // Rare cyan transit hub (~7%)
+	if (randomSeed > 0.8) return 0x64748b; // Modern slate accent (~20%)
+	if (randomSeed > 0.5) return 0x94a3b8; // Steel blue concrete (~30%)
+	return 0xcbd5e1; // Crisp neutral architectural stone (~38%)
+}
+
 export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const sceneRef = useRef<{
@@ -119,7 +128,7 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 		renderer: THREE.WebGLRenderer;
 		pins: THREE.Group[];
 		particles: THREE.Points;
-		highwayLines: THREE.LineSegments[];
+		highwayLines: THREE.Line[];
 		buildingMesh: THREE.InstancedMesh;
 		currentScroll: number;
 		targetCameraPos: THREE.Vector3;
@@ -148,13 +157,8 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 		const container = containerRef.current;
 		if (!container) return;
 
-		// 1. Scene setup
+		// 1. Scene setup (Transparent alpha canvas so CSS theme background shows through)
 		const scene = new THREE.Scene();
-		const isDark = document.documentElement.classList.contains("dark");
-
-		// Atmosphere fog
-		const fogColor = isDark ? 0x090b10 : 0xf4f6fa;
-		scene.fog = new THREE.FogExp2(fogColor, 0.045);
 
 		// 2. Camera setup
 		const aspect = container.clientWidth / container.clientHeight;
@@ -170,26 +174,20 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 		});
 		renderer.setSize(container.clientWidth, container.clientHeight);
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-		renderer.setClearColor(fogColor, 1);
+		renderer.setClearColor(0x000000, 0); // 100% transparent clear color
 		renderer.toneMapping = THREE.ACESFilmicToneMapping;
 		renderer.toneMappingExposure = 1.1;
 		container.appendChild(renderer.domElement);
 
-		// 4. Lighting
-		const ambientLight = new THREE.AmbientLight(
-			isDark ? 0x223344 : 0xe0e7ff,
-			isDark ? 1.4 : 2.2,
-		);
+		// 4. Lighting (Neutral crisp illumination that preserves text contrast)
+		const ambientLight = new THREE.AmbientLight(0xe2e8f0, 1.8);
 		scene.add(ambientLight);
 
-		const dirLight = new THREE.DirectionalLight(0xffb74d, isDark ? 2.2 : 3.0); // Saffron Warm Gold
+		const dirLight = new THREE.DirectionalLight(0xffedd5, 2.2); // Soft warm natural key light
 		dirLight.position.set(12, 18, 8);
 		scene.add(dirLight);
 
-		const secondaryLight = new THREE.DirectionalLight(
-			0x00bcd4,
-			isDark ? 1.6 : 1.2,
-		); // Cyan secondary
+		const secondaryLight = new THREE.DirectionalLight(0x93c5fd, 1.2); // Soft cool fill light
 		secondaryLight.position.set(-10, 12, -8);
 		scene.add(secondaryLight);
 
@@ -210,11 +208,11 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 		}
 		mountainGeo.computeVertexNormals();
 		const mountainMat = new THREE.MeshStandardMaterial({
-			color: isDark ? 0x1a2436 : 0xccd6e6,
+			color: 0x94a3b8,
 			wireframe: true,
 			roughness: 0.8,
 			transparent: true,
-			opacity: isDark ? 0.35 : 0.45,
+			opacity: 0.35,
 		});
 		const mountainMesh = new THREE.Mesh(mountainGeo, mountainMat);
 		mountainMesh.rotation.x = -Math.PI / 2 + 0.3;
@@ -227,9 +225,9 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 		buildingGeo.translate(0, 0.5, 0);
 
 		const buildingMat = new THREE.MeshStandardMaterial({
-			color: isDark ? 0x161d2a : 0xd8e0ec,
-			roughness: 0.4,
-			metalness: 0.2,
+			color: 0xcfd8e3,
+			roughness: 0.45,
+			metalness: 0.15,
 		});
 
 		const gridSize = 56;
@@ -240,8 +238,8 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 			totalBuildings,
 		);
 		const dummy = new THREE.Object3D();
-		const _matrix = new THREE.Matrix4();
 		const color = new THREE.Color();
+		const buildingData: { height: number; randomSeed: number }[] = [];
 
 		let idx = 0;
 		for (let x = 0; x < gridSize; x++) {
@@ -266,6 +264,9 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 						(0.4 + Math.random() * 0.8),
 				);
 
+				const randomSeed = Math.random();
+				buildingData.push({ height, randomSeed });
+
 				dummy.position.set(
 					worldX + (Math.random() - 0.5) * 0.1,
 					0,
@@ -280,14 +281,8 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 
 				buildingMesh.setMatrixAt(idx, dummy.matrix);
 
-				// Highlight tall towers with subtle saffron / cyan glow
-				if (height > 1.8) {
-					color.setHex(isDark ? 0xe58a13 : 0xd97706); // Saffron Gold Tower
-				} else if (height > 1.3 && Math.random() > 0.6) {
-					color.setHex(isDark ? 0x00bcd4 : 0x0284c7); // Cyan Transit Node
-				} else {
-					color.setHex(isDark ? 0x141b26 : 0xdce3ee);
-				}
+				const hexColor = getBuildingColor(height, randomSeed);
+				color.setHex(hexColor);
 				buildingMesh.setColorAt(idx, color);
 				idx++;
 			}
@@ -298,12 +293,7 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 		scene.add(buildingMesh);
 
 		// 7. Ground Grid Plate & District Boundary Contours
-		const gridHelper = new THREE.GridHelper(
-			64,
-			64,
-			isDark ? 0xe58a13 : 0xf59e0b,
-			isDark ? 0x1f293d : 0xcfd8e3,
-		);
+		const gridHelper = new THREE.GridHelper(64, 64, 0xf59e0b, 0x94a3b8);
 		gridHelper.position.y = -0.01;
 		scene.add(gridHelper);
 
@@ -341,9 +331,8 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 			],
 		];
 
-		const highwayLines: THREE.LineSegments[] = [];
+		const highwayLines: THREE.Line[] = [];
 		highways.forEach((coords, hIdx) => {
-			const _points: THREE.Vector3[] = [];
 			const curve = new THREE.CatmullRomCurve3(
 				coords.map((c) => new THREE.Vector3(c[0], c[1], c[2])),
 			);
@@ -353,10 +342,11 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 				color: hIdx % 2 === 0 ? 0xe58a13 : 0x00e5ff,
 				linewidth: 2,
 				transparent: true,
-				opacity: isDark ? 0.85 : 0.65,
+				opacity: 0.75,
 			});
 			const line = new THREE.Line(lineGeo, lineMat);
 			scene.add(line);
+			highwayLines.push(line);
 		});
 
 		// 9. Floating Holographic Neighborhood Pins
@@ -400,7 +390,7 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 
 			// Pulsating Ground Ring
 			const ringMat = new THREE.MeshBasicMaterial({
-				color: isDark ? 0xe58a13 : 0xf59e0b,
+				color: 0xf59e0b,
 				side: THREE.DoubleSide,
 				transparent: true,
 				opacity: 0.7,
@@ -418,7 +408,7 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 			);
 			stemGeo.translate(0, -(pinData.position[1] - 0.05) / 2, 0);
 			const stemMat = new THREE.MeshBasicMaterial({
-				color: isDark ? 0xe58a13 : 0xf59e0b,
+				color: 0xf59e0b,
 				transparent: true,
 				opacity: 0.4,
 			});
@@ -451,6 +441,7 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 				particleColors[i * 3 + 2] = 0.9;
 			}
 		}
+
 		particleGeo.setAttribute(
 			"position",
 			new THREE.BufferAttribute(particlePositions, 3),
@@ -464,7 +455,7 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 			size: 0.075,
 			vertexColors: true,
 			transparent: true,
-			opacity: isDark ? 0.75 : 0.5,
+			opacity: 0.65,
 			blending: THREE.AdditiveBlending,
 		});
 		const particles = new THREE.Points(particleGeo, particleMat);
@@ -486,7 +477,7 @@ export function TehranScene3D({ scrollProgress = 0 }: TehranScene3DProps) {
 			currentCameraLookAt: new THREE.Vector3(0, 0, 0),
 			mousePos: { x: 0, y: 0, targetX: 0, targetY: 0 },
 			raycaster: new THREE.Raycaster(),
-			pointer: new THREE.Vector2(),
+			pointer: new THREE.Vector2(-999, -999),
 			hoveredPin: null,
 		};
 

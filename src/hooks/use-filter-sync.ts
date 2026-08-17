@@ -9,7 +9,7 @@ export function useFilterSync() {
 	const skipFirstURLPush = useRef(true);
 
 	const patchFilters = useListingStore((s) => s.patchFilters);
-	const fetchLocationTree = useListingStore((s) => s.fetchLocationTree);
+	// const fetchLocationTree = useListingStore((s) => s.fetchLocationTree);
 
 	const appliedFilters = useListingStore((s) => s.appliedFilters);
 
@@ -94,7 +94,9 @@ export function useFilterSync() {
 		});
 
 		// void fetchLocationTree();
-	}, [fetchLocationTree, patchFilters]);
+	}, [
+		// fetchLocationTree,
+		 patchFilters]);
 
 	// 2. URL query params sync (only syncs applied filters)
 	useEffect(() => {
