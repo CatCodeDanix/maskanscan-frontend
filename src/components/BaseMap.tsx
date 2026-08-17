@@ -1,14 +1,13 @@
 "use client";
 
 import * as maplibregl from "maplibre-gl";
-import { useMapStore } from "@/store/map-store";
-import type { BBox } from "@/types/geospatial";
-import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useRef, useState } from "react";
 import Map, {
 	type MapRef,
 	type ViewStateChangeEvent,
 } from "react-map-gl/maplibre";
+import { useMapStore } from "@/store/map-store";
+import type { BBox } from "@/types/geospatial";
 import DeckMap from "./DeckMap";
 import { MapViewStateContext, type ViewState } from "./MapViewStateContext";
 

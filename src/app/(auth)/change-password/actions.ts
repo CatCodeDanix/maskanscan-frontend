@@ -22,10 +22,12 @@ export async function changePassword(formData: FormData) {
 		});
 
 		return { success: true, message: "Password changed successfully" };
-	} catch (error: any) {
+	} catch (error) {
+		const message =
+			error instanceof Error ? error.message : "Failed to change password";
 		return {
 			success: false,
-			error: error?.message || "Failed to change password",
+			error: message,
 		};
 	}
 }

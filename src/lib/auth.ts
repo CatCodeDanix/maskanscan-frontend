@@ -7,7 +7,7 @@ import { sendPasswordResetEmail, sendVerificationEmail } from "./email";
 export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
-		sendResetPassword: async ({ user, url, token }, _request) => {
+		sendResetPassword: async ({ user, url }, _request) => {
 			void sendPasswordResetEmail(user.email, url);
 		},
 	},

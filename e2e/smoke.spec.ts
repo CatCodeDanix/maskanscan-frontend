@@ -9,4 +9,13 @@ test.describe("Smoke Test", () => {
 		const brand = page.locator("header");
 		await expect(brand).toContainText(/مسکن[\s‌]?اسکن/i);
 	});
+
+	test("explore map page loads successfully", async ({ page }) => {
+		await page.goto("/explore");
+		await expect(page).toHaveTitle(/مسکن[\s‌]?اسکن/i);
+
+		const header = page.locator("header");
+		await expect(header).toBeVisible();
+	});
 });
+

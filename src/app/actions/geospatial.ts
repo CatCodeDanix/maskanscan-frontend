@@ -1,6 +1,6 @@
 "use server";
 
-import { and, count, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { scrapedListings } from "@/db/schema";
 import { expandBBox, getGridSizeForZoom, getZoomTier } from "@/lib/geospatial";

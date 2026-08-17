@@ -15,10 +15,12 @@ export async function requestPasswordReset(formData: FormData) {
 			message:
 				"If an account with that email exists, a reset link has been sent.",
 		};
-	} catch (error: any) {
+	} catch (error) {
+		const message =
+			error instanceof Error ? error.message : "Failed to send reset email";
 		return {
 			success: false,
-			error: error?.message || "Failed to send reset email",
+			error: message,
 		};
 	}
 }
@@ -36,10 +38,12 @@ export async function resetPassword(token: string, newPassword: string) {
 			return { success: true, message: "Password reset successfully" };
 		}
 		return { success: false, error: "Failed to reset password" };
-	} catch (error: any) {
+	} catch (error) {
+		const message =
+			error instanceof Error ? error.message : "Failed to reset password";
 		return {
 			success: false,
-			error: error?.message || "Failed to reset password",
+			error: message,
 		};
 	}
 }

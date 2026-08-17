@@ -172,6 +172,7 @@ export function useFilterSync() {
 		}
 
 		const qs = qs_params.toString();
-		window.history.replaceState(null, "", qs ? `/?${qs}` : "/");
+		const pathname = window.location.pathname;
+		window.history.replaceState(null, "", qs ? `${pathname}?${qs}` : pathname);
 	}, [appliedFilters]);
 }

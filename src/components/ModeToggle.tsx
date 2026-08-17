@@ -16,7 +16,7 @@ export function ModeToggle() {
 	const setMapTheme = useMapStore((state) => state.setMapTheme);
 
 	return (
-		<DropdownMenu>
+		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="outline"

@@ -9,10 +9,12 @@ export async function signOut() {
 			headers: await headers(),
 		});
 		return { success: true };
-	} catch (error: any) {
+	} catch (error) {
+		const message =
+			error instanceof Error ? error.message : "Failed to sign out";
 		return {
 			success: false,
-			error: error?.message || "Failed to sign out",
+			error: message,
 		};
 	}
 }
