@@ -139,4 +139,4 @@ Detailed engineering specifications and technical designs:
 
 This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
 
-Developed with ❤️ by **Danial Abdoli**.
+Developed with ❤️ by **Danial Abdoli**
