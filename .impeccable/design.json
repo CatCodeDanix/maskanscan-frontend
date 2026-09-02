@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-17T12:48:52.064Z",
+  "title": "Design System: MaskanScan",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Saffron Orange",
+        "canonical": "oklch(0.697 0.148 71)",
+        "tonalRamp": [
+          "oklch(0.25 0.08 71)",
+          "oklch(0.35 0.11 71)",
+          "oklch(0.45 0.13 71)",
+          "oklch(0.58 0.14 71)",
+          "oklch(0.697 0.148 71)",
+          "oklch(0.78 0.12 71)",
+          "oklch(0.88 0.08 71)",
+          "oklch(0.95 0.03 71)"
+        ]
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Canvas Background",
+        "canonical": "oklch(1 0 0)",
+        "tonalRamp": [
+          "oklch(0.145 0 0)",
+          "oklch(0.205 0 0)",
+          "oklch(0.269 0 0)",
+          "oklch(0.556 0 0)",
+          "oklch(0.708 0 0)",
+          "oklch(0.85 0 0)",
+          "oklch(0.922 0 0)",
+          "oklch(1 0 0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Modal headers and splash titles."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Panel headers and key section titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Property card titles and dialog headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Property attributes and general content."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Badges, captions, and price units."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-xs",
+        "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        "purpose": "Small UI elements and resting buttons."
+      },
+      {
+        "name": "shadow-md",
+        "value": "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+        "purpose": "Elevated property cards and active tooltips."
+      },
+      {
+        "name": "shadow-2xl",
+        "value": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+        "purpose": "Floating overlay panels and modal dialogs."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Drawer slide transitions and panel collapses."
+      },
+      {
+        "name": "duration-quick",
+        "value": "150ms",
+        "purpose": "Button hovers and icon state toggles."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action button with saffron orange accent.",
+      "html": "<button class=\"ds-btn-primary\">اعمال فیلترها</button>",
+      "css": ".ds-btn-primary { background: oklch(0.697 0.148 71); color: oklch(0.145 0 0); padding: 8px 16px; font-size: 14px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: opacity 0.15s ease; font-family: var(--font-iran-sans, sans-serif); } .ds-btn-primary:hover { opacity: 0.88; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Muted action button for secondary actions.",
+      "html": "<button class=\"ds-btn-secondary\">انصراف</button>",
+      "css": ".ds-btn-secondary { background: oklch(0.97 0 0); color: oklch(0.205 0 0); padding: 8px 16px; font-size: 14px; font-weight: 500; border: 1px solid oklch(0.922 0 0); border-radius: 8px; cursor: pointer; transition: background 0.15s ease; font-family: var(--font-iran-sans, sans-serif); } .ds-btn-secondary:hover { background: oklch(0.92 0 0); }"
+    },
+    {
+      "name": "Source Badge",
+      "kind": "chip",
+      "refersTo": "badge-source",
+      "description": "Attribution tag indicating portal origin.",
+      "html": "<span class=\"ds-badge-divar\">دیوار</span>",
+      "css": ".ds-badge-divar { background: #dc2626; color: #ffffff; padding: 2px 8px; font-size: 11px; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; font-family: var(--font-iran-sans, sans-serif); }"
+    },
+    {
+      "name": "Property Card Preview",
+      "kind": "card",
+      "refersTo": "card-property",
+      "description": "Compact rental listing summary card.",
+      "html": "<div class=\"ds-card-property\"><div class=\"ds-card-img\"></div><div class=\"ds-card-body\"><div class=\"ds-card-title\">آپارتمان ۸۵ متری سعادت‌آباد</div><div class=\"ds-card-price\">رهن: ۵۰۰ میلیون • اجاره: ۱۵ میلیون</div></div></div>",
+      "css": ".ds-card-property { border: 1px solid oklch(0.922 0 0); background: #ffffff; border-radius: 12px; overflow: hidden; width: 280px; text-align: right; direction: rtl; font-family: var(--font-iran-sans, sans-serif); box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; } .ds-card-property:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); } .ds-card-img { height: 120px; background: oklch(0.95 0 0); } .ds-card-body { padding: 12px; } .ds-card-title { font-size: 14px; font-weight: 700; color: oklch(0.145 0 0); margin-bottom: 6px; } .ds-card-price { font-size: 12px; color: oklch(0.556 0 0); font-weight: 500; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Urban Navigator",
+    "overview": "MaskanScan is a high-density, spatial instrument built specifically for rapid exploration and analysis of Tehran's rental market. The interface recedes cleanly into the background, prioritizing the geospatial map canvas while floating glassmorphic panels and drawer controls afford effortless filtering, price conversion, and listing inspection.",
+    "keyCharacteristics": [
+      "Spatial-first canvas with layered translucent glass interfaces (backdrop-blur-md).",
+      "High-contrast Persian typography driven by IRANSansX with strict RTL spatial rhythm.",
+      "Vibrant saffron-orange brand accent deployed with disciplined rarity for actionable elements.",
+      "Information-dense cards with clear visual hierarchy, badge attribution, and instant spatial feedback."
+    ],
+    "rules": [
+      {
+        "name": "The Rarity of Orange Rule",
+        "body": "The primary saffron-orange accent is reserved strictly for interactive state, selected pins, and confirmed CTA actions. It covers <= 10% of any viewport.",
+        "section": "colors"
+      },
+      {
+        "name": "The Portal Attribution Rule",
+        "body": "Scraped listings must retain their distinct portal badges (Divar, Sheypoor, Kilid, MrEstate) to guarantee source authenticity.",
+        "section": "colors"
+      },
+      {
+        "name": "The Native Persian Digits Rule",
+        "body": "All numerical figures (prices in Tomans, areas in sq.m, bedroom counts, dates) must render with Persian digits (۰-۹).",
+        "section": "typography"
+      },
+      {
+        "name": "The Glass-Over-Map Rule",
+        "body": "Any panel or widget that hovers over the map canvas must feature background opacity (bg-background/95) and backdrop blur (backdrop-blur-md).",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do format all currencies in Persian Tomans using formatToman() with Persian digits.",
+      "Do preserve strict RTL alignment across all layout containers, drawer transitions, and text elements.",
+      "Do display original source attribution badges with accurate portal colors on listing cards.",
+      "Do use backdrop-blur-md on floating navigation and drawer panels."
+    ],
+    "donts": [
+      "Don't use standard English digits (0-9) inside Persian text copy or price tags.",
+      "Don't flood entire panels with solid orange backgrounds; keep accent usage disciplined (<= 10%).",
+      "Don't use heavy dark drop shadows that obscure map details underneath translucent drawers.",
+      "Don't mix left-to-right alignment in form fields except for raw phone numbers or English URLs."
+    ]
+  }
+}

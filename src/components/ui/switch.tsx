@@ -23,17 +23,15 @@ function Switch({
           aria-invalid:border-destructive aria-invalid:ring-destructive/20
           dark:aria-invalid:border-destructive/50
           dark:aria-invalid:ring-destructive/40
-          data-checked:bg-primary
-          data-unchecked:bg-input
-          dark:data-unchecked:bg-input/80
+          data-[state=checked]:bg-primary data-checked:bg-primary
+          data-[state=unchecked]:bg-input data-unchecked:bg-input
+          dark:data-[state=unchecked]:bg-input/80 dark:data-unchecked:bg-input/80
           relative inline-flex shrink-0 items-center rounded-full border
-          border-transparent transition-all outline-none
-          after:absolute after:-inset-x-3 after:-inset-y-2
-          focus-visible:ring-3
-          aria-invalid:ring-3
+          border-transparent transition-colors outline-none
+          focus-visible:ring-2 focus-visible:ring-offset-2
           data-disabled:cursor-not-allowed data-disabled:opacity-50
-          data-[size=default]:h-[18.4px] data-[size=default]:w-8
-          data-[size=sm]:h-3.5 data-[size=sm]:w-6
+          data-[size=default]:h-5 data-[size=default]:w-9
+          data-[size=sm]:h-4 data-[size=sm]:w-7
         `,
 				className,
 			)}
@@ -43,15 +41,22 @@ function Switch({
 				data-slot="switch-thumb"
 				className="
           bg-background
-          dark:data-checked:bg-primary-foreground
-          dark:data-unchecked:bg-foreground
-          pointer-events-none block rounded-full ring-0 transition-transform
+          dark:bg-white
+          pointer-events-none block rounded-full ring-0 shadow-sm transition-transform
           group-data-[size=default]/switch:size-4
           group-data-[size=sm]/switch:size-3
-          group-data-[size=default]/switch:data-checked:translate-x-[calc(100%-2px)]
-          group-data-[size=sm]/switch:data-checked:translate-x-[calc(100%-2px)]
-          group-data-[size=default]/switch:data-unchecked:translate-x-0
-          group-data-[size=sm]/switch:data-unchecked:translate-x-0
+          group-data-[size=default]/switch:data-[state=checked]:translate-x-4
+          group-data-[size=default]/switch:rtl:data-[state=checked]:-translate-x-4
+          group-data-[size=default]/switch:data-checked:translate-x-4
+          group-data-[size=default]/switch:rtl:data-checked:-translate-x-4
+          group-data-[size=sm]/switch:data-[state=checked]:translate-x-3
+          group-data-[size=sm]/switch:rtl:data-[state=checked]:-translate-x-3
+          group-data-[size=sm]/switch:data-checked:translate-x-3
+          group-data-[size=sm]/switch:rtl:data-checked:-translate-x-3
+          data-[state=unchecked]:translate-x-0.5
+          rtl:data-[state=unchecked]:-translate-x-0.5
+          data-unchecked:translate-x-0.5
+          rtl:data-unchecked:-translate-x-0.5
         "
 			/>
 		</SwitchPrimitive.Root>

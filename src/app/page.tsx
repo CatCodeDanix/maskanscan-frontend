@@ -1,98 +1,46 @@
 "use client";
 
-import Image from "next/image";
-import { useRef, useState } from "react";
-import { AppSidebar, placeholderUser } from "@/components/AppSidebar";
-import BaseMapWrapper from "@/components/BaseMapWrapper";
-import { BottomBar } from "@/components/BottomBar";
-import { ContentDrawer } from "@/components/ContentDrawer";
-import { NavUser } from "@/components/NavUser";
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useNavigationStore } from "@/store/navigation-store";
+import { AggregationSection } from "@/components/landing/AggregationSection";
+import { CtaSection } from "@/components/landing/CtaSection";
+import { FeaturesGridSection } from "@/components/landing/FeaturesGridSection";
+import { GeospatialFeatureSection } from "@/components/landing/GeospatialFeatureSection";
+import { HeroSection } from "@/components/landing/HeroSection";
+import { LandingFooter } from "@/components/landing/LandingFooter";
+import { LandingHeader } from "@/components/landing/LandingHeader";
+import { RentCalculatorSection } from "@/components/landing/RentCalculatorSection";
 
-export default function Page() {
-	const isMobile = useIsMobile();
-	const activeItemId = useNavigationStore((s) => s.activeItemId);
-	const setActiveItemId = useNavigationStore((s) => s.setActiveItemId);
-	const triggerRef = useRef<HTMLButtonElement>(null);
-	const [drawerOpen, setDrawerOpen] = useState(false);
-
-	const handleItemClick = (itemId: string) => {
-		if (isMobile) {
-			if (itemId === activeItemId) {
-				triggerRef.current?.click();
-			} else {
-				setActiveItemId(itemId);
-				if (!drawerOpen) {
-					triggerRef.current?.click();
-				}
-			}
-		} else {
-			setActiveItemId(itemId);
-		}
-	};
-
+export default function LandingPage() {
 	return (
-		<>
-			<AppSidebar onItemClick={handleItemClick} />
+		<div
+			className="relative min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/20 selection:text-primary"
+			dir="rtl"
+		>
+			{/* Global Header */}
+			<LandingHeader />
 
-			<SidebarInset className="flex flex-col overflow-hidden">
-				<header
-					className="
-    bg-background
-    sticky top-0 z-10
-    h-16 border-b px-4
-  "
-				>
-					<div className="flex h-full items-center">
-						{/* Right action */}
-						<div className="flex w-12 items-center justify-start">
-							{isMobile ? (
-								<div className="w-12">
-									<NavUser user={placeholderUser} />
-								</div>
-							) : (
-								<SidebarTrigger />
-							)}
-						</div>
+			{/* Scrollable Content Layers */}
+			<main className="relative flex flex-col">
+				{/* 1. Hero Section with Integrated 3D Tehran Canvas */}
+				<HeroSection />
 
-						{/* Center content */}
-						<div className="flex flex-1 items-center justify-center p-12">
-							<Image
-								src={"/logo.svg"}
-								className="block size-[50px] shrink-0"
-								width={50}
-								height={50}
-								priority
-								alt="MaskanScan Logo - A blended house and map marker"
-							/>
-							<span className="text-primary text-base font-semibold md:text-lg">
-								مسکن‌اسکن
-							</span>
-						</div>
+				{/* 2. Cross-Platform Aggregation Section */}
+				<AggregationSection />
 
-						{/* Left spacer for perfect balance */}
-						<div className="w-12" />
-					</div>
-				</header>
+				{/* 3. Geospatial Municipal Boundaries Section */}
+				<GeospatialFeatureSection />
 
-				<div
-					className="
-            flex-1 pb-14
-            md:pb-0
-          "
-				>
-					<BaseMapWrapper />
-				</div>
-			</SidebarInset>
+				{/* 4. Mortgage-to-Rent Dynamic Calculator */}
+				<RentCalculatorSection />
 
-			{isMobile && (
-				<>
-					<BottomBar onItemClick={handleItemClick} />
-					<ContentDrawer triggerRef={triggerRef} onOpenChange={setDrawerOpen} />
-				</>
-			)}
-		</>
+				{/* 5. Key Features Grid */}
+				<FeaturesGridSection />
+
+				{/* 6. Launch Map Conversion CTA */}
+				<CtaSection />
+			</main>
+
+			{/* Global Footer */}
+			<LandingFooter />
+		</div>
 	);
 }

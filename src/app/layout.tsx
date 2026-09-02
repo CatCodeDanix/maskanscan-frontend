@@ -1,4 +1,3 @@
-import { ModeToggle } from "@/components/ModeToggle";
 import Providers from "@/components/Providers";
 import { DirectionProvider } from "@/components/ui/direction";
 import "@/styles/globals.css";
@@ -40,48 +39,110 @@ const iranSansX = localFont({
 });
 
 export const metadata: Metadata = {
+	metadataBase: new URL(
+		process.env.NEXT_PUBLIC_APP_URL || "https://maskanscan.ir",
+	),
 	title: {
-		default: "مسکن اسکن - جستجوی هوشمند ملک در ایران",
+		default: "مسکن اسکن - جستجوی هوشمند رهن و اجاره تهران روی نقشه",
 		template: "%s | مسکن اسکن",
 	},
 	description:
-		"پلتفرم یکپارچه جستجوی ملک در ایران. مقایسه آگهی‌های املاک از منابع معتبر، فیلتر پیشرفته، نقشه تعاملی و اعلان‌های هوشمند برای یافتن خانه ایده‌آل شما.",
+		"سامانه یکپارچه پایش، مقایسه و جستجوی هوشمند آگهی‌های رهن و اجاره مسکونی تهران. تجمیع آگهی‌های دیوار، شیپور، کلید و مستر ملک روی نقشه تعاملی با محاسبه‌گر رهن و اجاره.",
 	keywords: [
-		"املاک",
-		"مسکن",
-		"خرید خانه",
-		"اجاره آپارتمان",
-		"جستجوی ملک",
-		"ایران",
-		"نقشه املاک",
-		"قیمت مسکن",
-		"MaskanScan",
 		"مسکن اسکن",
+		"MaskanScan",
+		"اجاره خانه تهران",
+		"رهن و اجاره آپارتمان تهران",
+		"نقشه املاک تهران",
+		"تجمیع آگهی املاک",
+		"محاسبه تبدیل رهن و اجاره",
+		"آگهی دیوار و شیپور املاک",
+		"اجاره مسکونی تهران",
 	],
 	authors: [{ name: "Danial Abdoli" }],
 	creator: "Danial Abdoli",
+	publisher: "مسکن اسکن",
+	alternates: {
+		canonical: "/",
+	},
+	icons: {
+		icon: [
+			{ url: "/favicon.ico" },
+			{ url: "/logo.svg", type: "image/svg+xml" },
+		],
+		apple: [{ url: "/logo.svg" }],
+	},
 	openGraph: {
 		type: "website",
 		locale: "fa_IR",
 		siteName: "مسکن اسکن | MaskanScan",
-		title: "مسکن اسکن - جستجوی هوشمند ملک در ایران",
+		title: "مسکن اسکن - جستجوی هوشمند رهن و اجاره تهران روی نقشه",
 		description:
-			"پلتفرم یکپارچه جستجوی ملک در ایران. مقایسه آگهی‌های املاک از منابع معتبر با نقشه تعاملی و فیلترهای پیشرفته.",
-		// url: "https://maskanscan.ir",
-		// images: [{ url: "https://maskanscan.ir/og-image.jpg" }],
+			"سامانه یکپارچه پایش، مقایسه و جستجوی هوشمند آگهی‌های رهن و اجاره مسکونی در تهران از معتبرترین پلتفرم‌ها روی نقشه تعاملی.",
+		url: "https://maskanscan.ir",
+		images: [
+			{
+				url: "/og-image.jpg",
+				width: 1200,
+				height: 630,
+				alt: "مسکن اسکن - جستجوی هوشمند رهن و اجاره تهران",
+			},
+		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "مسکن اسکن | MaskanScan",
+		title: "مسکن اسکن - جستجوی هوشمند رهن و اجاره تهران روی نقشه",
 		description:
-			"پلتفرم یکپارچه جستجوی ملک در ایران. مقایسه آگهی‌های املاک از منابع معتبر با نقشه تعاملی.",
-		// images: ["https://maskanscan.ir/og-image.jpg"],
+			"سامانه یکپارچه پایش و مقایسه آگهی‌های رهن و اجاره مسکونی در تهران روی نقشه تعاملی.",
+		images: ["/og-image.jpg"],
+		creator: "@maskanscan",
 	},
 	robots: {
 		index: true,
 		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			"max-video-preview": -1,
+			"max-image-preview": "large",
+			"max-snippet": -1,
+		},
 	},
 };
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebSite",
+			"@id": "https://maskanscan.ir/#website",
+			url: "https://maskanscan.ir",
+			name: "مسکن اسکن | MaskanScan",
+			description:
+				"سامانه یکپارچه پایش، مقایسه و جستجوی هوشمند آگهی‌های رهن و اجاره مسکونی در تهران",
+			inLanguage: "fa-IR",
+			potentialAction: {
+				"@type": "SearchAction",
+				target: "https://maskanscan.ir/explore?query={search_term_string}",
+				"query-input": "required name=search_term_string",
+			},
+		},
+		{
+			"@type": "SoftwareApplication",
+			"@id": "https://maskanscan.ir/#application",
+			name: "مسکن اسکن",
+			operatingSystem: "Web",
+			applicationCategory: "RealEstateApplication",
+			offers: {
+				"@type": "Offer",
+				price: "0",
+				priceCurrency: "IRR",
+			},
+		},
+	],
+};
+
+import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout({
 	children,
@@ -98,6 +159,9 @@ export default function RootLayout({
       `}
 			suppressHydrationWarning
 		>
+			<head>
+				<script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+			</head>
 			<body className="flex min-h-dvh flex-col">
 				<ThemeProvider
 					storage="cookie"
@@ -107,10 +171,8 @@ export default function RootLayout({
 				>
 					<DirectionProvider dir="rtl" direction="rtl">
 						<Providers>
-							<div className="fixed top-4 left-4 z-50">
-								<ModeToggle />
-							</div>
 							{children}
+							<Toaster />
 						</Providers>
 					</DirectionProvider>
 				</ThemeProvider>
