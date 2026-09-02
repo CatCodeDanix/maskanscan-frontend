@@ -1,8 +1,9 @@
 # Vendor and third-party worker bundles
-public/workers/* linguist-vendored
-public/*.js linguist-vendored
+public/** linguist-vendored
+public/** linguist-generated
+*.mjs linguist-vendored
+*.js linguist-vendored
 
 # Data and migration artifacts
-src/data/geojson/* linguist-vendored
-drizzle/* linguist-vendored
-drizzle/meta/* linguist-vendored
+src/data/geojson/** linguist-vendored
+drizzle/** linguist-vendored
