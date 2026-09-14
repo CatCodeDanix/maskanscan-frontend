@@ -54,4 +54,20 @@ describe("PropertyCard component", () => {
 		const selected = useListingStore.getState().selectedListing;
 		expect(selected?.externalId).toBe("test-listing-1");
 	});
+
+	it("renders fallback image when listing has no images", () => {
+		const listingWithoutImages: UnifiedListing = {
+			...mockListing,
+			images: [],
+		};
+
+		render(<PropertyCard listing={listingWithoutImages} />);
+
+		const img = screen.getByAltText("تصویر در دسترس نیست");
+		expect(img).toBeInTheDocument();
+		expect(img).toHaveAttribute(
+			"src",
+			expect.stringContaining("property-placeholder.webp"),
+		);
+	});
 });

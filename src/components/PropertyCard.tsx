@@ -2,6 +2,7 @@
 
 import { BedDouble, Heart, MapPin, Maximize2 } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import {
 	formatBedrooms,
 	formatToman,
@@ -32,7 +33,18 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 		selectedListing?.externalId === listing.externalId &&
 		selectedListing?.source === listing.source;
 
-	const thumbnail = listing.images[0];
+	const [imgError, setImgError] = useState(false);
+	const thumbnail = listing.images?.[0];
+	const [prevThumbnail, setPrevThumbnail] = useState(thumbnail);
+	if (prevThumbnail !== thumbnail) {
+		setPrevThumbnail(thumbnail);
+		setImgError(false);
+	}
+
+	const isFallback = !thumbnail || imgError;
+	const effectiveThumbnail = isFallback
+		? "/images/property-placeholder.webp"
+		: thumbnail;
 	const area = listing.attributes.areaSqMeters;
 	const bedrooms = listing.attributes.bedrooms;
 	const totalSources = 1 + (listing.alternateSources?.length ?? 0);
@@ -62,19 +74,17 @@ export function PropertyCard({ listing, className }: PropertyCardProps) {
 		>
 			{/* Thumbnail */}
 			<div className="relative h-36 w-full overflow-hidden rounded-t-xl bg-muted">
-				{thumbnail ? (
-					<Image
-						src={thumbnail}
-						alt={listing.title}
-						fill
-						sizes="(max-width: 768px) 100vw, 350px"
-						className="object-cover transition-transform duration-300 group-hover/card:scale-105"
-					/>
-				) : (
-					<div className="flex size-full items-center justify-center text-muted-foreground">
-						<Maximize2 className="size-8 opacity-30" />
-					</div>
-				)}
+				<Image
+					src={effectiveThumbnail}
+					alt={isFallback ? "تصویر در دسترس نیست" : listing.title}
+					fill
+					sizes="(max-width: 768px) 100vw, 350px"
+					className={cn(
+						"object-cover transition-transform duration-300",
+						!isFallback && "group-hover/card:scale-105",
+					)}
+					onError={() => setImgError(true)}
+				/>
 
 				{/* Source badge */}
 				<div className="absolute top-2 right-2 z-10 flex items-center gap-1.5">

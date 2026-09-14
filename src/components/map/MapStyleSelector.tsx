@@ -41,10 +41,10 @@ export default function MapStyleSelector() {
 				<button
 					type="button"
 					className="
-            bg-background absolute bottom-6 left-6
+            bg-background absolute left-6
+            bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] md:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]
             z-10 overflow-hidden rounded-2xl border-2 border-slate-900 dark:border-slate-100 shadow-2xl transition hover:scale-105 ring-2 ring-black/10
           "
-					style={{ bottom: `calc(1.5rem + env(safe-area-inset-bottom, 0px))` }}
 				>
 					{/* Thumbnail */}
 					<div className="relative h-[70px] w-[71px]">

@@ -6,7 +6,10 @@ import {
 	useQueryClient,
 } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Supercluster from "supercluster";
+import Supercluster, {
+	type Options as SuperclusterOptions,
+	type PointFeature as SuperclusterPointFeature,
+} from "supercluster";
 import { fetchMapDataAction } from "@/app/actions/geospatial";
 import {
 	expandBBox,
@@ -23,7 +26,7 @@ import type {
 } from "@/types/geospatial";
 import type { MapPinItem, UnifiedListing } from "@/types/listing";
 
-const SUPERCLUSTER_OPTIONS: Supercluster.Options<
+const SUPERCLUSTER_OPTIONS: SuperclusterOptions<
 	{ pin: MapPinItem | UnifiedListing },
 	Record<string, never>
 > = {
@@ -33,7 +36,7 @@ const SUPERCLUSTER_OPTIONS: Supercluster.Options<
 	minZoom: 14,
 };
 
-type PointFeature = Supercluster.PointFeature<{
+type PointFeature = SuperclusterPointFeature<{
 	pin: MapPinItem | UnifiedListing;
 }>;
 

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <radialGradient id="spotlight" cx="50%" cy="42%" r="45%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.18" />
+      <stop offset="60%" stop-color="#1d4ed8" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0" />
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bgGrad)" />
+  <circle cx="400" cy="210" r="200" fill="url(#spotlight)" />
+
+  <!-- Grid decoration lines -->
+  <g stroke="#334155" stroke-opacity="0.2" stroke-width="1">
+    <line x1="200" y1="50" x2="200" y2="450" />
+    <line x1="400" y1="50" x2="400" y2="450" />
+    <line x1="600" y1="50" x2="600" y2="450" />
+    <line x1="100" y1="150" x2="700" y2="150" />
+    <line x1="100" y1="350" x2="700" y2="350" />
+  </g>
+
+  <!-- Main Illustration Container -->
+  <g transform="translate(352, 115)" filter="url(#glow)">
+    <!-- Outer Badge Ring -->
+    <rect x="-12" y="-12" width="120" height="120" rx="28" fill="#1e293b" fill-opacity="0.85" stroke="#334155" stroke-width="1.5" />
+
+    <!-- House Body -->
+    <path d="M48 18 L16 46 L24 46 L24 82 C24 84.2 25.8 86 28 86 L68 86 C70.2 86 72 84.2 72 82 L72 46 L80 46 Z" 
+          fill="#0f172a" 
+          stroke="#94a3b8" 
+          stroke-width="3.5" 
+          stroke-linejoin="round" 
+          stroke-linecap="round" />
+
+    <!-- Door / Entrance -->
+    <path d="M40 86 L40 60 C40 57.8 41.8 56 44 56 L52 56 C54.2 56 56 57.8 56 60 L56 86" 
+          stroke="#64748b" 
+          stroke-width="3" 
+          stroke-linejoin="round" />
+
+    <!-- Modern Window -->
+    <rect x="39" y="32" width="18" height="14" rx="3" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+
+    <!-- Image Off Alert Indicator -->
+    <circle cx="84" cy="22" r="16" fill="#1e1b4b" stroke="#f59e0b" stroke-width="2.5" />
+    <!-- Camera slash or photo icon inside circle -->
+    <path d="M77 29 L91 15" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="84" cy="22" r="4" stroke="#cbd5e1" stroke-width="1.5" fill="none" />
+  </g>
+
+  <!-- Persian Typography -->
+  <text x="400" y="295" 
+        font-family="IRANSansX, Tahoma, Arial, sans-serif" 
+        font-size="24" 
+        font-weight="700" 
+        fill="#f1f5f9" 
+        text-anchor="middle" 
+        direction="rtl"
+        letter-spacing="-0.5px">تصویر در دسترس نیست</text>
+
+  <g transform="translate(400, 330)">
+    <rect x="-65" y="-16" width="130" height="28" rx="14" fill="#1e293b" fill-opacity="0.7" stroke="#334155" stroke-width="1" />
+    <text x="0" y="3" 
+          font-family="IRANSansX, Tahoma, Arial, sans-serif" 
+          font-size="12.5" 
+          font-weight="500" 
+          fill="#94a3b8" 
+          text-anchor="middle" 
+          direction="rtl">مسکن اسکن</text>
+  </g>
+</svg>

@@ -3,7 +3,10 @@
 import { IconLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { useEffect, useMemo, useState } from "react";
 import { useMap } from "react-map-gl/maplibre";
-import type Supercluster from "supercluster";
+import type {
+	ClusterFeature as SuperclusterClusterFeature,
+	PointFeature as SuperclusterPointFeature,
+} from "supercluster";
 import {
 	type HoveredObject,
 	type HoverInfo,
@@ -109,8 +112,8 @@ function getClusterBadgeIcon(text: string, radius: number): ClusterBadgeIcon {
 
 // ── Supercluster feature types ────────────────────────────────────────────────
 
-type ClusterFeature = Supercluster.ClusterFeature<Record<string, never>>;
-type PointFeature = Supercluster.PointFeature<{
+type ClusterFeature = SuperclusterClusterFeature<Record<string, never>>;
+type PointFeature = SuperclusterPointFeature<{
 	pin: MapPinItem | UnifiedListing;
 }>;
 type SuperclusterFeature = ClusterFeature | PointFeature;

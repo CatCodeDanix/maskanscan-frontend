@@ -11,7 +11,7 @@ import {
 	Train,
 } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
-import type Supercluster from "supercluster";
+import type { ClusterFeature as SuperclusterClusterFeature } from "supercluster";
 import type { TransitProperties } from "@/data";
 import {
 	formatBedrooms,
@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 import type { BackendClusterItem } from "@/types/geospatial";
 import type { MapPinItem, UnifiedListing } from "@/types/listing";
 
-type ClusterFeature = Supercluster.ClusterFeature<Record<string, never>>;
+type ClusterFeature = SuperclusterClusterFeature<Record<string, never>>;
 
 export type HoveredObject =
 	| { type: "backend-cluster"; cluster: BackendClusterItem }
