@@ -177,10 +177,14 @@ function SwipeableImageGallery({
 										}}
 									/>
 								) : (
-									<div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground bg-muted select-none">
-										<ImageIcon className="size-8 opacity-40" />
-										<span className="text-xs">تصویر در دسترس نیست</span>
-									</div>
+									<Image
+										src="/images/property-placeholder.webp"
+										alt="تصویر در دسترس نیست"
+										fill
+										draggable={false}
+										sizes="(max-width: 768px) 100vw, 440px"
+										className="object-cover pointer-events-none select-none"
+									/>
 								)}
 							</div>
 						))}
@@ -239,12 +243,15 @@ function SwipeableImageGallery({
 							)}
 						>
 							<Image
-								src={src}
+								src={imageErrors[i] ? "/images/property-placeholder.webp" : src}
 								alt={`بند انگشتی ${toPersianDigits(i + 1)}`}
 								fill
 								draggable={false}
 								sizes="60px"
 								className="object-cover pointer-events-none select-none"
+								onError={() => {
+									setImageErrors((prev) => ({ ...prev, [i]: true }));
+								}}
 							/>
 						</button>
 					))}
@@ -294,7 +301,18 @@ function DetailContent({ listing }: { listing: UnifiedListing }) {
 						<Skeleton className="absolute inset-0" />
 						<ImageIcon className="size-8 text-muted-foreground/30 z-10" />
 					</div>
-				) : null}
+				) : (
+					<div className="relative h-56 sm:h-60 w-full shrink-0 overflow-hidden rounded-xl bg-muted border border-border/70 shadow-2xs">
+						<Image
+							src="/images/property-placeholder.webp"
+							alt="تصویر در دسترس نیست"
+							fill
+							draggable={false}
+							sizes="(max-width: 768px) 100vw, 440px"
+							className="object-cover pointer-events-none select-none"
+						/>
+					</div>
+				)}
 
 				{/* Title & Location Header */}
 				<div className="flex items-start justify-between gap-3 pt-0.5">
